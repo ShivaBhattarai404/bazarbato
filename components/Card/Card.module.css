@@ -1,0 +1,11 @@
+.card {
+  border-radius: 10px;
+  background-color: #fff;
+
+  --tw-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05),
+    0 1px 3px 0 rgba(63, 63, 68, 0.15);
+  --tw-shadow-colored: 0 0 0 1px var(--tw-shadow-color),
+    0 1px 3px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}

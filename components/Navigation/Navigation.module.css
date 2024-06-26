@@ -32,7 +32,7 @@
 .nav {
   grid-area: nav;
   width: 15rem;
-  height: calc(100vh - 3.7rem);
+  height: 100%;
   position: fixed;
   top: 3.5rem;
   left: 0;
