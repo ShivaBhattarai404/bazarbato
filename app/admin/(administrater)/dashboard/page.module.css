@@ -8,12 +8,7 @@
   grid-template-columns: 38rem calc(100% - 40rem);
   grid-template-rows: 20rem 6rem 10rem;
 }
-.card {
-  background-color: #fff;
-  color: #000;
-  padding: 1.2rem;
-  position: relative;
-}
+
 .cardTitle {
   font-weight: bold;
 }

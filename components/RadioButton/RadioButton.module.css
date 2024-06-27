@@ -6,6 +6,7 @@
     border-radius: 50%;
     vertical-align: middle;
     position: relative;
+    user-select: none;
 }
 .checkbox::after{
     content: '';

@@ -1,0 +1,32 @@
+.checkbox{
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+}
+.checkbox *{
+    vertical-align: middle;
+}
+.icon{
+    color: var(--primary);
+    margin-right: 0.5rem;
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--primary);
+    border-radius: 3px;
+    position: relative;
+}
+
+.tickBox{
+    margin: 0;
+    font-size: 1rem;
+    display: none;
+    vertical-align: middle;
+    outline-offset: 0;
+}
+.input:checked ~ .icon{
+    border: none;
+}
+.input:checked ~ .icon .tickBox{
+    display: block;
+}
