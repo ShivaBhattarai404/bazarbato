@@ -1,0 +1,141 @@
+.title{
+  margin: 0.5rem 0 1.3rem;
+}
+.layout {
+  gap: 1rem;
+  display: grid;
+  margin: 1rem 0 10rem;
+  grid-template-columns: 38rem calc(100% - 40rem);
+  grid-template-rows: 20rem 6rem 10rem;
+}
+.card {
+  background-color: #fff;
+  color: #000;
+  padding: 1.2rem;
+  position: relative;
+}
+.cardTitle {
+  font-weight: bold;
+}
+.graph {
+  grid-column: 1/2;
+  grid-row: 1/1;
+}
+.test {
+  color: #666;
+  display: block;
+  position: absolute;
+  top: 50%;
+}
+.lifetimeSales{
+  grid-row: 1/3;
+  grid-column: 2/3;
+}
+.reportlist {
+  list-style: none;
+  font-size: 0.85rem;
+  color: rgb(32, 34, 35);
+  margin-top: 1rem;
+}
+.reportlist li {
+  line-height: 1.6rem;
+  display: flex;
+  align-items: center;
+}
+.dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  display: inline-block;
+  background-color: #000;
+  font-weight: bold;
+  vertical-align: middle;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+.reportlist li:nth-child(1) .dot {
+  background-color: var(--critical-light);
+}
+.reportlist li:nth-child(2) .dot {
+  background-color: var(--decorative);
+}
+.reportlist li:nth-child(3) .dot {
+  background-color: var(--highlight);
+}
+.reportlist li:nth-child(4) .dot {
+  background-color: var(--primary);
+}
+.reportlist li:nth-child(5) .dot {
+  background-color: var(--critical);
+}
+.lifetimeSales hr {
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 1px solid var(--divider);
+}
+.piechart {
+  margin: auto;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  background-color: var(--background);
+  display: grid;
+  place-items: center;
+}
+
+.bestSales {
+  grid-row-start: 2;
+  height: fit-content;
+  grid-column: 1/2;
+}
+.bestSales > a{
+  float: right;
+  display: block;
+  width: fit-content;
+  font-size: 0.875rem;
+  color: var(--interactive);
+  text-decoration: none;
+}
+.products{
+  margin-top: 2rem;
+}
+.product{
+  width: 100%;
+  display: grid;
+  align-items: center;
+  font-size: 0.875rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--divider);
+  grid-template-columns: repeat(20, 1fr);
+}
+.product:first-child{
+  border-top: none;
+}
+.product img{
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  grid-column: 1/3;
+  aspect-ratio: 1/1;
+  border-radius: 3px;
+  object-fit: contain;
+  border: 1px solid var(--divider);
+}
+.product_name{
+  color: inherit;
+  font-weight: 600;
+  grid-column: 3/12;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+  text-decoration: none;
+}
+.product_name:hover{
+  text-decoration: underline;
+}
+.product_price{
+  text-align: center;
+  grid-column: 12/17;
+}
+.product_sold_amount{
+  text-align: right;
+  grid-column: 17/22;
+}

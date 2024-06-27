@@ -40,12 +40,12 @@ const Attributes = () => {
           <select
             id="new-product-size"
             className={formStyles.select}
-            name="attribute-set"
+            name="size"
           >
-            <option value="none">S</option>
-            <option value="Size_and_Weight">L</option>
-            <option value="Shoes">XL</option>
-            <option value="clothes">XXL</option>
+            <option value="s">S</option>
+            <option value="l">L</option>
+            <option value="xl">XL</option>
+            <option value="xxl">XXL</option>
           </select>
         </Fragment>
       )}
@@ -58,12 +58,12 @@ const Attributes = () => {
           <select
             id="new-product-color"
             className={formStyles.select}
-            name="attribute-set"
+            name="color"
           >
-            <option value="none">Red</option>
-            <option value="Size_and_Weight">Green</option>
-            <option value="Shoes">Yellow</option>
-            <option value="clothes">Orange</option>
+            <option value="red">Red</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+            <option value="orange">Orange</option>
           </select>
         </Fragment>
       )}
@@ -77,12 +77,12 @@ const Attributes = () => {
             style={{ display: "inline-block" }}
             id="new-product-color"
             className={formStyles.select}
-            name="attribute-set"
+            name="weight"
           >
-            <option value="none">120</option>
-            <option value="Size_and_Weight">125</option>
-            <option value="Shoes">130</option>
-            <option value="clothes">140</option>
+            <option value="120">120</option>
+            <option value="125">125</option>
+            <option value="130">130</option>
+            <option value="140">140</option>
           </select>
         </Fragment>
       )}

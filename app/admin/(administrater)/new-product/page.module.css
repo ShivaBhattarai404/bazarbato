@@ -1,25 +1,5 @@
-.dashboard{
+.container{
     width: 100%;
-    padding: 2rem 10rem;
-}
-.title{
-    display: flex;
-    justify-content: left;
-    align-items: center;
-}
-.backIcon{
-    margin-right: 1rem;
-    cursor: pointer;
-    width: 2rem;
-    height: 2.1rem;
-    padding: 5px;
-    color: var(--icon);
-    border: 1px solid #8c9196;
-    border-radius: 3px;
-}
-.title h1{
-    font-size: 1.3rem;
-    font-weight: 500;
 }
 .wrapper{
     display: grid;
@@ -31,7 +11,6 @@
 .card{
     background-color: #fff;
     color: #000;
-    border-radius: 6px;
     padding: 1.2rem;
 }
 .cardTitle{
@@ -87,7 +66,7 @@
     grid-column: 1/2;
     grid-row: 12/24;
     display: grid;
-    min-height: 24rem;
+    min-height: 22rem;
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: 1rem 1fr 1fr;
     gap: 0.5rem;
@@ -178,4 +157,7 @@
 }
 .cancelButton:hover{
     background-color: var(--critical-light);
+}
+.saveButton:active, .cancelButton:active{
+    scale: 0.9;
 }

@@ -1,4 +1,4 @@
-import { FaArrowLeft } from "react-icons/fa6";
+import { redirect } from "next/navigation";
 
 import Card from "@/components/Card/Card";
 import styles from "./page.module.css";
@@ -6,19 +6,23 @@ import formStyles from "@/public/styles/form.module.css";
 import DND from "@/components/DND/DND";
 import RadioButton from "@/components/RadioButton/RadioButton";
 import Attributes from "@/components/Attributes/Attributes";
+import AdminPageHeading from "@/components/Utils/AdminPageHeading";
 
 export const metadata = {
   title: "Create a new product",
 };
 
 export default function Dashboard() {
+  async function formSubmitHandler(formData) {
+    "use server";
+    // console.log(formData);
+    redirect("/admin/products");
+  }
+
   return (
-    <div className={styles.dashboard}>
-      <div className={styles.title}>
-        <FaArrowLeft className={styles.backIcon} />
-        <h1>Create A New Product</h1>
-      </div>
-      <div className={styles.wrapper}>
+    <div className={`${styles.container} homepadding`}>
+      <AdminPageHeading back>Create A New Product</AdminPageHeading>
+      <form className={styles.wrapper} action={formSubmitHandler} >
         <Card className={`${styles.general} ${styles.card}`}>
           <span className={styles.cardTitle}>General</span>
           <label htmlFor="new-product-name" className={formStyles.label}>
@@ -64,6 +68,7 @@ export default function Dashboard() {
             Description
           </label>
           <textarea
+            name="product-description"
             id="new-product-description"
             className={formStyles.textarea}
           />
@@ -174,7 +179,7 @@ export default function Dashboard() {
           <span className={styles.cardTitle}>Inventory</span>
           <label className={formStyles.label}>Stock Avaibility</label>
           <RadioButton
-            name="availability"
+            name="stock-availability"
             value="no"
             className={styles.radio}
             labelclassname={styles.radioText}
@@ -182,7 +187,7 @@ export default function Dashboard() {
             No
           </RadioButton>
           <RadioButton
-            name="availability"
+            name="stock-availability"
             value="yes"
             defaultChecked
             className={styles.radio}
@@ -211,10 +216,10 @@ export default function Dashboard() {
         </Card>
 
         <Card className={`${styles.footer} ${styles.card}`}>
-          <button className={styles.saveButton}>Save</button>
-          <button className={styles.cancelButton}>Cancel</button>
+          <button className={styles.saveButton} type="submit" >Save</button>
+          <button className={styles.cancelButton} type="reset" >Reset</button>
         </Card>
-      </div>
+      </form>
     </div>
   );
 }
