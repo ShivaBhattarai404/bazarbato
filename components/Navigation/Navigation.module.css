@@ -17,7 +17,7 @@
   left: 0;
   background-color: #fff;
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.15);
-  z-index: 100;
+  z-index: 90;
 }
 .profilePic {
   width: 2rem;
@@ -37,6 +37,7 @@
   top: 3.5rem;
   left: 0;
   border-right: 5px solid #058c8c;
+  overflow-y: scroll;
 }
 .links {
   padding-top: 1rem;

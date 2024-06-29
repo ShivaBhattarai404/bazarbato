@@ -1,0 +1,50 @@
+/* Modal styles */
+.modal {
+  width: 32rem;
+  height: 11rem;
+}
+.modal h1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.modal h1 svg {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+.modal p {
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
+}
+.modal hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+.modal button {
+  border: none;
+  color: #fff;
+  display: block;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  text-decoration: none;
+  padding: 0.55rem 0.8rem;
+  background-color: #008060;
+  float: right;
+  margin-right: 1rem;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+.modal button:hover {
+  background-color: #007050;
+}
+.modal button.cancel {
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--divider);
+  box-shadow: none;
+}

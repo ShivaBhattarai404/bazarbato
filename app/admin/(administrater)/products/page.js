@@ -11,11 +11,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
+import Modal from "@/components/Modal/Modal";
 
 export default function ProductsPage() {
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [modalType, setModalType] = useState("");
 
-  const productSelectHanler = (e) => {
+  const productSelectHandler = (e) => {
     const { value } = e.target;
     if (selectedProducts.includes(value)) {
       setSelectedProducts((prev) => prev.filter((item) => item !== value));
@@ -24,8 +26,23 @@ export default function ProductsPage() {
     }
   };
 
+  const modalTitleKey = modalType === "disable" ? "Disable" : "Delete";
+  const modalPargraphKey = modalType === "disable" ? "disable" : "delete";
+  const btn1Text = modalType === "disable" ? "Disable" : "Delete";
+
   return (
     <div className={styles.container}>
+      {modalType && (
+        <Modal
+          btn1Text={btn1Text}
+          btn2Text="Cancel"
+          bgColor2={modalType === "disable" ? "#2c6ecb" : "#d72c0d"}
+          onCancel={() => setModalType("")}
+          title={`${modalTitleKey} ${selectedProducts.length} products`}
+          paragraph={`Are you sure you want to ${modalPargraphKey} this product?`}
+        />
+      )}
+
       <div className={styles.title}>
         <h1>Products</h1>
         <Link className={styles.newProductLink} href="/admin/new-product">
@@ -57,8 +74,18 @@ export default function ProductsPage() {
             <div className={styles.no_of_selected_product}>
               {selectedProducts.length} selected
             </div>
-            <div className={styles.delete_btn}>Delete</div>
-            <div className={styles.enable_or_disable_btn}>Disable</div>
+            <div
+              className={styles.delete_btn}
+              onClick={() => setModalType("delete")}
+            >
+              Delete
+            </div>
+            <div
+              className={styles.enable_or_disable_btn}
+              onClick={() => setModalType("disable")}
+            >
+              Disable
+            </div>
           </div>
         )}
 
@@ -72,7 +99,6 @@ export default function ProductsPage() {
               <th className={styles.sku}>SKU</th>
               <th className={styles.stock}>Stock</th>
               <th className={styles.status}>Status</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -82,7 +108,7 @@ export default function ProductsPage() {
                   <CheckBox
                     id={`all-products-${i}`}
                     value={i}
-                    onClick={productSelectHanler}
+                    onClick={productSelectHandler}
                   />
                 </td>
                 <td className={`${styles.thumbnail} ${styles.image}`}>
@@ -106,15 +132,31 @@ export default function ProductsPage() {
             <tr>
               <td colSpan={2} className={styles.product_per_page}>
                 Show
-                <input className={formStyles.input} type="number" defaultValue="10" />
+                <input
+                  className={formStyles.input}
+                  type="number"
+                  defaultValue="10"
+                />
                 per page
               </td>
               <td colSpan={4} className={styles.pagination}>
-                <button className={styles.first}><AiOutlineDoubleLeft /></button>
-                <button className={styles.prev}><HiOutlineChevronLeft /></button>
-                <input className={formStyles.input} type="number" defaultValue="1" />
-                <button className={styles.next}><HiOutlineChevronRight /></button>
-                <button className={styles.last}><AiOutlineDoubleRight  /></button>
+                <button className={styles.first}>
+                  <AiOutlineDoubleLeft />
+                </button>
+                <button className={styles.prev}>
+                  <HiOutlineChevronLeft />
+                </button>
+                <input
+                  className={formStyles.input}
+                  type="number"
+                  defaultValue="1"
+                />
+                <button className={styles.next}>
+                  <HiOutlineChevronRight />
+                </button>
+                <button className={styles.last}>
+                  <AiOutlineDoubleRight />
+                </button>
                 <span>36 records</span>
               </td>
             </tr>

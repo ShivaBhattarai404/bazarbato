@@ -85,36 +85,18 @@
   border-bottom: 1px solid #ccc;
 }
 .table tr td {
-  padding: 0.5rem 0;
+  padding: 1rem 0;
   font-size: 0.8rem;
 }
 .checkbox {
   width: 5%;
 }
-.thumbnail {
-  width: 10%;
-}
-.name {
-  width: 30%;
-}
-.price {
-  width: 12%;
-}
-.sku {
-  width: 18%;
-}
-.stock {
-  width: 15%;
-}
-.status {
-  width: 10%;
-}
-.name a {
+.code a {
   color: #222;
   font-weight: 600;
   text-decoration: none;
 }
-.name a:hover {
+.code a:hover {
   text-decoration: underline;
 }
 .image img {

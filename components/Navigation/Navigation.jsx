@@ -7,6 +7,7 @@ import { FaArchive } from "react-icons/fa";
 import { LuLink } from "react-icons/lu";
 import { RiBox3Fill } from "react-icons/ri";
 import { IoPeopleSharp } from "react-icons/io5";
+import { FaHashtag } from "react-icons/fa6";
 
 import styles from "./Navigation.module.css";
 import logo from "@/public/images/logo.png";
@@ -31,19 +32,19 @@ const Navigation = ({ children }) => {
           <span>Quick Links</span>
           <ul>
             <li className={checkActive("/dashboard")}>
-              <Link href="dashboard">
+              <Link href="/admin/dashboard">
                 <IoMdHome />
                 Dashboard
               </Link>
             </li>
             <li className={checkActive("/new-product")}>
-              <Link href="new-product">
+              <Link href="/admin/new-product">
                 <FaArchive />
                 New Product
               </Link>
             </li>
             <li className={checkActive("/new-coupon")}>
-              <Link href="new-coupon">
+              <Link href="/admin/new-coupon">
                 <IoIosGift />
                 New Coupon
               </Link>
@@ -55,15 +56,21 @@ const Navigation = ({ children }) => {
           <span>Catalog</span>
           <ul>
           <li className={checkActive("/products")}>
-              <Link href="products">
+              <Link href="/admin/products">
                 <FaArchive />
                 Products
               </Link>
             </li>
             <li className={checkActive("/categories")}>
-              <Link href="categories">
+              <Link href="/admin/categories">
                 <LuLink />
                 Categories
+              </Link>
+            </li>
+            <li className={checkActive("/attributes")}>
+              <Link href="/admin/attributes">
+                <FaHashtag />
+                Attributes
               </Link>
             </li>
           </ul>
@@ -73,7 +80,7 @@ const Navigation = ({ children }) => {
           <span>Sale</span>
           <ul>
           <li className={checkActive("/orders")}>
-              <Link href="orders">
+              <Link href="/admin/orders">
                 <RiBox3Fill />
                 Orders
               </Link>
@@ -85,7 +92,7 @@ const Navigation = ({ children }) => {
           <span>Customer</span>
           <ul>
           <li className={checkActive("/customers")}>
-              <Link href="customers">
+              <Link href="/admin/customers">
                 <IoPeopleSharp />
                 Customers
               </Link>
@@ -97,7 +104,7 @@ const Navigation = ({ children }) => {
           <span>Promotion</span>
           <ul>
           <li className={checkActive("/coupons")}>
-              <Link href="coupons">
+              <Link href="/admin/coupons">
                 <IoIosGift />
                 Coupons
               </Link>
@@ -109,7 +116,7 @@ const Navigation = ({ children }) => {
           <span>Site</span>
           <ul>
           <li className={checkActive("/setting")}>
-              <Link href="setting">
+              <Link href="/admin/setting">
                 <IoMdSettings />
                 Setting
               </Link>

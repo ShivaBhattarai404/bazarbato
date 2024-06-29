@@ -16,7 +16,7 @@ async function handleSubmit(data) {
 export default async function Dashboard() {
   return (
     <form className={`${styles.container} homepadding`} action={handleSubmit}>
-      <AdminPageHeading back>Create A New Coupon</AdminPageHeading>
+      <AdminPageHeading back="/admin/coupons" >Create A New Coupon</AdminPageHeading>
       <Card className={styles.card}>
         <span className={styles.cardTitle}>General</span>
         <label htmlFor="new-coupon-code" className={formStyles.label}>
