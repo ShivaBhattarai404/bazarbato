@@ -21,8 +21,10 @@ export default function Dashboard() {
 
   return (
     <div className={`${styles.container} homepadding`}>
-      <AdminPageHeading back>Create A New Product</AdminPageHeading>
-      <form className={styles.wrapper} action={formSubmitHandler} >
+      <AdminPageHeading back="/admin/products">
+        Create A New Product
+      </AdminPageHeading>
+      <form className={styles.wrapper} action={formSubmitHandler}>
         <Card className={`${styles.general} ${styles.card}`}>
           <span className={styles.cardTitle}>General</span>
           <label htmlFor="new-product-name" className={formStyles.label}>
@@ -216,8 +218,12 @@ export default function Dashboard() {
         </Card>
 
         <Card className={`${styles.footer} ${styles.card}`}>
-          <button className={styles.saveButton} type="submit" >Save</button>
-          <button className={styles.cancelButton} type="reset" >Reset</button>
+          <button className={styles.saveButton} type="submit">
+            Save
+          </button>
+          <button className={styles.cancelButton} type="reset">
+            Reset
+          </button>
         </Card>
       </form>
     </div>

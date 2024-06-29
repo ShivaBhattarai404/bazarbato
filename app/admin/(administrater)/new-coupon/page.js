@@ -1,5 +1,3 @@
-"use client";
-
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
 
@@ -10,24 +8,14 @@ import Toggle from "@/components/Toggle/Toggle";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import RadioButton from "@/components/RadioButton/RadioButton";
 
-export default function Dashboard() {
-  async function handleSubmit(event) {
-    event.preventDefault();
-    // const form = event.target;
-    // const data = new FormData(form);
-    // const response = await fetch("/api/new-coupon", {
-    //   method: "POST",
-    //   body: data,
-    // });
-    // if (response.ok) {
-    //   alert("Coupon created successfully");
-    //   form.reset();
-    // } else {
-    //   alert("Failed to create coupon");
-    // }
-  }
+async function handleSubmit(data) {
+  "use server";
+  // console.log(data);
+}
+
+export default async function Dashboard() {
   return (
-    <form className={`${styles.container} homepadding`} onSubmit={handleSubmit} >
+    <form className={`${styles.container} homepadding`} action={handleSubmit}>
       <AdminPageHeading back>Create A New Coupon</AdminPageHeading>
       <Card className={styles.card}>
         <span className={styles.cardTitle}>General</span>
@@ -104,6 +92,7 @@ export default function Dashboard() {
           </div>
         </div>
         <CheckBox
+          value="true"
           id="new-coupon-free-shipping"
           styles={{ fontSize: "0.9rem" }}
           name="new-coupon-free-shipping"
@@ -126,21 +115,34 @@ export default function Dashboard() {
           className={styles.discountTypeOption}
           name="discount-type"
           defaultChecked
+          value="6"
         >
           Fixed discount on specific products
         </RadioButton>
-        <RadioButton className={styles.discountTypeOption} name="discount-type">
+        <RadioButton
+          className={styles.discountTypeOption}
+          name="discount-type"
+          value="2"
+        >
           Percentage discount on specific products
         </RadioButton>
-        <RadioButton className={styles.discountTypeOption} name="discount-type">
+        <RadioButton
+          className={styles.discountTypeOption}
+          name="discount-type"
+          value="3"
+        >
           Fixed discount on specific categories
         </RadioButton>
-        <RadioButton className={styles.discountTypeOption} name="discount-type">
+        <RadioButton
+          className={styles.discountTypeOption}
+          name="discount-type"
+          value="4"
+        >
           Percentage discount on specific categories
         </RadioButton>
-        <RadioButton className={styles.discountTypeOption} name="discount-type">
+        {/* <RadioButton className={styles.discountTypeOption} name="discount-type" value="5" >
           Buy X get Y
-        </RadioButton>
+        </RadioButton> */}
 
         <label className={`${formStyles.label} ${styles.discountValue}`}>
           Discount Amount
@@ -197,7 +199,6 @@ export default function Dashboard() {
           defaultValue={0}
         />
       </Card>
-
 
       <Card className={`${styles.footer} ${styles.card}`}>
         <button className={styles.saveButton} type="submit">

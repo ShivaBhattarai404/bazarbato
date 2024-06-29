@@ -7,6 +7,7 @@ import PieChart from "@/components/Charts/PieChart";
 
 import frame from "@/public/images/frame.png";
 import Image from "next/image";
+import AreaChart from "@/components/Charts/AreaChart";
 
 export const metadata = {
   title: "Dashboard",
@@ -15,14 +16,11 @@ export const metadata = {
 export default function Dashboard() {
   return (
     <div className={`${styles.container} homepadding`}>
-      <AdminPageHeading className={styles.title} >Dashboard</AdminPageHeading>
+      <AdminPageHeading className={styles.title}>Dashboard</AdminPageHeading>
       <div className={styles.layout}>
         <Card className={`${styles.card} ${styles.graph}`}>
           <span className={styles.cardTitle}>Sales Statistics</span>
-          <span className={styles.test}>
-            Yeha euta graph haldinxu jasle timilai lai samjhauxa ki kati bikri
-            vayeko xa
-          </span>
+          <AreaChart className={styles.chart} />
         </Card>
         <Card className={`${styles.card} ${styles.lifetimeSales}`}>
           <span className={styles.cardTitle}>Lifetime Sales</span>

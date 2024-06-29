@@ -8,7 +8,10 @@
   --critical-light: #ffe1db;
   --warning: #ffc453;
   --highlight: #5bcdda;
-  --success: #008060;
+  --success: #aee9d1;
+  --info: #2c6ecb;
+  --info-light: #e8f0fe;
+  --disabled: #e4e5e7;
   --decorative: #ffc96b;
   --border: #8c9196;
   --background: #f6f6f7fc;

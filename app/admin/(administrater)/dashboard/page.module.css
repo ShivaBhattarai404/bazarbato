@@ -8,19 +8,17 @@
   grid-template-columns: 38rem calc(100% - 40rem);
   grid-template-rows: 20rem 6rem 10rem;
 }
-
 .cardTitle {
   font-weight: bold;
 }
 .graph {
   grid-column: 1/2;
-  grid-row: 1/1;
+  grid-row: 1/3;
+  position: relative;
 }
-.test {
-  color: #666;
-  display: block;
-  position: absolute;
-  top: 50%;
+.chart {
+  height: 25rem;
+  margin-top: 1rem;
 }
 .lifetimeSales{
   grid-row: 1/3;
@@ -78,7 +76,7 @@
 }
 
 .bestSales {
-  grid-row-start: 2;
+  grid-row-start: 3;
   height: fit-content;
   grid-column: 1/2;
 }
