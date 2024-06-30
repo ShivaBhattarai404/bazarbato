@@ -1,5 +1,10 @@
-import WIP from "@/components/WIP/WIP";
+import OrderComponent from "./component";
 
-export default function Dashboard() {
-  return <WIP />;
+export const metadata = {
+  title: "Order",
+};
+
+export default function OrderPage({ params: { id: orderId } }) {
+  console.log("OrderId", orderId);
+  return <OrderComponent />;
 }

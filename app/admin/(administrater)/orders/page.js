@@ -99,11 +99,12 @@ export default function ProductsPage() {
                 <td className={styles.date}>Jun 29, 2024</td>
                 <td className={styles.email}>shivabhattarai15@gmail.com</td>
                 <td className={styles.shipment_status}>
-                  {i > 3 ? (
-                    <span className={styles.processing}>Processing</span>
-                  ) : (
-                    <span className={styles.shipped}>Shipped</span>
-                  )}
+                  {i === 0 && <span className={styles.delivered}>Delivered</span>}
+                  {i === 1 && <span className={styles.shipped}>Shipped</span>}
+                  {i === 2 && <span className={styles.shipped}>Shipped</span>}
+                  {i === 3 && <span className={styles.processing}>Processing</span>}
+                  {i === 4 && <span className={styles.processing}>Processing</span>}
+                  {i === 5 && <span className={styles.processing}>Processing</span>}
                 </td>
                 <td className={styles.payment_status}>
                   {i > 1 ? (

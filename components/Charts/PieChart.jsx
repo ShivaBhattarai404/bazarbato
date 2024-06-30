@@ -5,6 +5,8 @@ const PieChart = () => {
   return (
     <Pie
       animate
+      animationEasing="ease"
+      animationDuration={1000}
       data={[
         { title: "One", value: 10, color: "#ffe1db" },
         { title: "Two", value: 15, color: "#ffc96b" },

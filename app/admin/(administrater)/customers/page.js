@@ -104,7 +104,7 @@ export default function ProductsPage() {
                 <td className={styles.fullname}>
                   <Link href="/admin/customers/some-id">Sapana Bhandari</Link>
                 </td>
-                <td className={styles.email}>shivabhattarai15@gmail.com</td>
+                <td className={styles.email}>sapanabhandari56@gmail.com</td>
                 <td className={styles.phone}>9825448970</td>
                 <td className={styles.orders}>214</td>
                 <td className={styles.status}>

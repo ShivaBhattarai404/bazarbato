@@ -113,15 +113,18 @@
     font-weight: 500;
 }
 .shipment_status span.shipped::before,
+.shipment_status span.delivered::before,
 .payment_status span.paid::before{
     border: none;
     background-color: var(--text);
 }
-.payment_status span.paid{
+.payment_status span.paid,
+.shipment_status span.delivered{
     color: var(--text);
     background-color: var(--success);
     font-weight: 500;
 }
+.shipment_status span.delivered::before,
 .payment_status span.paid::before{
     background-color: var(--primary);
 }

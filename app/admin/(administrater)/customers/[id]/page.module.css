@@ -1,0 +1,93 @@
+.container {
+  padding: 1rem 2rem;
+  width: 100%;
+}
+.title {
+  display: flex;
+  margin: 1.5rem 0 1.3rem;
+  justify-content: space-between;
+}
+.title h1 {
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+.card {
+  margin-bottom: 5rem;
+  padding-bottom: 0.5rem !important;
+}
+.cardWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.customerInfo {
+  width: 25rem;
+}
+.customerInfo h1 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #343a40;
+  text-transform: uppercase;
+  border-top: 1px solid #ccc;
+  padding: 1rem 0 0.5rem;
+}
+.customerInfo h1:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+.customerInfo p {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #444;
+  padding: 0 0 1rem;
+}
+
+
+.orderInfo {
+  width: calc(100% - 26rem);
+}
+.cardTitle {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.fallback {
+  font-size: 0.8rem;
+  color: #444;
+  padding: 0.5rem 0 1rem;
+}
+
+.table {
+  width: 100%;
+  text-align: left;
+  margin: 1.5rem 0.5rem 0;
+  border-collapse: collapse;
+}
+.table th {
+  padding: 1rem 0;
+  overflow: hidden;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ccc;
+}
+.table tr {
+  overflow: hidden;
+  border-bottom: 1px solid #ccc;
+}
+.table tr:last-child {
+    border: none;
+}
+.table tr td {
+  padding: 1rem 0;
+  font-size: 0.8rem;
+}
+.order_number a {
+  color: #222;
+  font-weight: 500;
+  text-decoration: none;
+}
+.order_number a:hover {
+  text-decoration: underline;
+}
