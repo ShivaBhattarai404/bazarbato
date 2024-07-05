@@ -16,7 +16,6 @@ const CheckBox = (props) => {
           className={styles.input}
           type="checkbox"
           id={props.id || "checkbox-component"}
-          name={props.name}
           hidden
         />
         <span className={styles.icon}>

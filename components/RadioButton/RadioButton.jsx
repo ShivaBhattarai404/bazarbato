@@ -1,7 +1,7 @@
 import styles from "./RadioButton.module.css";
 
 const RadioButton = (props) => {
-    const { children, ...rest } = props;
+  const { children, ...rest } = props;
 
   return (
     <label className={`${props.className} ${styles.label}`}>

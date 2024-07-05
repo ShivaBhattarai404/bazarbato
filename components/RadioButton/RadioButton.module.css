@@ -1,3 +1,6 @@
+.label{
+    cursor: pointer;
+}
 .checkbox{
     width: 1rem;
     height: 1rem;

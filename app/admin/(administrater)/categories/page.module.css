@@ -10,7 +10,7 @@
   font-weight: 600;
   font-size: 1.15rem;
 }
-.newCouponLink {
+.newCategoryLink {
   border: none;
   color: #fff;
   display: block;
@@ -22,7 +22,7 @@
   background-color: #008060;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
-.newCouponLink:hover {
+.newCategoryLink:hover {
   background-color: #007050;
 }
 
@@ -84,6 +84,9 @@
   overflow: hidden;
   border-bottom: 1px solid #ccc;
 }
+.table tr:last-child{
+  border-bottom: none;
+}
 .table tr td {
   padding: 1rem 0;
   font-size: 0.8rem;
@@ -91,18 +94,27 @@
 .checkbox {
   width: 5%;
 }
-.code a {
+.name a {
   color: #222;
   font-weight: 600;
   text-decoration: none;
 }
-.code a:hover {
+.name a:hover {
   text-decoration: underline;
 }
 .image img {
   padding: 2px;
   object-fit: contain;
   border: 1px solid var(--divider);
+}
+.status{
+  width: 10%;
+}
+.no_of_products {
+  width: 15%;
+}
+.is_in_menu {
+  width: 15%;
 }
 td.status span {
   margin: 0 1rem;
@@ -163,4 +175,3 @@ td.status span.disabled {
 .pagination span {
   margin-left: 0.5rem;
 }
-

@@ -9,6 +9,7 @@
   --critical-light: #ffe1db;
   --warning: #ffc453;
   --highlight: #5bcdda;
+  --highlight-light: #e6fdff;
   --success: #aee9d1;
   --info: #2c6ecb;
   --info-light: #e8f0fe;
@@ -38,6 +39,30 @@
 }
 body {
   background-color: #f6f6f7;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  scroll-behavior: smooth;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  /* background: #f1f1f1; */
+  background-color: var(--divider);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  /* background: #888; */
+  background-color: #058c8c;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
 @layer utilities {

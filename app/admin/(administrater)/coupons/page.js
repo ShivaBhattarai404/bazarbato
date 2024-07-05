@@ -43,7 +43,7 @@ export default function ProductsPage() {
 
       <div className={styles.title}>
         <h1>Coupons</h1>
-        <Link className={styles.newProductLink} href="/admin/new-coupon">
+        <Link className={styles.newCouponLink} href="/admin/new-coupon">
           New Coupon
         </Link>
       </div>
@@ -108,7 +108,7 @@ export default function ProductsPage() {
                   />
                 </td>
                 <td className={styles.code}>
-                  <Link href="#">BUYXGETY {i + 1}</Link>
+                  <Link href="/admin/coupons/BUYXGETY">BUYXGETY {i + 1}</Link>
                 </td>
                 <td className={styles.startdate}>12 Jun 2024</td>
                 <td className={styles.enddate}>20 Jul 2024</td>

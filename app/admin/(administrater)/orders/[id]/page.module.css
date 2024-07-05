@@ -24,9 +24,9 @@
   grid-template-rows: repeat(auto-fill, 5rem);
   gap: 1rem;
   grid-auto-flow: column;
-  grid-template-areas:
+  /* grid-template-areas:
     "status customerNote"
-    "payment customer";
+    "payment customer"; */
 }
 /* status styles it can be processing, shipped or delivered */
 .status {

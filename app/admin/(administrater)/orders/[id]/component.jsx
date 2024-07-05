@@ -20,6 +20,7 @@ function Product({ products }) {
     image: frame,
     qty: 3,
     price: 500,
+    coupon: "SUMMER200",
     attributes: [
       {
         name: "Color",
@@ -40,6 +41,11 @@ function Product({ products }) {
           {product.name}
         </Link>
         <p className={styles.sku}>{product.sku}</p>
+        {product.coupon && (
+          <p className={styles.attribute}>
+            <b>Coupon:</b> {product.coupon}
+          </p>
+        )}
         {product.attributes.map((attribute) => (
           <p key={attribute.name} className={styles.attribute}>
             <b>{attribute.name}:</b> {attribute.value}
@@ -64,7 +70,7 @@ export default function OrderComponent() {
   };
   return (
     <div className={`${styles.container} homepadding`}>
-      <AdminPageHeading back="/admin/orders" className={styles.title}>
+      <AdminPageHeading back className={styles.title}>
         Order #ORD51687 <span className={styles.shipped}>Shipped</span>{" "}
         <span className={styles.paid}>Paid</span>
       </AdminPageHeading>

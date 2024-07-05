@@ -4,20 +4,20 @@
   grid-template-areas: "header header" "nav children";
 }
 .header {
-  grid-area: header;
-  height: 3.5rem;
-  width: 100%;
-  padding: 0 1rem;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
   top: 0;
   left: 0;
-  background-color: #fff;
-  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.15);
+  width: 100%;
   z-index: 90;
+  display: flex;
+  height: 3.5rem;
+  padding: 0 1rem;
+  position: fixed;
+  grid-area: header;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: #fff;
+  justify-content: space-between;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.15);
 }
 .profilePic {
   width: 2rem;
@@ -30,14 +30,19 @@
   border: 3px solid #4c8f65;
 }
 .nav {
-  grid-area: nav;
-  width: 15rem;
-  height: 100%;
-  position: fixed;
-  top: 3.5rem;
   left: 0;
-  border-right: 5px solid #058c8c;
+  top: 3.5rem;
+  height: calc(100% - 3rem); /* reduce header width */
+  padding-bottom: 2rem;
+  width: 15rem;
+  grid-area: nav;
+  position: fixed;
   overflow-y: scroll;
+  /* border-right: 5px solid #058c8c; */
+  scroll-behavior: smooth;
+}
+.nav::-webkit-scrollbar {
+  width: 7px;
 }
 .links {
   padding-top: 1rem;

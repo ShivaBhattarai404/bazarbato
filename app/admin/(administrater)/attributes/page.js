@@ -1,5 +1,109 @@
-import WIP from "@/components/WIP/WIP";
+"use client";
 
-export default function Dashboard() {
-  return <WIP />;
+import Link from "next/link";
+
+import styles from "./page.module.css";
+import formStyles from "@/public/styles/form.module.css";
+import Card from "@/components/Card/Card";
+import CheckBox from "@/components/CheckBox/CheckBox";
+import { useState } from "react";
+import Modal from "@/components/Modal/Modal";
+
+export default function ProductsPage() {
+  const [selectedAttributes, setSelectedAttributes] = useState([]);
+  const [modal, setModal] = useState(false);
+
+  const categorySelectHandler = (e) => {
+    const { value } = e.target;
+    if (selectedAttributes.includes(value)) {
+      setSelectedAttributes((prev) => prev.filter((item) => item !== value));
+    } else {
+      setSelectedAttributes((prev) => [...prev, value]);
+    }
+  };
+
+  const word = selectedAttributes.length > 1 ? "attributes" : "attribute";
+  const grammar = selectedAttributes.length > 1 ? "these" : "this";
+
+  return (
+    <div className={styles.container}>
+      {modal && (
+        <Modal
+          btn1Text="Delete"
+          btn2Text="Cancel"
+          bgColor2="#d72c0d"
+          onCancel={() => setModal(false)}
+          title={`Delete ${selectedAttributes.length} ${word}`}
+          paragraph={`Are you sure you want to delete ${grammar} ${word}?`}
+        />
+      )}
+
+      <div className={styles.title}>
+        <h1>Attribute</h1>
+        <Link className={styles.newCategoryLink} href="/admin/new-attribute">
+          New Attribute
+        </Link>
+      </div>
+      <Card className={styles.card}>
+        <input
+          type="text"
+          placeholder="Search"
+          className={`${formStyles.input} ${styles.search}`}
+        />
+        <select className={`${formStyles.select}`}>
+          <option value="all">All</option>
+          <option value="enabled">Enabled</option>
+          <option value="disabled">Disabled</option>
+        </select>
+        <select className={`${formStyles.select} ${styles.sort}`}>
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="nameAsc">Name: A to Z</option>
+          <option value="nameDesc">Name: Z to A</option>
+          <option value="productsAsc">No. of products: Low to High</option>
+          <option value="productsDesc">No. of products: High to Low</option>
+        </select>
+
+        {selectedAttributes.length > 0 && (
+          <div className={styles.controls}>
+            <div className={styles.no_of_selected_items}>
+              {selectedAttributes.length} selected
+            </div>
+            <div className={styles.delete_btn} onClick={() => setModal(true)}>
+              Delete
+            </div>
+          </div>
+        )}
+
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th className={styles.checkbox}></th>
+              <th className={styles.name}>Attribute Name</th>
+              <th className={styles.type}>type</th>
+              <th className={styles.isRequired}>is Required?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {new Array(4).fill("").map((_, i) => (
+              <tr key={i}>
+                <td className={styles.checkbox}>
+                  <CheckBox
+                    id={`categories-${i}`}
+                    value={i}
+                    onClick={categorySelectHandler}
+                  />
+                </td>
+                <td className={styles.name}>
+                  <Link href={`/admin/new-attribute?attribute=${i}`}>Size</Link>
+                </td>
+                <td className={styles.type}>Select</td>
+                <td className={styles.isRequired}>{i % 4 ? "Yes" : "No"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
 }

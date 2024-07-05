@@ -13,7 +13,7 @@ async function handleSubmit(data) {
   // console.log(data);
 }
 
-export default async function Dashboard() {
+export default async function NewCoupon() {
   return (
     <form className={`${styles.container} homepadding`} action={handleSubmit}>
       <AdminPageHeading back="/admin/coupons" >Create A New Coupon</AdminPageHeading>

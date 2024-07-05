@@ -1,0 +1,111 @@
+.title {
+  margin-bottom: 1rem;
+}
+.cardWrapper {
+  display: grid;
+  grid-template-columns: 40rem 20rem;
+  grid-template-rows: repeat(auto-fit, auto);
+  gap: 1rem;
+}
+.cardTitle {
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0;
+}
+.card label{
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 1.3rem;
+}
+.card label:first-of-type{
+  margin-top: 1rem;
+}
+.general {
+  grid-row: 1/3;
+  grid-column: 1/2;
+}
+.attributeTypeRadioBtn{
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 0.5rem !important;
+}
+.optionWrapper{
+  width: 20rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 1rem;
+}
+.optionWrapper input{
+  margin: 0;
+  margin-top: 0.5rem;
+}
+.removeOption{
+  border: none;
+  cursor: pointer;
+  color: var(--critical);
+  background-color: transparent;
+}
+.addOption{
+  border: none;
+  margin-top: 0.5rem;
+  background-color: transparent;
+  color: var(--interactive);
+  cursor: pointer;
+}
+.addOption:hover{
+  text-decoration: underline;
+}
+
+.advanced .radio{
+  margin-top: 0.5rem;
+}
+.advanced hr{
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 1px solid var(--divider);
+}
+
+
+/* footer styles */
+.footer {
+  padding: 0;
+  display: flex;
+  /* grid-row: 4/5; */
+  grid-column: 1/3;
+  border-radius: 0;
+  margin-top: 1.5rem;
+  box-shadow: none !important;
+  padding-top: 1.5rem !important;
+  justify-content: space-between;
+  border-top: 1px solid var(--divider);
+  background-color: transparent !important;
+}
+.saveButton {
+  background-color: #008060;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none;
+}
+.saveButton:hover {
+  background-color: #007050;
+}
+.cancelButton {
+  background-color: transparent;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: var(--critical);
+  border: 2px solid var(--critical);
+}
+.cancelButton:hover {
+  background-color: var(--critical-light);
+}
+.saveButton:active,
+.cancelButton:active {
+  scale: 0.9;
+}
