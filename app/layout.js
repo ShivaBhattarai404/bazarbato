@@ -1,10 +1,10 @@
 import { Inter } from "next/font/google";
-import "./globals.css";
+// import "./global.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Pattu's Admin",
+  title: "Home | Premps",
 };
 
 export default function RootLayout({ children }) {

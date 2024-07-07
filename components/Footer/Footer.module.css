@@ -1,0 +1,117 @@
+.footer {
+  background: var(--eerie-black);
+  color: var(--white);
+  padding: 2rem var(--padding-lg);
+}
+.category,
+.nav {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--onyx);
+}
+.category_title {
+  color: var(--salmon-pink);
+  font-size: var(--fs-6);
+  font-weight: var(--weight-600);
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+.category_box_title {
+  color: var(--spanish-gray);
+  font-size: var(--fs-8);
+  font-weight: var(--weight-600);
+  text-transform: uppercase;
+  margin-right: 1rem;
+}
+
+.category_box {
+  margin: 0.5rem 0;
+}
+.category_box * {
+  display: inline;
+  vertical-align: middle;
+}
+.category_box a {
+  line-height: 1.8;
+  margin-right: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: var(--fs-7);
+  color: var(--sonic-silver);
+  text-transform: capitalize;
+  transition: var(--transition-timing);
+  border-right: 1px solid var(--sonic-silver);
+}
+.category_box a:hover {
+  color: var(--spanish-gray);
+}
+.category_box a:last-child {
+  border-right: none;
+}
+
+/*  */
+/* NAVIGATION LINKS */
+/*  */
+.list {
+  margin: 1.5rem 0;
+}
+.list_item {
+  line-height: 1.8;
+}
+.list_item h2 {
+  position: relative;
+  color: var(--white);
+  font-size: var(--fs-7);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+.list_item h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: var(--salmon-pink);
+  width: 5rem;
+  height: 1px;
+}
+.list_item a {
+  width: max-content;
+  color: var(--sonic-silver);
+  font-size: var(--fs-7);
+  text-transform: capitalize;
+  transition: var(--transition-timing);
+}
+.list_item a:hover {
+  color: var(--spanish-gray);
+}
+
+.footer_bottom {
+  color: var(--sonic-silver);
+  font-size: var(--fs-8);
+  font-weight: var(--weight-500);
+  text-transform: capitalize;
+  letter-spacing: 1.2px;
+  text-align: center;
+}
+.footer_bottom svg {
+  vertical-align: middle;
+}
+
+/*  */
+/* MEDIA QUERIES */
+/*  */
+@media (min-width: 570px) {
+  .footer {
+    padding: 2rem var(--padding-x-lg);
+  }
+  .nav {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer {
+    padding: 2rem var(--padding-xx-lg);
+  }
+}

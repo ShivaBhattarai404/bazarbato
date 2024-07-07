@@ -30,7 +30,7 @@ async function loginHandler(email, password) {
   }
 
   // Check if email and password are correct
-  if (email === "demo@gmail.com" && password === "demo") {
+  if (email === "demo@premps.com" && password === "demo") {
     const storedCookies = cookies();
     // Generate JWT token
     const token = await generateJwt({ email }, "1d");
