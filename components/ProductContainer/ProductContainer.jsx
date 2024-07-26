@@ -320,6 +320,7 @@ export default function ProductContainer() {
           <Link href="#">
             <Image
               className={styles.image}
+              alt="shoes"
               src={shoes}
               width={400}
               height={400}
