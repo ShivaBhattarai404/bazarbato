@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import { IoMdHome, IoIosGift, IoMdSettings } from "react-icons/io";
-import { FaArchive } from "react-icons/fa";
+import { FaArchive, FaLayerGroup } from "react-icons/fa";
 import { LuLink } from "react-icons/lu";
 import { RiBox3Fill } from "react-icons/ri";
 import { IoPeopleSharp } from "react-icons/io5";
@@ -11,8 +13,6 @@ import { FaHashtag } from "react-icons/fa6";
 
 import styles from "./Navigation.module.css";
 import logo from "@/public/images/logo.png";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const Navigation = ({ children }) => {
   const pathname = usePathname();
@@ -71,6 +71,12 @@ const Navigation = ({ children }) => {
               <Link href="/admin/attributes">
                 <FaHashtag />
                 Attributes
+              </Link>
+            </li>
+            <li className={checkActive("/attribute-set")}>
+              <Link href="/admin/attribute-set">
+                <FaLayerGroup />
+                Attribute Set
               </Link>
             </li>
           </ul>

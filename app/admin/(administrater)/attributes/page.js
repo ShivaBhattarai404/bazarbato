@@ -22,13 +22,17 @@ export default function ProductsPage() {
       });
   }, []);
 
-  const categorySelectHandler = (e) => {
-    const { value } = e.target;
-    if (selectedAttributes.includes(value)) {
-      setSelectedAttributes((prev) => prev.filter((item) => item !== value));
+  const attributeSelectHandler = (e) => {
+    const { attributeId } = e.target;
+    if (selectedAttributes.includes(attributeId)) {
+      setSelectedAttributes((prev) => prev.filter((item) => item !== attributeId));
     } else {
-      setSelectedAttributes((prev) => [...prev, value]);
+      setSelectedAttributes((prev) => [...prev, attributeId]);
     }
+  };
+
+  const attributeDeleteHandler = () => {
+    // console.log(selectedAttributes);
   };
 
   const word = selectedAttributes.length > 1 ? "attributes" : "attribute";
@@ -41,6 +45,7 @@ export default function ProductsPage() {
           btn1Text="Delete"
           btn2Text="Cancel"
           bgColor2="#d72c0d"
+          onOk={attributeDeleteHandler}
           onCancel={() => setModal(false)}
           title={`Delete ${selectedAttributes.length} ${word}`}
           paragraph={`Are you sure you want to delete ${grammar} ${word}?`}
@@ -99,12 +104,16 @@ export default function ProductsPage() {
                 <td className={styles.checkbox}>
                   <CheckBox
                     id={`attributes-${i}`}
-                    value={i}
-                    onClick={categorySelectHandler}
+                    value={attribute._id}
+                    onClick={attributeSelectHandler}
                   />
                 </td>
                 <td className={styles.name}>
-                  <Link href={`/admin/new-attribute?attribute=${attribute.code}`}>{attribute.name}</Link>
+                  <Link
+                    href={`/admin/new-attribute?attribute=${attribute.code}`}
+                  >
+                    {attribute.name}
+                  </Link>
                 </td>
                 <td className={styles.type}>{attribute.type}</td>
                 <td className={styles.code}>{attribute.code}</td>

@@ -192,7 +192,7 @@ export default function NewProductForm({
       // creating a new form data object
       const formData = new FormData(e.target);
       // append the product id to the form data if the product is in edit mode
-      formData.append("_id", (product && product._id) ? product._id : "");
+      formData.append("_id", product && product._id ? product._id : "");
       // appending the images to the form data
       images.map((image) => formData.append("images", image));
       // calling the handleSubmit function
@@ -304,11 +304,7 @@ export default function NewProductForm({
           <DND
             key={index}
             className={styles.imagePicker}
-            defaultimage={
-              product?.images[index]
-                ? `${product.url_key}/${product.images[index]}`
-                : null
-            }
+            defaultimage={product?.images[index]}
             onUpload={(file) => imageChangeHandler(file, index)}
           />
         ))}
@@ -485,7 +481,10 @@ export default function NewProductForm({
         />
       </Card>
 
-      <Card className={`${styles.footer} ${styles.card}`}>
+      <Card
+        style={{ backgroundColor: "transparent" }}
+        className={`${styles.footer} ${styles.card}`}
+      >
         <button className={styles.saveButton} type="submit">
           Save
         </button>

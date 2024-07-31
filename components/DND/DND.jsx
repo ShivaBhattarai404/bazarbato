@@ -10,7 +10,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 
 const DND = (props) => {
   const [file, setFile] = useState(
-    props.defaultimage ? `/api/public/${props.defaultimage}` : null
+    props.defaultimage ? props.defaultimage : null
   );
 
   const handleChange = (e) => {

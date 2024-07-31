@@ -109,7 +109,7 @@ export default function ProductTable({ products }) {
                   </td>
                   <td className={`${styles.thumbnail} ${styles.image}`}>
                     <Image
-                      src={`/api/public/${product.url_key}/${product.images[0]}`}
+                      src={product.images[0]}
                       width={60}
                       height={55}
                       alt={product.name}

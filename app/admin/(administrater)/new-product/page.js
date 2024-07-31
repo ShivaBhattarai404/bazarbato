@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { readdir, writeFile, mkdir, unlink } from "fs/promises";
 import { Buffer } from "buffer";
 import path from "path";
+import { put, del } from "@vercel/blob";
 
 // product model or schema
 import Product from "@/models/Product";
@@ -17,19 +18,32 @@ export const metadata = {
   title: "Create a new product",
 };
 
+async function upload(filename, file) {
+  try {
+    return put(filename, file, {
+      access: "public",
+    });
+  } catch (error) {
+    console.log("error while uploading", error.message);
+  }
+}
+
+async function deleteImage(filename) {
+  try {
+    console.log("deleting", filename);
+    return del(filename);
+  } catch (error) {
+    console.log("error while deleting", error.message);
+  }
+}
+
 // function to update the uploaded images
-async function imageUpdateHandler(newImages, slug = "") {
-  const productImagePaths = path.join(
-    process.cwd(),
-    "images",
-    "products",
-    slug
-  );
-  const existingImages = await readdir(productImagePaths);
+async function imageUpdateHandler(newImages, existingImages, slug = "") {
   const newImageNames = [];
   for (let image of newImages) {
     if (existingImages.includes(image)) {
       newImageNames.push(image);
+      continue;
     }
     if (
       image === "null" ||
@@ -38,7 +52,7 @@ async function imageUpdateHandler(newImages, slug = "") {
     )
       continue;
     const buffer = Buffer.from(await image.arrayBuffer());
-    const filename = (Date.now() + image.name).replace(" ", "_");
+    const filename = (Date.now() + "_" + image.name).replace(" ", "_");
     newImageNames.push(filename);
     await writeFile(path.join(productImagePaths, filename), buffer);
   }
@@ -52,27 +66,15 @@ async function imageUpdateHandler(newImages, slug = "") {
 // function to upload images to the server
 async function imageUploadHandler(images, slug = "") {
   "use server";
-  const imageNames = [];
-  for (const image of images) {
-    if (image === "null" || image.type.split("/")[0] !== "image") continue;
-    const filename = (Date.now() + image.name).replace(" ", "_");
-    imageNames.push(filename);
+  let response = [];
+  for (let imageFile of images) {
+    if (imageFile === "null" || imageFile.type.split("/")[0] !== "image")
+      continue;
+    const filename = `products/${slug}/${imageFile.name}`;
+    response.push(upload(filename, imageFile));
   }
-  images.map(async (file, index) => {
-    if (file === "null" || file.type.split("/")[0] !== "image") return;
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = imageNames[index];
-    // making a directory for the product images with the product's slug
-    await mkdir(path.join(process.cwd(), "images", "products", slug), {
-      recursive: true,
-    });
-    // writing the image to the file system
-    return writeFile(
-      path.join(process.cwd(), "images", "products", slug, filename),
-      buffer
-    );
-  });
-  await Promise.all(images);
+  let imageNames = await Promise.all(response);
+  imageNames = imageNames.map((image) => image.url);
   return imageNames;
 }
 
@@ -96,14 +98,14 @@ async function formSubmitHandler(formData) {
   const stock_availability = formData.get("stock_availability");
   const quantity = formData.get("quantity");
   const attributeSet = formData.get("attribute_set");
-  
+
   // checking if the product with the same url_key already exists
-  const productExists = _id && await Product.findOne({ url_key });
+  const existingProduct = _id && (await Product.findOne({ _id }));
 
   // updating images if the product already exists
   // else uploading the images
-  let imageNames = productExists
-    ? imageUpdateHandler(images, url_key)
+  let imageNames = existingProduct
+    ? imageUpdateHandler(images, existingProduct.url_key)
     : imageUploadHandler(images, url_key);
 
   // fetching schema of attributes of the selected attribute set from database
@@ -127,9 +129,9 @@ async function formSubmitHandler(formData) {
       })
     : [];
   let product;
-  if (productExists) {
+  if (existingProduct) {
     // updating the existing product object
-    product = productExists;
+    product = existingProduct;
     product.name = name;
     product.price = price;
     product.category = category;
@@ -166,6 +168,7 @@ async function formSubmitHandler(formData) {
   }
 
   // saving the product to the database
+  console.log("product saved successfully");
   await product.save();
   redirect("/admin/products");
 }
@@ -196,8 +199,8 @@ async function checkIfProductExists(url_key) {
   "use server";
   try {
     await dbConnect();
-    const productExists = await Product.findOne({ url_key });
-    if (productExists) {
+    const existingProduct = await Product.findOne({ url_key });
+    if (existingProduct) {
       return { ack: true, exists: true };
     } else {
       return { ack: true, exists: false };
