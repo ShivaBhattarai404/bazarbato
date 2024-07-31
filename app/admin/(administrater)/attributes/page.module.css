@@ -1,169 +1,169 @@
 .container {
-    padding: 1rem 2rem;
-  }
-  .title {
-    display: flex;
-    margin: 1.5rem 0 1.3rem;
-    justify-content: space-between;
-  }
-  .title h1 {
-    font-weight: 600;
-    font-size: 1.15rem;
-  }
-  .newCategoryLink {
-    border: none;
-    color: #fff;
-    display: block;
-    cursor: pointer;
-    font-size: 0.9rem;
-    border-radius: 3px;
-    text-decoration: none;
-    padding: 0.55rem 0.8rem;
-    background-color: #008060;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  }
-  .newCategoryLink:hover {
-    background-color: #007050;
-  }
-  
-  .card {
-    margin-bottom: 5rem;
-    padding-bottom: 0.5rem !important;
-  }
-  .search {
-    width: 12rem !important;
-    height: 2rem !important;
-    display: inline-block !important;
-    border-top-color: #ccc !important;
-    border-color: var(--divider) !important;
-  }
-  .card select {
-    height: 2rem;
-    margin-left: 1.5rem;
-    width: 12rem !important;
-    display: inline-block !important;
-  }
-  .controls {
-    width: 20rem;
-    display: flex;
-    color: #444;
-    cursor: pointer;
-    font-weight: 600;
-    margin-top: 1rem;
-    font-size: 0.87rem;
-    border-radius: 5px;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid var(--divider);
-  }
-  .controls div {
-    width: 100%;
-    padding: 0.5rem 0;
-    text-align: center;
-    border-right: 1px solid var(--divider);
-  }
-  .enable_or_disable_btn {
-    border-right: none !important;
-  }
-  
-  .table {
-    width: 100%;
-    text-align: left;
-    margin-top: 1.5rem;
-    border-collapse: collapse;
-  }
-  .table th {
-    padding: 1rem 0;
-    overflow: hidden;
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    border-bottom: 1px solid #ccc;
-  }
-  .table tr {
-    overflow: hidden;
-    border-bottom: 1px solid #ccc;
-  }
-  .table tr:last-child{
-    border-bottom: none;
-  }
-  .table tr td {
-    padding: 1rem 0;
-    font-size: 0.8rem;
-  }
-  .checkbox {
-    width: 5%;
-  }
-  .name a {
-    color: #222;
-    font-weight: 600;
-    text-decoration: none;
-  }
-  .name a:hover {
-    text-decoration: underline;
-  }
-  .image img {
-    padding: 2px;
-    object-fit: contain;
-    border: 1px solid var(--divider);
-  }
-  td.status span {
-    margin: 0 1rem;
-    width: 0.85rem;
-    height: 0.85rem;
-    border-radius: 50%;
-    display: inline-block;
-    background-color: var(--success);
-  }
-  td.status span.disabled {
-    background-color: var(--disabled);
-  }
-  
-  .tableFoot {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .tableFoot tr {
-    border: none;
-    position: relative;
-  }
-  .tableFoot td {
-    font-size: 0.8rem;
-  }
-  .product_per_page input {
-    width: 3rem;
-    text-align: center;
-    margin: 0.5rem 0.5rem 0;
-    display: inline-block !important;
-  }
-  .pagination {
-    top: 0.5rem;
-    right: 1rem;
-    position: absolute;
-  }
-  .pagination button {
-    width: 2.3rem;
-    height: 2.3rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    text-align: center;
-    margin-left: 0.5rem;
-    color: var(--border);
-    vertical-align: middle;
-    background-color: #fff;
-    border: 1px solid var(--divider);
-  }
-  .pagination input {
-    margin: 0;
-    padding: 0;
-    width: 3rem;
-    text-align: center;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-    display: inline-block !important;
-  }
-  .pagination span {
-    margin-left: 0.5rem;
-  }
-  
+  padding: 1rem 2rem;
+}
+.title {
+  display: flex;
+  margin: 1.5rem 0 1.3rem;
+  justify-content: space-between;
+}
+.title h1 {
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+.newCategoryLink {
+  border: none;
+  color: #fff;
+  display: block;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  text-decoration: none;
+  padding: 0.55rem 0.8rem;
+  background-color: #008060;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+.newCategoryLink:hover {
+  background-color: #007050;
+}
+
+.card {
+  margin-bottom: 5rem;
+  padding-bottom: 0.5rem !important;
+}
+.search {
+  width: 12rem !important;
+  height: 2rem !important;
+  display: inline-block !important;
+  border-top-color: #ccc !important;
+  border-color: var(--divider) !important;
+}
+.card select {
+  height: 2rem;
+  margin-left: 1.5rem;
+  width: 12rem !important;
+  display: inline-block !important;
+}
+.controls {
+  width: 20rem;
+  display: flex;
+  color: #444;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 1rem;
+  font-size: 0.87rem;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--divider);
+}
+.controls div {
+  width: 100%;
+  padding: 0.5rem 0;
+  text-align: center;
+  border-right: 1px solid var(--divider);
+}
+.enable_or_disable_btn {
+  border-right: none !important;
+}
+
+.table {
+  width: 100%;
+  text-align: left;
+  margin-top: 1.5rem;
+  border-collapse: collapse;
+}
+.table th {
+  padding: 1rem 0;
+  overflow: hidden;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ccc;
+}
+.table tr {
+  overflow: hidden;
+  border-bottom: 1px solid #ccc;
+}
+.table tr:last-child {
+  border-bottom: none;
+}
+.table tr td {
+  padding: 1rem 0;
+  font-size: 0.8rem;
+}
+.checkbox {
+  width: 5%;
+}
+.name a {
+  color: #222;
+  font-weight: 600;
+  text-transform: capitalize;
+  text-decoration: none;
+}
+.name a:hover {
+  text-decoration: underline;
+}
+.image img {
+  padding: 2px;
+  object-fit: contain;
+  border: 1px solid var(--divider);
+}
+td.status span {
+  margin: 0 1rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: var(--success);
+}
+td.status span.disabled {
+  background-color: var(--disabled);
+}
+
+.tableFoot {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tableFoot tr {
+  border: none;
+  position: relative;
+}
+.tableFoot td {
+  font-size: 0.8rem;
+}
+.product_per_page input {
+  width: 3rem;
+  text-align: center;
+  margin: 0.5rem 0.5rem 0;
+  display: inline-block !important;
+}
+.pagination {
+  top: 0.5rem;
+  right: 1rem;
+  position: absolute;
+}
+.pagination button {
+  width: 2.3rem;
+  height: 2.3rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  margin-left: 0.5rem;
+  color: var(--border);
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid var(--divider);
+}
+.pagination input {
+  margin: 0;
+  padding: 0;
+  width: 3rem;
+  text-align: center;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  display: inline-block !important;
+}
+.pagination span {
+  margin-left: 0.5rem;
+}

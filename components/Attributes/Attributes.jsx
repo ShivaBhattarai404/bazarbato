@@ -1,14 +1,45 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import formStyles from "@/public/styles/form.module.css";
 import styles from "./Attributes.module.css";
 
-const Attributes = () => {
-  const [attributeSet, setAttributeSet] = useState("none");
+// default set
+const DEFAULT_SET = {
+  name: "none",
+  type: "none",
+  attributes: [],
+};
 
+const Attributes = ({ attributeSet, defaultSet, attributes }) => {
+  // function to get attributes of a set
+  function getAttributesOfSet(setName) {
+    const set = attributeSet.find((item) => item.name === setName);
+    return set ? set : DEFAULT_SET;
+  }
+
+  // state to store current set
+  const [currentSet, setCurrentSet] = useState(DEFAULT_SET);
+
+  // set current set on initial render and value of each attribute
+  useEffect(() => {
+    const set = getAttributesOfSet(defaultSet);
+    if (attributes && attributes.length) {
+      set.attributes.forEach((attribute) => {
+        const { code } = attribute;
+        const attr = attributes.find((attr) => attr.code === code);
+        if (attr) {
+          attribute.value = attr.value;
+        }
+      });
+    }
+    setCurrentSet(set);
+  }, []);
+
+  // function to handle select change
   const selectChangeHandler = (e) => {
-    setAttributeSet(e.target.value);
+    const selectedSet = getAttributesOfSet(e.target.value);
+    setCurrentSet(selectedSet);
   };
   return (
     <Fragment>
@@ -18,13 +49,16 @@ const Attributes = () => {
       <select
         id="new-product-attribute-set"
         className={formStyles.select}
-        name="attribute-set"
+        name="attribute_set"
+        value={currentSet.name}
         onChange={selectChangeHandler}
       >
         <option value="none">None</option>
-        <option value="sw">Size and Weight</option>
-        <option value="swc">Shoes</option>
-        <option value="sc">Clothes</option>
+        {attributeSet.map((attributeSet) => (
+          <option key={attributeSet.name} value={attributeSet.name}>
+            {attributeSet.name}
+          </option>
+        ))}
       </select>
 
       <hr />
@@ -32,60 +66,35 @@ const Attributes = () => {
         Attributes
       </label>
 
-      {attributeSet.includes("s") && (
-        <Fragment>
-          <label htmlFor="new-product-size" className={formStyles.label}>
-            Size
+      {currentSet.attributes.map((attribute) => (
+        <div key={attribute.code} className={styles.attribute}>
+          <label htmlFor={attribute.code} className={formStyles.label}>
+            {attribute.name}
           </label>
-          <select
-            id="new-product-size"
-            className={formStyles.select}
-            name="size"
-          >
-            <option value="s">S</option>
-            <option value="l">L</option>
-            <option value="xl">XL</option>
-            <option value="xxl">XXL</option>
-          </select>
-        </Fragment>
-      )}
-
-      {attributeSet.includes("c") && (
-        <Fragment>
-          <label htmlFor="new-product-color" className={formStyles.label}>
-            Color
-          </label>
-          <select
-            id="new-product-color"
-            className={formStyles.select}
-            name="color"
-          >
-            <option value="red">Red</option>
-            <option value="green">Green</option>
-            <option value="yellow">Yellow</option>
-            <option value="orange">Orange</option>
-          </select>
-        </Fragment>
-      )}
-
-      {attributeSet.includes("w") && (
-        <Fragment>
-          <label htmlFor="new-product-color" className={formStyles.label}>
-            Weight (in grams)
-          </label>
-          <select
-            style={{ display: "inline-block" }}
-            id="new-product-color"
-            className={formStyles.select}
-            name="weight"
-          >
-            <option value="120">120</option>
-            <option value="125">125</option>
-            <option value="130">130</option>
-            <option value="140">140</option>
-          </select>
-        </Fragment>
-      )}
+          {attribute.type.toLowerCase() === "select" ? (
+            <select
+              className={formStyles.select}
+              name={attribute.name}
+              id={attribute.code}
+              defaultValue={attribute.value || ""}
+            >
+              {attribute.options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              id={attribute.code}
+              name={attribute.name}
+              className={formStyles.input}
+              defaultValue={attribute.value || ""}
+            />
+          )}
+        </div>
+      ))}
     </Fragment>
   );
 };

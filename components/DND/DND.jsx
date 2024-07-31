@@ -9,10 +9,14 @@ import styles from "./DND.module.css";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 const DND = (props) => {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(
+    props.defaultimage ? `/api/public/${props.defaultimage}` : null
+  );
 
   const handleChange = (e) => {
-    setFile(URL.createObjectURL(e.target.files[0]));
+    const image = e.target.files[0];
+    setFile(URL.createObjectURL(image));
+    props.onUpload?.(image);
   };
 
   return (
@@ -28,7 +32,8 @@ const DND = (props) => {
           <FaCamera className={styles.cameraIcon} />
           <input
             type="file"
-            name={props.name || "image"}
+            accept="image/*"
+            name={props.name}
             hidden
             onChange={handleChange}
           />
@@ -37,7 +42,13 @@ const DND = (props) => {
 
       {file && (
         <div className={`${props.className} ${styles.imageWrapper}`}>
-          <div className={styles.overlay} onClick={() => setFile(null)}>
+          <div
+            className={styles.overlay}
+            onClick={() => {
+              setFile(null);
+              props.onUpload?.(null);
+            }}
+          >
             <RiDeleteBinLine />
           </div>
           <Image

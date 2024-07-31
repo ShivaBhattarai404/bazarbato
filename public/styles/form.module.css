@@ -1,6 +1,7 @@
 .label {
   display: block;
   font-size: 0.8rem;
+  text-transform: capitalize;
   color: hsl(0, 0%, 20%);
 }
 .input,

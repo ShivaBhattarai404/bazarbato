@@ -1,17 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
 import Card from "@/components/Card/Card";
 import CheckBox from "@/components/CheckBox/CheckBox";
-import { useState } from "react";
 import Modal from "@/components/Modal/Modal";
 
 export default function ProductsPage() {
+  const [attributes, setAttributes] = useState([]);
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [modal, setModal] = useState(false);
+
+  useState(() => {
+    fetch("http://localhost:3000/api/attributes")
+      .then((res) => res.json())
+      .then((data) => {
+        setAttributes(data);
+      });
+  }, []);
 
   const categorySelectHandler = (e) => {
     const { value } = e.target;
@@ -81,24 +90,24 @@ export default function ProductsPage() {
               <th className={styles.checkbox}></th>
               <th className={styles.name}>Attribute Name</th>
               <th className={styles.type}>type</th>
-              <th className={styles.isRequired}>is Required?</th>
+              <th className={styles.code}>Code</th>
             </tr>
           </thead>
           <tbody>
-            {new Array(4).fill("").map((_, i) => (
-              <tr key={i}>
+            {attributes.map((attribute, i) => (
+              <tr key={attribute.name}>
                 <td className={styles.checkbox}>
                   <CheckBox
-                    id={`categories-${i}`}
+                    id={`attributes-${i}`}
                     value={i}
                     onClick={categorySelectHandler}
                   />
                 </td>
                 <td className={styles.name}>
-                  <Link href={`/admin/new-attribute?attribute=${i}`}>Size</Link>
+                  <Link href={`/admin/new-attribute?attribute=${attribute.code}`}>{attribute.name}</Link>
                 </td>
-                <td className={styles.type}>Select</td>
-                <td className={styles.isRequired}>{i % 4 ? "Yes" : "No"}</td>
+                <td className={styles.type}>{attribute.type}</td>
+                <td className={styles.code}>{attribute.code}</td>
               </tr>
             ))}
           </tbody>
