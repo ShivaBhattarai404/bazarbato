@@ -1,5 +1,7 @@
+const { default: Spinner } = require("@/components/Spinner/Spinner")
+
 const loading = () => {
-  return <h1>Loading....</h1>;
+  return <Spinner />;
 };
 
 export default loading;

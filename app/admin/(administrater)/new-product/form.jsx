@@ -11,6 +11,7 @@ import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
 
 import { PiWarningCircleBold } from "react-icons/pi";
+import Spinner from "@/components/Spinner/Spinner";
 
 // Null erros
 // these errors are shown initially when the the page is in edit mode
@@ -143,6 +144,7 @@ export default function NewProductForm({
 }) {
   const [errors, dispatch] = useReducer(reducer, DEFAULT_ERRORS);
   const [images, setImages] = useState(new Array(5).fill(null));
+  const [loading, setLoading] = useState(false);
 
   // if the form is in edit mode, then set the errors to null initially
   useEffect(() => {
@@ -217,7 +219,13 @@ export default function NewProductForm({
       // appending the images to the form data
       images.map((image) => formData.append("images", image));
       // calling the handleSubmit function
-      const response = await handleSubmit(formData);
+      try {
+        setLoading(true);
+        const response = await handleSubmit(formData);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
     } else {
       for (const key in errors) {
         errors[key].touched = true;
@@ -225,6 +233,8 @@ export default function NewProductForm({
       dispatch({ type: "SET_ERRORS", payload: errors });
     }
   };
+
+  if (loading) return <Spinner />;
 
   return (
     <form
