@@ -30,7 +30,6 @@ async function upload(filename, file) {
 
 async function deleteImage(filename) {
   try {
-    console.log("deleting", filename);
     return del(filename);
   } catch (error) {
     console.log("error while deleting", error.message);
@@ -38,11 +37,11 @@ async function deleteImage(filename) {
 }
 
 // function to update the uploaded images
-async function imageUpdateHandler(newImages, existingImages, slug = "") {
-  const newImageNames = [];
-  for (let image of newImages) {
+async function imageUpdateHandler(images, existingImages, slug = "") {
+  const response = [];
+  for (let image of images) {
     if (existingImages.includes(image)) {
-      newImageNames.push(image);
+      response.push(Promise.resolve({ url: image }));
       continue;
     }
     if (
@@ -51,16 +50,18 @@ async function imageUpdateHandler(newImages, existingImages, slug = "") {
       image.type.split("/")[0] !== "image"
     )
       continue;
-    const buffer = Buffer.from(await image.arrayBuffer());
-    const filename = (Date.now() + "_" + image.name).replace(" ", "_");
-    newImageNames.push(filename);
-    await writeFile(path.join(productImagePaths, filename), buffer);
+    const filename = `products/${slug}/${image.name}`;
+    console.log("uploading", filename);
+    response.push(upload(filename, image));
   }
+  const deletionResponse = [];
+  const imageNames = (await Promise.all(response)).map((image) => image.url);
   for (let image of existingImages) {
-    if (newImageNames.includes(image)) continue;
-    await unlink(path.join(productImagePaths, image));
+    if (imageNames.includes(image)) continue;
+    deletionResponse.push(deleteImage(image));
   }
-  return newImageNames;
+  await Promise.all(deletionResponse);
+  return imageNames;
 }
 
 // function to upload images to the server
@@ -85,6 +86,7 @@ async function formSubmitHandler(formData) {
   // extracting input field values
   const _id = formData.get("_id");
   const name = formData.get("name");
+  const sku = formData.get("sku");
   const price = formData.get("price");
   const category = formData.get("category");
   const description = formData.get("description");
@@ -105,7 +107,11 @@ async function formSubmitHandler(formData) {
   // updating images if the product already exists
   // else uploading the images
   let imageNames = existingProduct
-    ? imageUpdateHandler(images, existingProduct.url_key)
+    ? imageUpdateHandler(
+        images,
+        existingProduct.images,
+        existingProduct.url_key
+      )
     : imageUploadHandler(images, url_key);
 
   // fetching schema of attributes of the selected attribute set from database
@@ -150,6 +156,7 @@ async function formSubmitHandler(formData) {
     // creating a new product object
     product = new Product({
       name,
+      sku,
       price,
       category,
       description,
@@ -195,11 +202,11 @@ async function fetchAttributes() {
   return formattedAttributes;
 }
 
-async function checkIfProductExists(url_key) {
+async function checkIfProductExists(filter) {
   "use server";
   try {
     await dbConnect();
-    const existingProduct = await Product.findOne({ url_key });
+    const existingProduct = await Product.findOne({ ...filter });
     if (existingProduct) {
       return { ack: true, exists: true };
     } else {

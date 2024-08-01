@@ -18,6 +18,10 @@
 .card label {
   margin-top: 1rem;
 }
+.card .sku{
+  text-transform: uppercase;
+  width: 20rem;
+}
 .card input.price {
   width: 10rem;
 }

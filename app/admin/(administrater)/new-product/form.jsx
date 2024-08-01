@@ -16,6 +16,7 @@ import { PiWarningCircleBold } from "react-icons/pi";
 // these errors are shown initially when the the page is in edit mode
 const NULL_ERRORS = {
   name: { message: "", touched: true },
+  sku: { message: "", touched: true },
   price: { message: "", touched: true },
   category: { message: "", touched: true },
   description: { message: "", touched: true },
@@ -37,6 +38,7 @@ const NULL_ERRORS = {
 // if the user has not interacted with the input field, then the error message is not shown
 const DEFAULT_ERRORS = {
   name: { message: "Name must be at least 3 characters", touched: false },
+  sku: { message: "SKU is required", touched: false },
   price: { message: "Price must be a greater than zero", touched: false },
   category: { message: "Category is required", touched: false },
   description: { message: "Description is required", touched: false },
@@ -60,6 +62,9 @@ function reducer(state, action) {
     case "NAME":
       error.message = payload.length < 3 ? DEFAULT_ERRORS.name.message : "";
       return { ...state, name: error };
+    case "SKU":
+      error.message = payload;
+      return { ...state, sku: error };
     case "PRICE":
       error.message = isNaN(payload)
         ? "Price must be a number"
@@ -118,7 +123,7 @@ function reducer(state, action) {
 // Error component
 function Error({ errors, name }) {
   const error = errors[name];
-  if (error.message && error.touched) {
+  if (error?.message && error.touched) {
     return (
       <span className={formStyles.error}>
         <PiWarningCircleBold />
@@ -171,11 +176,27 @@ export default function NewProductForm({
         payload: "Url key must be at least 3 characters",
       });
     } else {
-      const productStatus = await checkIfProductExists(slug);
+      const productStatus = await checkIfProductExists({ "url-key": slug });
       if (productStatus.ack && productStatus.exists) {
         dispatch({ type: "URL-KEY", payload: "Url key already exists" });
       } else {
         dispatch({ type: "URL-KEY", payload: "" });
+      }
+    }
+  }
+  async function skuChangeHandler(e) {
+    const slug = e.target.value;
+    if (slug.length < 3) {
+      dispatch({
+        type: "SKU",
+        payload: "SKU must be at least 3 characters",
+      });
+    } else {
+      const productStatus = await checkIfProductExists({ sku: slug });
+      if (productStatus.ack && productStatus.exists) {
+        dispatch({ type: "SKU", payload: "SKU key already exists" });
+      } else {
+        dispatch({ type: "SKU", payload: "" });
       }
     }
   }
@@ -231,6 +252,26 @@ export default function NewProductForm({
             }
           />
           <Error errors={errors} name="name" />
+        </Fragment>
+
+        <Fragment>
+          <label
+            htmlFor="new-product-sku"
+            className={`${formStyles.label} ${styles.price}`}
+          >
+            SKU
+          </label>
+          <input
+            id="new-product-sku"
+            className={`${formStyles.input} ${styles.sku}`}
+            type="text"
+            name="sku"
+            placeholder="SKU"
+            disabled={Boolean(product)}
+            defaultValue={product ? product.sku : ""}
+            onChange={skuChangeHandler}
+          />
+          <Error errors={errors} name="sku" />
         </Fragment>
 
         <Fragment>

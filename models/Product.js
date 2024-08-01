@@ -8,6 +8,10 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
+    sku: {
+      type: String,
+      required: true,
+    },
     price: {
       type: SchemaTypes.Number,
       required: true,
