@@ -1,97 +1,91 @@
 import { redirect } from "next/navigation";
-import { readdir, writeFile, mkdir, unlink } from "fs/promises";
-import { Buffer } from "buffer";
-import path from "path";
-import { put, del } from "@vercel/blob";
 
 // product model or schema
 import Product from "@/models/Product";
 import AttributeSet from "@/models/AttributeSet";
 
+// helper functions
+import dbConnect from "@/helpers/dbConnect";
+import { deepCopy } from "@/helpers/utils";
+import { checkIfProductExists, deleteFile, uploadFile } from "@/helpers/crud";
+
 import styles from "./page.module.css";
 import AdminPageHeading from "@/components/Utils/AdminPageHeading";
 import NewProductForm from "./form";
-import dbConnect from "@/helpers/dbConnect";
-import { deepCopy } from "@/helpers/utils";
+import Category from "@/models/Category";
 
 export const metadata = {
   title: "Create a new product",
 };
 
-async function upload(filename, file) {
-  try {
-    return put(filename, file, {
-      access: "public",
-    });
-  } catch (error) {
-    console.log("error while uploading", error.message);
-  }
-}
-
-async function deleteImage(filename) {
-  try {
-    return del(filename);
-  } catch (error) {
-    console.log("error while deleting", error.message);
-  }
-}
-
 // function to update the uploaded images
 async function imageUpdateHandler(images, existingImages, slug = "") {
-  const response = [];
-  for (let image of images) {
-    if (existingImages.includes(image)) {
-      response.push(Promise.resolve({ url: image }));
-      continue;
+  try {
+    const response = [];
+    for (let image of images) {
+      if (existingImages.includes(image)) {
+        response.push(Promise.resolve({ url: image }));
+        continue;
+      }
+      if (
+        image === "null" ||
+        typeof image === "string" ||
+        image.type.split("/")[0] !== "image"
+      )
+        continue;
+      const filename = `products/${slug}/${image.name}`;
+      console.log("uploading", filename);
+      response.push(uploadFile(image, filename));
     }
-    if (
-      image === "null" ||
-      typeof image === "string" ||
-      image.type.split("/")[0] !== "image"
-    )
-      continue;
-    const filename = `products/${slug}/${image.name}`;
-    console.log("uploading", filename);
-    response.push(upload(filename, image));
+    const deletionResponse = [];
+    const imageNames = (await Promise.all(response)).map((image) => image.url);
+    for (let image of existingImages) {
+      if (imageNames.includes(image)) continue;
+      deletionResponse.push(deleteFile(image));
+    }
+    await Promise.all(deletionResponse);
+    return imageNames;
+  } catch (error) {
+    throw new Error("Error updating images");
   }
-  const deletionResponse = [];
-  const imageNames = (await Promise.all(response)).map((image) => image.url);
-  for (let image of existingImages) {
-    if (imageNames.includes(image)) continue;
-    deletionResponse.push(deleteImage(image));
-  }
-  await Promise.all(deletionResponse);
-  return imageNames;
 }
 
 // function to upload images to the server
 async function imageUploadHandler(images, slug = "") {
-  "use server";
-  let response = [];
-  for (let imageFile of images) {
-    if (imageFile === "null" || imageFile.type.split("/")[0] !== "image")
-      continue;
-    const filename = `products/${slug}/${imageFile.name}`;
-    response.push(upload(filename, imageFile));
+  try {
+    let response = [];
+    for (let imageFile of images) {
+      if (imageFile === "null" || imageFile.type.split("/")[0] !== "image")
+        continue;
+      const filename = `products/${slug}/${imageFile.name}`;
+      response.push(uploadFile(imageFile, filename));
+    }
+    let imageNames = await Promise.all(response);
+    imageNames = imageNames.map((image) => image.url);
+    return imageNames;
+  } catch (error) {
+    throw new Error("Error uploading images");
   }
-  let imageNames = await Promise.all(response);
-  imageNames = imageNames.map((image) => image.url);
-  return imageNames;
 }
 
 async function formSubmitHandler(formData) {
   "use server";
   // connecting to database
-  await dbConnect();
+  try {
+    await dbConnect();
+  } catch (error) {
+    return { error: "Error connecting to database" };
+  }
   // extracting input field values
   const _id = formData.get("_id");
   const name = formData.get("name");
   const sku = formData.get("sku");
   const price = formData.get("price");
-  const category = formData.get("category");
+  let category = formData.get("category");
   const description = formData.get("description");
   const images = formData.getAll("images");
-  const url_key = formData.get("url_key");
+  const key = formData.get("url_key");
+  const url_key = key ? key.trim().replace(" ", "_") : "";
   const meta_title = formData.get("meta_title");
   const meta_keywords = formData.get("meta_keywords");
   const meta_description = formData.get("meta_description");
@@ -101,88 +95,91 @@ async function formSubmitHandler(formData) {
   const quantity = formData.get("quantity");
   const attributeSet = formData.get("attribute_set");
 
-  // checking if the product with the same url_key already exists
-  const existingProduct = _id && (await Product.findOne({ _id }));
+  try {
+    // checking if the product with the same url_key already exists
+    const existingProduct = _id && (await Product.findOne({ _id }));
 
-  // updating images if the product already exists
-  // else uploading the images
-  let imageNames = existingProduct
-    ? imageUpdateHandler(
-        images,
-        existingProduct.images,
-        existingProduct.url_key
-      )
-    : imageUploadHandler(images, url_key);
+    // updating images if the product already exists
+    // else uploading the images
+    let imageNames = existingProduct
+      ? imageUpdateHandler(
+          images,
+          existingProduct.images,
+          existingProduct.url_key
+        )
+      : imageUploadHandler(images, url_key);
 
-  // fetching schema of attributes of the selected attribute set from database
-  let attributeSetSchema = AttributeSet.findOne({
-    name: attributeSet,
-  }).populate("attributes");
+    // fetching schema of attributes of the selected attribute set from database
+    let attributeSetSchema = AttributeSet.findOne({
+      name: attributeSet,
+    }).populate("attributes");
 
-  // combining both promises to get the resolved values and reducing the time taken
-  [imageNames, attributeSetSchema] = await Promise.all([
-    imageNames,
-    attributeSetSchema,
-  ]);
+    // combining both promises to get the resolved values and reducing the time taken
+    [imageNames, attributeSetSchema] = await Promise.all([
+      imageNames,
+      attributeSetSchema,
+    ]);
 
-  const attributes = attributeSetSchema
-    ? attributeSetSchema.attributes.map((attribute) => {
-        const code = attribute.code;
-        const name = attribute.name;
-        const type = attribute.type;
-        const value = formData.get(name);
-        return { code, name, type, value };
-      })
-    : [];
-  let product;
-  if (existingProduct) {
-    // updating the existing product object
-    product = existingProduct;
-    product.name = name;
-    product.price = price;
-    product.category = category;
-    product.description = description;
-    product.images = imageNames;
-    product.meta_title = meta_title;
-    product.meta_keywords = meta_keywords;
-    product.meta_description = meta_description;
-    product.status = status;
-    product.visibility = visibility;
-    product.stock_availability = stock_availability;
-    product.quantity = quantity;
-    product.attributeSet = attributeSet;
-    product.attributes = attributes;
-  } else {
-    // creating a new product object
-    product = new Product({
-      name,
-      sku,
-      price,
-      category,
-      description,
-      images: imageNames,
-      url_key,
-      meta_title,
-      meta_keywords,
-      meta_description,
-      status,
-      visibility,
-      stock_availability,
-      quantity,
-      attributeSet,
-      attributes,
-    });
+    const attributes = attributeSetSchema
+      ? attributeSetSchema.attributes.map((attribute) => {
+          const code = attribute.code;
+          const name = attribute.name;
+          const type = attribute.type;
+          const value = formData.get(name);
+          return { code, name, type, value };
+        })
+      : [];
+    let product;
+    if (existingProduct) {
+      // updating the existing product object
+      product = existingProduct;
+      product.name = name;
+      product.price = price;
+      product.category = category;
+      product.description = description;
+      product.images = imageNames;
+      product.meta_title = meta_title;
+      product.meta_keywords = meta_keywords;
+      product.meta_description = meta_description;
+      product.status = status;
+      product.visibility = visibility;
+      product.stock_availability = stock_availability;
+      product.quantity = quantity;
+      product.attributeSet = attributeSet;
+      product.attributes = attributes;
+    } else {
+      // creating a new product object
+      product = new Product({
+        name,
+        sku,
+        price,
+        category,
+        description,
+        images: imageNames,
+        url_key,
+        meta_title,
+        meta_keywords,
+        meta_description,
+        status,
+        visibility,
+        stock_availability,
+        quantity,
+        attributeSet,
+        attributes,
+      });
+    }
+
+    // saving the product to the database
+    await product.save();
+    redirect("/admin/products");
+  } catch (error) {
+    return { error: "Error saving product" };
   }
-
-  // saving the product to the database
-  console.log("product saved successfully");
-  await product.save();
-  redirect("/admin/products");
 }
 
 async function fetchAttributes() {
   await dbConnect();
-  const attributes = await AttributeSet.find({}).populate("attributes");
+  const attributes = await AttributeSet.find().populate("attributes");
   const formattedAttributes = attributes.map((attributeSet) => {
     return {
       name: attributeSet.name,
@@ -202,18 +199,17 @@ async function fetchAttributes() {
   return formattedAttributes;
 }
 
-async function checkIfProductExists(filter) {
-  "use server";
+async function getCategories() {
   try {
     await dbConnect();
-    const existingProduct = await Product.findOne({ ...filter });
-    if (existingProduct) {
-      return { ack: true, exists: true };
-    } else {
-      return { ack: true, exists: false };
-    }
-  } catch (error) {
-    return { ack: false, error: "Internal Server Error" };
+    const categories = await Category.find({
+      visibility: "yes",
+      status: "enabled",
+      isParent: false,
+    }).select("name code");
+    return deepCopy(categories);
+  } catch {
+    return [];
   }
 }
 
@@ -228,11 +224,11 @@ async function getProduct(url_key) {
 }
 
 export default async function NewProduct({ searchParams: { product: slug } }) {
-  const [attributeSet, product] = await Promise.all([
+  const [attributeSet, categories, product] = await Promise.all([
     fetchAttributes(),
+    getCategories(),
     getProduct(slug),
   ]);
-
   return (
     <div className={`${styles.container} homepadding`}>
       <AdminPageHeading back="/admin/products">
@@ -243,6 +239,7 @@ export default async function NewProduct({ searchParams: { product: slug } }) {
         handleSubmit={formSubmitHandler}
         checkIfProductExists={checkIfProductExists}
         product={deepCopy(product)}
+        categories={categories}
       />
     </div>
   );

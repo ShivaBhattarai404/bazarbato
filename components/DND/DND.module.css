@@ -1,46 +1,42 @@
-.wrapper{
-    display: grid;
-    place-content: center;
-    width: 100%;
-    height: 100%;
-    border: 2px dashed var(--divider);
-    border-radius: 5px;
-    cursor: pointer;
-    position: relative;
+.wrapper {
+  display: grid;
+  place-content: center;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed var(--divider);
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
 }
-.cameraIcon{
-    font-size: 1.5rem;
-    color: var(--primary);
+.cameraIcon {
+  font-size: 1.5rem;
+  color: var(--primary);
 }
-/* .wrapper .image{
-    display: none;
-} */
- div.imageWrapper{
-    border: 1px solid var(--divider);
-    display: grid;
-    place-content: center;
-    padding: 0.5rem;
-    position: relative;
- }
-.image{
-    max-width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    /* display: none; */
+div.imageWrapper {
+  border: 1px solid var(--divider);
+  display: grid;
+  place-content: center;
+  padding: 0.5rem;
+  position: relative;
 }
-.overlay{
-    top: 0;
-    left: 0;
-    width: 1.5rem;
-    height: 1.5rem;
-    display: grid;
-    place-content: center;
-    position: absolute;
-    color: #FFF;
-    background-color: red;
-    border-radius: 50%;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
+.image {
+  max-width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.overlay {
+  top: 0;
+  left: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-content: center;
+  position: absolute;
+  color: #fff;
+  background-color: red;
+  border-radius: 50%;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
 }

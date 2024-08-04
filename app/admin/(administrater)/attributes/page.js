@@ -8,24 +8,32 @@ import formStyles from "@/public/styles/form.module.css";
 import Card from "@/components/Card/Card";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import Modal from "@/components/Modal/Modal";
+import Spinner from "@/components/Spinner/Spinner";
 
 export default function ProductsPage() {
   const [attributes, setAttributes] = useState([]);
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useState(() => {
     fetch("http://localhost:3000/api/attributes")
       .then((res) => res.json())
       .then((data) => {
+        setLoading(false);
         setAttributes(data);
+      })
+      .catch(() => {
+        setLoading(false);
       });
   }, []);
 
   const attributeSelectHandler = (e) => {
     const { attributeId } = e.target;
     if (selectedAttributes.includes(attributeId)) {
-      setSelectedAttributes((prev) => prev.filter((item) => item !== attributeId));
+      setSelectedAttributes((prev) =>
+        prev.filter((item) => item !== attributeId)
+      );
     } else {
       setSelectedAttributes((prev) => [...prev, attributeId]);
     }
@@ -38,6 +46,7 @@ export default function ProductsPage() {
   const word = selectedAttributes.length > 1 ? "attributes" : "attribute";
   const grammar = selectedAttributes.length > 1 ? "these" : "this";
 
+  if (loading) return <Spinner />;
   return (
     <div className={styles.container}>
       {modal && (
