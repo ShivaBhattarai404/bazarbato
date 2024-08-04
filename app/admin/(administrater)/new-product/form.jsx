@@ -6,12 +6,12 @@ import Card from "@/components/Card/Card";
 import DND from "@/components/DND/DND";
 import RadioButton from "@/components/RadioButton/RadioButton";
 import Attributes from "@/components/Attributes/Attributes";
+import Spinner from "@/components/Spinner/Spinner";
+import InputError from "@/components/InputError/InputError";
 
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
 
-import { PiWarningCircleBold } from "react-icons/pi";
-import Spinner from "@/components/Spinner/Spinner";
 
 // Null erros
 // these errors are shown initially when the the page is in edit mode
@@ -121,20 +121,6 @@ function reducer(state, action) {
   }
 }
 
-// Error component
-function Error({ errors, name }) {
-  const error = errors[name];
-  if (error?.message && error.touched) {
-    return (
-      <span className={formStyles.error}>
-        <PiWarningCircleBold />
-        {error.message}
-      </span>
-    );
-  }
-  return null;
-}
-
 // rendering the form
 export default function NewProductForm({
   attributeSet,
@@ -223,7 +209,7 @@ export default function NewProductForm({
         setLoading(true);
         const response = await handleSubmit(formData);
         setLoading(false);
-      } catch (error) {
+      } catch (error) {g
         setLoading(false);
       }
     } else {
@@ -261,7 +247,7 @@ export default function NewProductForm({
               dispatch({ type: "NAME", payload: e.target.value })
             }
           />
-          <Error errors={errors} name="name" />
+          <InputError errors={errors} name="name" />
         </Fragment>
 
         <Fragment>
@@ -281,7 +267,7 @@ export default function NewProductForm({
             defaultValue={product ? product.sku : ""}
             onChange={skuChangeHandler}
           />
-          <Error errors={errors} name="sku" />
+          <InputError errors={errors} name="sku" />
         </Fragment>
 
         <Fragment>
@@ -304,7 +290,7 @@ export default function NewProductForm({
               dispatch({ type: "PRICE", payload: e.target.value })
             }
           />
-          <Error errors={errors} name="price" />
+          <InputError errors={errors} name="price" />
         </Fragment>
 
         <Fragment>
@@ -325,14 +311,14 @@ export default function NewProductForm({
             <option value="women">Women</option>
             <option value="child">Child</option>
           </select>
-          <Error errors={errors} name="category" />
+          <InputError errors={errors} name="category" />
         </Fragment>
 
         <Fragment>
           <label htmlFor="new-product-description" className={formStyles.label}>
             Description
           </label>
-          <Error errors={errors} name="description" />
+          <InputError errors={errors} name="description" />
           <textarea
             name="description"
             id="new-product-description"
@@ -349,7 +335,7 @@ export default function NewProductForm({
       <Card className={`${styles.media} ${styles.card}`}>
         <span className={styles.cardTitle}>
           Media
-          <Error errors={errors} name="image" />
+          <InputError errors={errors} name="image" />
         </span>
         {images.map((_, index) => (
           <DND
@@ -376,7 +362,7 @@ export default function NewProductForm({
             defaultValue={product ? product.url_key : ""}
             onChange={urlKeyChangeHandler}
           />
-          <Error errors={errors} name="url-key" />
+          <InputError errors={errors} name="url-key" />
         </Fragment>
 
         <Fragment>
@@ -394,7 +380,7 @@ export default function NewProductForm({
               dispatch({ type: "META-TITLE", payload: e.target.value })
             }
           />
-          <Error errors={errors} name="meta-title" />
+          <InputError errors={errors} name="meta-title" />
         </Fragment>
 
         <Fragment>
@@ -415,7 +401,7 @@ export default function NewProductForm({
               dispatch({ type: "META-KEYWORDS", payload: e.target.value })
             }
           />
-          <Error errors={errors} name="meta-keywords" />
+          <InputError errors={errors} name="meta-keywords" />
         </Fragment>
 
         <Fragment>
@@ -436,7 +422,7 @@ export default function NewProductForm({
               dispatch({ type: "META-DESCRIPTION", payload: e.target.value })
             }
           />
-          <Error errors={errors} name="meta-description" />
+          <InputError errors={errors} name="meta-description" />
         </Fragment>
       </Card>
 
@@ -518,7 +504,7 @@ export default function NewProductForm({
           defaultValue={product ? product.quantity : ""}
           onChange={(e) => dispatch({ type: "QTY", payload: e.target.value })}
         />
-        <Error errors={errors} name="qty" />
+        <InputError errors={errors} name="qty" />
       </Card>
 
       <Card className={`${styles.variants} ${styles.card}`}>Variants</Card>

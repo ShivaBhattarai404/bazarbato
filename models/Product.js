@@ -32,7 +32,7 @@ const productSchema = new Schema(
     ],
     rating: {
       type: Number,
-      default: 5,
+      default: 0,
     },
     url_key: {
       type: String,
@@ -60,7 +60,7 @@ const productSchema = new Schema(
     },
     stock_availability: {
       type: String,
-      default: true,
+      default: "no",
     },
     quantity: {
       type: Number,

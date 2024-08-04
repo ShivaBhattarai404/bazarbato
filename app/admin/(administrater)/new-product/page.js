@@ -1,40 +1,21 @@
 import { redirect } from "next/navigation";
-import { readdir, writeFile, mkdir, unlink } from "fs/promises";
-import { Buffer } from "buffer";
-import path from "path";
-import { put, del } from "@vercel/blob";
 
 // product model or schema
 import Product from "@/models/Product";
 import AttributeSet from "@/models/AttributeSet";
 
+// helper functions
+import dbConnect from "@/helpers/dbConnect";
+import { deepCopy } from "@/helpers/utils";
+import { checkIfProductExists, deleteFile, uploadFile } from "@/helpers/crud";
+
 import styles from "./page.module.css";
 import AdminPageHeading from "@/components/Utils/AdminPageHeading";
 import NewProductForm from "./form";
-import dbConnect from "@/helpers/dbConnect";
-import { deepCopy } from "@/helpers/utils";
 
 export const metadata = {
   title: "Create a new product",
 };
-
-async function upload(filename, file) {
-  try {
-    return put(filename, file, {
-      access: "public",
-    });
-  } catch (error) {
-    console.log("error while uploading", error.message);
-  }
-}
-
-async function deleteImage(filename) {
-  try {
-    return del(filename);
-  } catch (error) {
-    console.log("error while deleting", error.message);
-  }
-}
 
 // function to update the uploaded images
 async function imageUpdateHandler(images, existingImages, slug = "") {
@@ -52,13 +33,13 @@ async function imageUpdateHandler(images, existingImages, slug = "") {
       continue;
     const filename = `products/${slug}/${image.name}`;
     console.log("uploading", filename);
-    response.push(upload(filename, image));
+    response.push(uploadFile(image, filename));
   }
   const deletionResponse = [];
   const imageNames = (await Promise.all(response)).map((image) => image.url);
   for (let image of existingImages) {
     if (imageNames.includes(image)) continue;
-    deletionResponse.push(deleteImage(image));
+    deletionResponse.push(deleteFile(image));
   }
   await Promise.all(deletionResponse);
   return imageNames;
@@ -72,7 +53,7 @@ async function imageUploadHandler(images, slug = "") {
     if (imageFile === "null" || imageFile.type.split("/")[0] !== "image")
       continue;
     const filename = `products/${slug}/${imageFile.name}`;
-    response.push(upload(filename, imageFile));
+    response.push(uploadFile(imageFile, filename));
   }
   let imageNames = await Promise.all(response);
   imageNames = imageNames.map((image) => image.url);
@@ -91,7 +72,8 @@ async function formSubmitHandler(formData) {
   const category = formData.get("category");
   const description = formData.get("description");
   const images = formData.getAll("images");
-  const url_key = formData.get("url_key");
+  const key = formData.get("url_key");
+  const url_key = key ? "".trim().replace(" ", "_") : "";
   const meta_title = formData.get("meta_title");
   const meta_keywords = formData.get("meta_keywords");
   const meta_description = formData.get("meta_description");
@@ -200,21 +182,6 @@ async function fetchAttributes() {
     };
   });
   return formattedAttributes;
-}
-
-async function checkIfProductExists(filter) {
-  "use server";
-  try {
-    await dbConnect();
-    const existingProduct = await Product.findOne({ ...filter });
-    if (existingProduct) {
-      return { ack: true, exists: true };
-    } else {
-      return { ack: true, exists: false };
-    }
-  } catch (error) {
-    return { ack: false, error: "Internal Server Error" };
-  }
 }
 
 async function getProduct(url_key) {
