@@ -65,10 +65,7 @@
   font-weight: var(--weight-600);
   text-transform: uppercase;
   padding: 4px 10px;
-  -webkit-border-radius: var(--border-radius-sm);
   border-radius: var(--border-radius-sm);
-  -webkit-transition: var(--transition-timing);
-  -o-transition: var(--transition-timing);
   transition: var(--transition-timing);
 }
 

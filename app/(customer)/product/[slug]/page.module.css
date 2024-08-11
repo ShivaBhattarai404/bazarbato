@@ -1,0 +1,240 @@
+.section {
+  margin-top: 1rem;
+  padding: 0 var(--padding-lg);
+}
+/* PRODUCT CONTENT CARD
+** The product content part where there would be images, details, and other stuff
+*/
+.productContent {
+  gap: 1rem 2rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+.path {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  font-size: var(--fs-8);
+  color: var(--spanish-gray);
+}
+.path a {
+  color: var(--sonic-silver);
+}
+.path a:hover {
+  color: var(--info);
+}
+
+/* IMAGES
+** The images part where there would be a main image and other images
+*/
+.images {
+  width: 30rem;
+  display: grid;
+  user-select: none;
+  gap: 0.5rem 0.6rem;
+  position: relative;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 20rem 4rem;
+  grid-template-areas:
+    "first first first first"
+    "second third fourth fifth";
+}
+.images img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-md);
+}
+.images .mainImage {
+  position: relative;
+  grid-area: first;
+}
+.images .mainImage img {
+  cursor: default;
+  width: 100%;
+}
+.mainImage .leftArrow,
+.mainImage .rightArrow {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform var(--transition-timing);
+  transform: translate(0, -50%);
+}
+.mainImage .leftArrow:active,
+.mainImage .rightArrow:active {
+  scale: 0.9;
+}
+.mainImage .leftArrow {
+  left: 0.5rem;
+}
+.mainImage .rightArrow {
+  right: 0.5rem;
+}
+.images img:nth-of-type(2) {
+  grid-area: second;
+}
+.images img:nth-of-type(3) {
+  grid-area: third;
+}
+.images img:nth-of-type(4) {
+  grid-area: fourth;
+}
+.images img:nth-of-type(5) {
+  grid-area: fifth;
+}
+
+/* the details part where there would be name, price, attributes */
+.details {
+  margin: 2rem 0;
+}
+.details .tag {
+  background: var(--salmon-pink);
+  color: var(--white);
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  font-size: var(--fs-11);
+  font-weight: var(--weight-600);
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition-timing);
+}
+.details .name {
+  font-size: 1.6rem;
+  font-weight: var(--weight-500);
+  margin: 0.5rem 0;
+}
+.details .reviews {
+  font-size: var(--fs-8);
+}
+.details .reviews * {
+  vertical-align: middle;
+}
+.details .reviews .rating svg {
+  color: var(--sandy-brown);
+}
+.details .reviews .reviewCount {
+  margin-left: 0.5rem;
+}
+.details .price {
+  margin: 1rem 0;
+  font-size: var(--fs-3);
+}
+.details .attributes {
+  margin: 1.5rem 0;
+}
+.details .attribute {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  justify-content: flex-start;
+}
+.details .attributes p {
+  font-size: var(--fs-9);
+  font-weight: var(--weight-500);
+  color: var(--onyx);
+  text-transform: uppercase;
+  width: 100%;
+}
+.details .attribute button {
+  margin: 0.5rem 0.5rem 0 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-sm);
+  background: var(--white);
+  font-size: var(--fs-8);
+  cursor: pointer;
+  transition: var(--transition-timing);
+}
+.details .attribute button:hover {
+  background: var(--cultured);
+}
+.details .attribute button.active {
+  border-color: var(--salmon-pink);
+  background: var(--salmon-pink);
+  color: var(--white);
+}
+.details .description {
+  font-size: var(--fs-8);
+  max-width: 40rem;
+  text-wrap: balance;
+  margin: 1rem 0;
+}
+.details .description p:first-of-type {
+  margin: 0.5rem 0;
+  text-transform: uppercase;
+  color: var(--sonic-silver);
+  font-weight: var(--weight-500);
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.cta button {
+  padding: 0.8rem;
+  max-width: 25rem;
+  font-weight: var(--weight-600);
+  font-size: var(--fs-7);
+  border: 1px solid;
+  border-radius: var(--border-radius-sm);
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  gap: 0 0.25rem;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-timing);
+  transition-property: background-color, border-color, scale;
+}
+.cta button.buyNow {
+  background: var(--sandy-brown-dark);
+  border-color: var(--sandy-brown-dark);
+}
+.cta button.addToBag {
+  background: var(--bittersweet);
+  border-color: var(--bittersweet);
+}
+.cta button:active {
+  scale: 0.9;
+}
+
+/* MEDIA QUERIES */
+@media (min-width: 570px) {
+  .cta {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .cta button {
+    width: 30%;
+    padding: 0.75rem 0;
+    font-size: var(--fs-8);
+  }
+}
+@media (min-width: 768px) {
+  .section {
+    padding: 0 var(--padding-x-lg);
+  }
+}
+@media (min-width: 1024px) {
+  .section {
+    padding: 0 var(--padding-xx-lg);
+  }
+  .images {
+    width: 25rem;
+  }
+  .details {
+    width: calc(100% - 27rem);
+  }
+}
