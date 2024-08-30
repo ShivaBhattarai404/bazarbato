@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useReducer, useState } from "react";
 
 import Card from "@/components/Card/Card";
-import DND from "@/components/DND/DND";
+import DND from "@/components/_admin/DND/DND";
 import RadioButton from "@/components/RadioButton/RadioButton";
 import Attributes from "@/components/Attributes/Attributes";
 import Spinner from "@/components/Spinner/Spinner";
@@ -146,7 +146,7 @@ export default function NewProductForm({
         }
       });
     }
-  }, [product]);
+  }, [product, images]);
 
   // setting the image in the images array using useState hook
   const imageChangeHandler = (file, index) => {
@@ -210,6 +210,7 @@ export default function NewProductForm({
         const response = await handleSubmit(formData);
         setLoading(false);
       } catch (error) {
+        g;
         setLoading(false);
       }
     } else {
@@ -301,7 +302,7 @@ export default function NewProductForm({
             id="new-product-category"
             className={formStyles.select}
             name="category"
-            defaultValue={product ? product.category : "none"}
+            defaultValue={product ? product.category.code : "none"}
             onChange={(e) =>
               dispatch({ type: "CATEGORY", payload: e.target.value })
             }

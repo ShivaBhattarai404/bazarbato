@@ -47,7 +47,6 @@ export async function checkIfProductExists(filter) {
 export async function checkIfCategoryExists(filter) {
   return checkExistence(filter, Category);
 }
-
 export async function checkIfAttributeExists(filter) {
   return checkExistence(filter, Attribute);
 }

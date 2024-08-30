@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import Category from "./Category";
 
 const SchemaTypes = Schema.Types;
 
@@ -19,6 +20,7 @@ const productSchema = new Schema(
     category: {
       type: SchemaTypes.ObjectId,
       required: true,
+      ref: Category,
     },
     description: {
       type: String,

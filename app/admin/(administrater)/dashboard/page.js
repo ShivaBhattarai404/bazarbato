@@ -3,11 +3,11 @@ import Link from "next/link";
 import AdminPageHeading from "@/components/Utils/AdminPageHeading";
 import styles from "./page.module.css";
 import Card from "@/components/Card/Card";
-import PieChart from "@/components/Charts/PieChart";
+import PieChart from "@/components/_admin/Charts/PieChart";
 
 import frame from "@/public/images/frame.png";
 import Image from "next/image";
-import AreaChart from "@/components/Charts/AreaChart";
+import AreaChart from "@/components/_admin/Charts/AreaChart";
 
 export const metadata = {
   title: "Dashboard",

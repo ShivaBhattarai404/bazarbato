@@ -177,6 +177,7 @@ async function formSubmitHandler(formData) {
   }
 }
 
+// function to fetch attributes
 async function fetchAttributes() {
   await dbConnect();
   const attributes = await AttributeSet.find().populate("attributes");
@@ -213,10 +214,14 @@ async function getCategories() {
   }
 }
 
+// function to get the product data if the form is in edit mode
 async function getProduct(url_key) {
   try {
     await dbConnect();
-    const product = await Product.findOne({ url_key });
+    const product = await Product.findOne({ url_key }).populate(
+      "category",
+      "name code"
+    );
     return product;
   } catch {
     return null;
@@ -228,6 +233,7 @@ export default async function NewProduct({ searchParams: { product: slug } }) {
     fetchAttributes(),
     getCategories(),
     getProduct(slug),
+    fetchCategories(),
   ]);
   return (
     <div className={`${styles.container} homepadding`}>

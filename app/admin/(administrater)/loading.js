@@ -1,4 +1,4 @@
-const { default: Spinner } = require("@/components/Spinner/Spinner")
+const { default: Spinner } = require("@/components/_admin/Spinner/Spinner")
 
 const loading = () => {
   return <Spinner />;

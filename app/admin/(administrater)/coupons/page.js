@@ -9,7 +9,7 @@ import CheckBox from "@/components/CheckBox/CheckBox";
 import { useState } from "react";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
-import Modal from "@/components/Modal/Modal";
+import Modal from "@/components/_admin/Modal/Modal";
 
 export default function ProductsPage() {
   const [selectedCoupons, setSelectedCoupon] = useState([]);

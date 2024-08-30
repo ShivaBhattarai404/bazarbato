@@ -1,0 +1,112 @@
+.section {
+  margin: 1rem 0 5rem;
+}
+.title {
+  font-size: var(--fs-4);
+  font-weight: 500;
+}
+.order {
+  padding: 0.75rem;
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-md);
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow-sm);
+}
+.orderHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.orderStatus {
+  font-size: var(--fs-9);
+  font-weight: 600;
+  border-radius: 5rem;
+  padding: 0.25rem 1.2rem;
+  position: relative;
+  text-transform: capitalize;
+  color: var(--sandy-brown-dark);
+  background-color: var(--sandy-brown-light);
+}
+.orderStatus::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.5rem;
+  transform: translateY(-50%);
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background-color: var(--sandy-brown-dark);
+}
+.orderStatus.shipped {
+  color: var(--eerie-black);
+  background-color: var(--sandy-brown);
+}
+.orderStatus.shipped::before {
+  background-color: var(--eerie-black);
+}
+.orderStatus.delivered {
+  color: var(--erie-black);
+  background-color: var(--ocean-green);
+}
+.orderStatus.delivered::before {
+  background-color: var(--eerie-black);
+}
+.orderDate {
+  font-size: var(--fs-9);
+  border-left: 1px solid var(--divider);
+  padding-left: 1rem;
+}
+.orderBody {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.orderBody img {
+  object-fit: contain;
+}
+.orderId {
+  font-size: var(--fs-7);
+  color: var(--bittersweet-dark);
+  font-weight: 600;
+}
+.orderItems {
+  font-size: var(--fs-7);
+  margin: 0.25rem 0;
+}
+.orderItems .extraItems {
+  color: var(--bittersweet-dark);
+  font-weight: 500;
+  cursor: pointer;
+  display: inline;
+}
+.orderItems .extraItems:hover {
+  text-decoration: underline;
+}
+.orderPrice {
+  font-size: var(--fs-7);
+  font-weight: 500;
+}
+.orderCTA {
+  font-size: var(--fs-3);
+  margin-left: auto;
+  transition: var(--transition-timing);
+  cursor: pointer;
+  display: none;
+}
+.orderCTA:hover {
+  transform: translateX(0.5rem);
+  scale: 1.05;
+}
+
+@media (min-width: 570px) {
+  .orderCTA {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .order {
+    padding: 1rem;
+  }
+}

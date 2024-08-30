@@ -1,0 +1,116 @@
+.links {
+  background-color: var(--ash-gray);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.links .title {
+  margin-bottom: 1rem;
+}
+.link {
+  border: 1px solid var(--davys-gray);
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-sm);
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+  text-transform: capitalize;
+  font-size: var(--fs-7);
+  color: var(--davys-gray);
+  cursor: pointer;
+}
+.link:hover {
+  background-color: var(--white);
+  color: var(--eerie-black);
+}
+.link.active {
+  background-color: var(--white);
+  color: var(--eerie-black);
+}
+.userProfile {
+  width: 10rem;
+  height: 10rem;
+  margin: auto;
+  border-radius: 50%;
+  position: relative;
+}
+.userProfile img {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+.userProfile .edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: var(--white);
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.userProfile .edit svg {
+  color: var(--info);
+}
+/* title on each card like "Personal Information", "Profile */
+.title {
+  font-size: var(--fs-7);
+  font-weight: 600;
+}
+
+/* user infomation */
+.personalInfo {
+  background-color: var(--ash-gray);
+  padding: 1rem;
+  max-width: 30rem;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 5rem;
+}
+.personalInfo .header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.personalInfo .header .edit {
+  font-size: var(--fs-7);
+  color: var(--info);
+  display: flex;
+  align-items: center;
+}
+.personalInfo .header .edit svg {
+  margin-right: 3px;
+}
+.form > label:not(.gender) {
+  text-transform: capitalize;
+  font-size: var(--fs-7);
+  font-weight: 500;
+  display: block;
+  margin-top: 1rem;
+}
+.verified{
+    font-size: var(--fs-8);
+    text-transform: lowercase;
+    color: var(--ocean-green-dark);
+}
+.form input {
+  max-width: 20rem;
+}
+.form input:disabled {
+  background-color: var(--white);
+  border: none;
+  color: var(--davys-gray);
+  font-size: var(--fs-7);
+}
+.genderLabel {
+  margin-bottom: 0.5rem;
+}
+.gender {
+  margin-right: 2rem !important;
+  font-size: var(--fs-7);
+}
+
+@media (min-width: 480px) {
+  .userProfile {
+    margin: 0;
+  }
+}

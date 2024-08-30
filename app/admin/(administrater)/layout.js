@@ -1,4 +1,4 @@
-import Navigation from "@/components/Navigation/Navigation";
+import Navigation from "@/components/_admin/Navigation/Navigation";
 import "./utils.css";
 import { cookies } from "next/headers";
 import { verifyJwtToken } from "@/helpers/jwt";

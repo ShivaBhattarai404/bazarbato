@@ -8,7 +8,7 @@ import formStyles from "@/public/styles/form.module.css";
 import Card from "@/components/Card/Card";
 import RadioButton from "@/components/RadioButton/RadioButton";
 import InputError from "@/components/InputError/InputError";
-import Spinner from "@/components/Spinner/Spinner";
+import Spinner from "@/components/_admin/Spinner/Spinner";
 
 const DEFAULT_ERRORS = {
   name: { message: "Name should be 3 characters long", touched: false },

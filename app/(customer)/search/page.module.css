@@ -1,0 +1,36 @@
+.section {
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: flex-start;
+  align-content: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.heading {
+  width: 100%;
+  text-align: center;
+  font-size: var(--fs-4);
+}
+.filter {
+  width: 15rem;
+}
+.title {
+  font-size: var(--fs-4);
+  border-bottom: 1px solid var(--divider);
+  font-weight: 500;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.filter select:focus {
+  outline-color: var(--salmon-pink);
+  border-color: var(--cultured);
+}
+.filter label {
+  margin-top: 1rem;
+}
+
+.results {
+  display: grid;
+  gap: 2rem 1rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
