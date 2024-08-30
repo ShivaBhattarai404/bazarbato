@@ -3,15 +3,14 @@
 import { Fragment, useEffect, useReducer, useState } from "react";
 
 import Card from "@/components/Card/Card";
-import DND from "@/components/DND/DND";
+import DND from "@/components/_admin/DND/DND";
 import RadioButton from "@/components/RadioButton/RadioButton";
-import Attributes from "@/components/Attributes/Attributes";
-import Spinner from "@/components/Spinner/Spinner";
+import Attributes from "@/components/_admin/Attributes/Attributes";
+import Spinner from "@/components/_admin/Spinner/Spinner";
 import InputError from "@/components/InputError/InputError";
 
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
-
 
 // Null erros
 // these errors are shown initially when the the page is in edit mode
@@ -127,6 +126,7 @@ export default function NewProductForm({
   handleSubmit,
   checkIfProductExists,
   product,
+  categories,
 }) {
   const [errors, dispatch] = useReducer(reducer, DEFAULT_ERRORS);
   const [images, setImages] = useState(new Array(5).fill(null));
@@ -146,7 +146,7 @@ export default function NewProductForm({
         }
       });
     }
-  }, [product]);
+  }, [product, images]);
 
   // setting the image in the images array using useState hook
   const imageChangeHandler = (file, index) => {
@@ -209,7 +209,8 @@ export default function NewProductForm({
         setLoading(true);
         const response = await handleSubmit(formData);
         setLoading(false);
-      } catch (error) {g
+      } catch (error) {
+        g;
         setLoading(false);
       }
     } else {
@@ -301,15 +302,17 @@ export default function NewProductForm({
             id="new-product-category"
             className={formStyles.select}
             name="category"
-            defaultValue={product ? product.category : "none"}
+            defaultValue={product ? product.category.code : "none"}
             onChange={(e) =>
               dispatch({ type: "CATEGORY", payload: e.target.value })
             }
           >
             <option value="none">None</option>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="child">Child</option>
+            {categories.map((category) => (
+              <option key={category.code} value={category.code}>
+                {category.name}
+              </option>
+            ))}
           </select>
           <InputError errors={errors} name="category" />
         </Fragment>

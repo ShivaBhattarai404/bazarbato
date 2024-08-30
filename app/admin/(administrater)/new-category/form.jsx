@@ -6,11 +6,11 @@ import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
 
 import Card from "@/components/Card/Card";
-import DND from "@/components/DND/DND";
+import DND from "@/components/_admin/DND/DND";
 import RadioButton from "@/components/RadioButton/RadioButton";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import InputError from "@/components/InputError/InputError";
-import Spinner from "@/components/Spinner/Spinner";
+import Spinner from "@/components/_admin/Spinner/Spinner";
 
 // Null erros
 // these errors are shown initially when the the page is in edit mode

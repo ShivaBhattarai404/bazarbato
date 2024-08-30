@@ -1,6 +1,6 @@
 .section {
   margin-top: 1rem;
-  padding: 0 var(--padding-lg);
+  padding: 0 var(--padding-sm);
 }
 /* PRODUCT CONTENT CARD
 ** The product content part where there would be images, details, and other stuff

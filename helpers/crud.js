@@ -4,6 +4,8 @@ import { put, del } from "@vercel/blob";
 
 import Category from "@/models/Category";
 import Product from "@/models/Product";
+import Attribute from "@/models/Attribute";
+import dbConnect from "./dbConnect";
 
 export async function uploadFile(file, filename) {
   try {
@@ -43,4 +45,7 @@ export async function checkIfProductExists(filter) {
 
 export async function checkIfCategoryExists(filter) {
   return checkExistence(filter, Category);
+}
+export async function checkIfAttributeExists(filter) {
+  return checkExistence(filter, Attribute);
 }

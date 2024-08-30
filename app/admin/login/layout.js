@@ -1,7 +1,10 @@
-import { verifyJwtToken } from "@/helpers/jwt";
+// core react and nextjs functions and components
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Fragment } from "react";
+
+// helper functions
+import { verifyJwtToken } from "@/helpers/jwt";
 
 export const metadata = {
   title: "Login",

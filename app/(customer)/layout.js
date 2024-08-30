@@ -1,9 +1,10 @@
 import { Fragment } from "react";
 
-import Header from "@/components/Header/Header";
-import Nav from "@/components/Nav/Nav";
+import Header from "@/components/_customer/Header/Header";
+import Nav from "@/components/_customer/Nav/Nav";
 
 import "./global.css";
+import Footer from "@/components/_customer/Footer/Footer";
 
 export const metadata = {
   title: "Home | Premps",
@@ -14,7 +15,8 @@ export default function RootLayout({ children }) {
     <Fragment>
       <Header />
       <Nav />
-      {children}
+      <main>{children}</main>
+      <Footer />
     </Fragment>
   );
 }

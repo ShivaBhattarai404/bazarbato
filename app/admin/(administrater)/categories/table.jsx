@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 
 import Card from "@/components/Card/Card";
 import CheckBox from "@/components/CheckBox/CheckBox";
-import Modal from "@/components/Modal/Modal";
+import Modal from "@/components/_admin/Modal/Modal";
 
 export default function CategoryTable({ categories }) {
   const [selectedCategories, setSelectedCategories] = useState([]);

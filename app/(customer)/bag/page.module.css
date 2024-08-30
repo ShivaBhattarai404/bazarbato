@@ -1,0 +1,207 @@
+.section {
+  display: grid;
+  grid-template-columns: auto;
+  gap: 0 1rem;
+  grid-template-areas:
+    "title title"
+    "products products"
+    "summary summary";
+  margin-bottom: 5rem;
+  padding: 0 var(--padding-sm);
+}
+.title {
+  grid-area: title;
+  font-size: var(--fs-3);
+  font-weight: 500;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--cultured);
+}
+.bag {
+  grid-area: products;
+  padding: 1rem 0;
+}
+.product {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 0 1rem;
+  grid-template-areas:
+    "image name-and-coupon"
+    "image price-and-remove"
+    "image quantity";
+  border-bottom: 1px solid var(--cultured);
+  padding: 1rem 0;
+}
+.product:first-child {
+  padding-top: 0;
+}
+.product:last-child {
+  border-bottom: none;
+}
+.productImage {
+  grid-area: image;
+  width: 5rem;
+  height: 5rem;
+  object-fit: contain;
+  background-color: var(--ash-gray);
+  border-radius: var(--border-radius-md);
+}
+.nameAndCoupon {
+  grid-area: name-and-coupon;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.productName {
+  max-width: 13rem;
+  font-size: var(--fs-7);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.coupon {
+  font-size: var(--fs-8);
+  text-transform: uppercase;
+  color: var(--sonic-silver);
+}
+.priceAndRemove {
+  grid-area: price-and-remove;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.removeButton {
+  display: none;
+}
+.productQuantity {
+  display: flex;
+  grid-area: quantity;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 2rem;
+  width: 5rem;
+}
+.productQuantity span {
+  font-size: var(--fs-7);
+}
+.productQuantity button svg {
+  color: var(--sonic-silver);
+  vertical-align: middle;
+  font-size: 1.1rem;
+}
+.productPrice {
+  font-size: var(--fs-7);
+  color: var(--ocean-green);
+  border-radius: var(--border-radius-sm);
+  padding: 0;
+  border: none;
+  color: var(--eric-black);
+  font-weight: 500;
+}
+.removeButton {
+  font-size: var(--fs-7);
+  padding: 0.5rem;
+  color: var(--bittersweet);
+  text-align: center;
+}
+
+/* Order summary */
+.summary {
+  grid-area: summary;
+  font-size: var(--fs-6);
+}
+.summaryTitle {
+  font-size: var(--fs-3);
+  font-weight: 500;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--cultured);
+}
+.summaryList li {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--cultured);
+}
+.summaryList li :first-child {
+  color: var(--sonic-silver);
+}
+.checkoutButton {
+  width: 100%;
+  padding: 0.7rem;
+  background-color: var(--ocean-green);
+  color: var(--white);
+  font-size: var(--fs-6);
+  font-weight: 500;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: var(--transition-timing);
+}
+.checkoutButton:hover {
+  background-color: var(--ocean-green-dark);
+}
+.checkoutButton:active {
+  scale: 0.9;
+}
+
+@media (min-width: 570px) {
+  .product {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+  .productName {
+    max-width: 10rem;
+  }
+  .productQuantity {
+    width: 6rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    background-color: var(--ash-gray);
+  }
+  .productQuantity button svg {
+    font-size: 1.3rem;
+  }
+  .productPrice {
+    color: var(--ocean-green);
+    border: 3px solid var(--ocean-green);
+    font-weight: normal;
+    padding: 0.2rem 0.5rem;
+  }
+  .priceAndRemove {
+    flex-direction: column;
+  }
+  .removeButton {
+    display: inline;
+  }
+
+  /* order summary */
+  .summary {
+    font-size: var(--fs-6);
+  }
+}
+@media (min-width: 1024px) {
+  .productName {
+    max-width: 15rem;
+  }
+  .summary {
+    padding: 1rem;
+    padding-right: 0;
+    border-left: 1px solid var(--cultured);
+  }
+  .section {
+    grid-template-columns: 35rem auto;
+    gap: 2rem 3rem;
+    grid-template-areas:
+      "title title"
+      "products summary";
+    padding: 0 var(--padding-x-lg);
+  }
+}
+@media (min-width: 1200px) {
+  .section {
+    grid-template-columns: 40rem auto;
+    padding: 0 var(--padding-sm);
+  }
+}

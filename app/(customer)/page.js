@@ -1,23 +1,18 @@
-import Banner from "@/components/Banner/Banner";
-import Category from "@/components/Category/Category";
-import Header from "@/components/Header/Header";
-import Nav from "@/components/Nav/Nav";
 import { Fragment } from "react";
 
-import Footer from "@/components/Footer/Footer";
-import ProductContainer from "@/components/ProductContainer/ProductContainer";
-import Testimonials from "@/components/Testimonials/Testimonials";
+import Banner from "@/components/_customer/Banner/Banner";
+import Category from "@/components/_customer/Category/Category";
+
+import ProductContainer from "@/components/_customer/ProductContainer/ProductContainer";
+import Testimonials from "@/components/_customer/Testimonials/Testimonials";
 
 export default function Home() {
   return (
     <Fragment>
-      <main>
         <Banner />
         <Category />
         <ProductContainer />
         <Testimonials />
-      </main>
-      <Footer />
     </Fragment>
   );
 }

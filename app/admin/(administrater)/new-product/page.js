@@ -12,6 +12,7 @@ import { checkIfProductExists, deleteFile, uploadFile } from "@/helpers/crud";
 import styles from "./page.module.css";
 import AdminPageHeading from "@/components/Utils/AdminPageHeading";
 import NewProductForm from "./form";
+import Category from "@/models/Category";
 
 export const metadata = {
   title: "Create a new product",
@@ -157,11 +158,12 @@ async function formSubmitHandler(formData) {
   }
 
   // saving the product to the database
-  console.log("product saved successfully");
+  // console.log("product saved successfully");
   await product.save();
   redirect("/admin/products");
 }
 
+// function to fetch attributes
 async function fetchAttributes() {
   await dbConnect();
   const attributes = await AttributeSet.find({}).populate("attributes");
@@ -184,10 +186,23 @@ async function fetchAttributes() {
   return formattedAttributes;
 }
 
+// function to fetch categories
+async function fetchCategories() {
+  await dbConnect();
+  const attributes = (await Category.find({ isParent: false })).map(
+    ({ name, code }) => ({ name, code })
+  );
+  return attributes;
+}
+
+// function to get the product data if the form is in edit mode
 async function getProduct(url_key) {
   try {
     await dbConnect();
-    const product = await Product.findOne({ url_key });
+    const product = await Product.findOne({ url_key }).populate(
+      "category",
+      "name code"
+    );
     return product;
   } catch {
     return null;
@@ -195,9 +210,10 @@ async function getProduct(url_key) {
 }
 
 export default async function NewProduct({ searchParams: { product: slug } }) {
-  const [attributeSet, product] = await Promise.all([
+  const [attributeSet, product, categories] = await Promise.all([
     fetchAttributes(),
     getProduct(slug),
+    fetchCategories(),
   ]);
 
   return (
@@ -210,6 +226,7 @@ export default async function NewProduct({ searchParams: { product: slug } }) {
         handleSubmit={formSubmitHandler}
         checkIfProductExists={checkIfProductExists}
         product={deepCopy(product)}
+        categories={categories}
       />
     </div>
   );

@@ -1,0 +1,18 @@
+.path {
+  margin: 1rem 0;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  font-size: var(--fs-8);
+  color: var(--spanish-gray);
+}
+.path a {
+  color: var(--davys-gray);
+  text-transform: capitalize;
+}
+.path a:hover {
+  color: var(--info);
+}
+.path a.active {
+  color: var(--sonic-silver);
+}

@@ -131,14 +131,14 @@ export default async function NewCoupon() {
           name="discount-type"
           value="3"
         >
-          Fixed discount on specific categories
+          Fixed discount on cart
         </RadioButton>
         <RadioButton
           className={styles.discountTypeOption}
           name="discount-type"
           value="4"
         >
-          Percentage discount on specific categories
+          Percentage discount on cart
         </RadioButton>
         {/* <RadioButton className={styles.discountTypeOption} name="discount-type" value="5" >
           Buy X get Y

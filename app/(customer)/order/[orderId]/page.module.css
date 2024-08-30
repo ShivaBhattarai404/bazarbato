@@ -1,0 +1,174 @@
+.section {
+  margin-bottom: 5rem;
+}
+.title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 1rem 0;
+}
+.title h1 {
+  font-size: var(--fs-4);
+  font-weight: 500;
+  color: var(--eerie-black);
+  text-transform: capitalize;
+  margin-right: 2rem;
+}
+.cta {
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--cultured);
+  padding: 5px 8px;
+  font-size: var(--fs-8);
+  box-shadow: var(--shadow);
+  transition: var(--transition-timing);
+}
+.cta svg {
+  margin-right: 0.5rem;
+}
+.title .cta:active {
+  transform: scale(0.9);
+}
+.date {
+  color: var(--spanish-gray);
+  font-size: var(--fs-8);
+}
+.date span:first-of-type {
+  border-right: 1px solid var(--divider);
+  margin-right: 1rem;
+  padding-right: 1rem;
+}
+.date b {
+  color: var(--onyx);
+  font-size: var(--fs-8);
+  font-weight: 500;
+}
+.hr {
+  border: 1px solid var(--cultured);
+  margin: 1rem 0;
+}
+
+/* PRODUCT */
+.product {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 1rem 0;
+  border-radius: var(--border-radius-sm);
+}
+.product .productImg {
+  width: 5rem;
+  height: 5rem;
+  object-fit: contain;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--cultured);
+}
+.productInfo {
+  margin-left: 1rem;
+}
+.productName {
+  font-size: var(--fs-7);
+  color: var(--eerie-black);
+  font-weight: 500;
+}
+.productAttribute {
+  color: var(--davys-gray);
+  font-size: var(--fs-8);
+}
+.productAttribute:not(:first-of-type, :last-of-type) {
+  border-left: 1px solid var(--divider);
+  margin-left: 1rem;
+  padding-left: 1rem;
+}
+.productAttribute:last-of-type {
+  display: block;
+}
+.priceAndQuantity {
+  margin-left: auto;
+  font-size: var(--fs-8);
+}
+.price {
+  font-size: var(--fs-7);
+  color: var(--eerie-black);
+  font-weight: 500;
+  display: block;
+}
+.qty {
+  font-size: var(--fs-8);
+  margin-top: 0.5rem;
+  color: var(--davys-gray);
+}
+
+/* style of title of every section like payment, delivery, order etc */
+.sectionTitle {
+  font-size: var(--fs-4);
+  font-weight: 500;
+  color: var(--eerie-black);
+  margin-top: 2rem;
+}
+
+/* PAYMENT */
+.payment .cta {
+  margin-top: 1rem;
+}
+.delivery h2 {
+  font-size: var(--fs-4);
+  font-weight: 500;
+  color: var(--eerie-black);
+  margin-top: 2rem;
+}
+.delivery span {
+  font-size: var(--fs-8);
+  color: var(--spanish-gray);
+  display: block;
+  margin: 0.5rem 0;
+}
+.delivery span b {
+  color: var(--onyx);
+  font-size: var(--fs-8);
+  font-weight: 500;
+}
+
+/* ORDER SUMMARY */
+.summary {
+  max-width: 20rem;
+}
+.subtotal,
+.others,
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-7);
+}
+.summary div svg {
+  vertical-align: middle;
+}
+.summary b {
+  color: var(--eerie-black);
+  font-size: var(--fs-7);
+  font-weight: 500;
+}
+.others,
+.others b {
+  color: var(--davys-gray);
+  font-size: var(--fs-8);
+}
+.total {
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--divider);
+  font-weight: 600;
+}
+.total b {
+  font-weight: 600;
+}
+@media (min-width: 1024px) {
+  .section {
+    padding: 0 var(--padding-x-lg);
+  }
+  .path {
+    margin: 0;
+  }
+}
