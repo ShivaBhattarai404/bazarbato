@@ -5,12 +5,12 @@ import { Fragment, useEffect, useReducer, useState } from "react";
 import Card from "@/components/Card/Card";
 import DND from "@/components/_admin/DND/DND";
 import RadioButton from "@/components/RadioButton/RadioButton";
-import Attributes from "@/components/Attributes/Attributes";
-import Spinner from "@/components/Spinner/Spinner";
 import InputError from "@/components/InputError/InputError";
 
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
+import Attributes from "@/components/_admin/Attributes/Attributes";
+import Spinner from "@/components/_admin/Spinner/Spinner";
 
 // Null erros
 // these errors are shown initially when the the page is in edit mode
@@ -302,7 +302,7 @@ export default function NewProductForm({
             id="new-product-category"
             className={formStyles.select}
             name="category"
-            defaultValue={product ? product.category.code : "none"}
+            defaultValue={product ? product.category._id : "none"}
             onChange={(e) =>
               dispatch({ type: "CATEGORY", payload: e.target.value })
             }

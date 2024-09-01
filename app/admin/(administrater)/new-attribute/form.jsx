@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
@@ -9,7 +9,16 @@ import Card from "@/components/Card/Card";
 import RadioButton from "@/components/RadioButton/RadioButton";
 import InputError from "@/components/InputError/InputError";
 import Spinner from "@/components/_admin/Spinner/Spinner";
+import { useRouter } from "next/navigation";
 
+// Null errors
+// these errors are shown initially when the the page is in edit mode
+const NULL_ERRORS = {
+  name: { message: "", touched: true },
+  code: { message: "", touched: true },
+};
+
+// default errors for inputs
 const DEFAULT_ERRORS = {
   name: { message: "Name should be 3 characters long", touched: false },
   code: { message: "Code should be 3 characters long", touched: false },
@@ -19,11 +28,19 @@ export default function AttributeForm({
   checkIfAttributeExists,
   attribute,
 }) {
-  const [attributeType, setAttributeType] = useState("TEXT");
-  const [attributeCode, setAttributeCode] = useState("");
-  const [errors, setErrors] = useState(DEFAULT_ERRORS);
-  const [attributeSelectOptions, setAttributeSelectOptions] = useState([]);
+  const router = useRouter();
+  const [attributeType, setAttributeType] = useState(
+    attribute?.type.toUpperCase() || "TEXT"
+  );
+  const [attributeCode, setAttributeCode] = useState(attribute?.code || "");
+  const [errors, setErrors] = useState(
+    attribute ? NULL_ERRORS : DEFAULT_ERRORS
+  );
+  const [attributeSelectOptions, setAttributeSelectOptions] = useState(
+    attribute?.options || []
+  );
   const [loading, setLoading] = useState(false);
+
   // function to handle the change of the attribute type
   const attributeTypeChangeHandler = (e) => {
     setAttributeType(e.target.value);
@@ -40,7 +57,7 @@ export default function AttributeForm({
       error.message = "Code should be 3 characters long";
     } else {
       try {
-        const { ack, exists } = await checkIfAttributeExists(value);
+        const { ack, exists } = await checkIfAttributeExists({ code: value });
         if (!ack) throw "Network error occurred. Refresh the page";
         if (exists) error.message = "Attribute with this code already exists";
       } catch {
@@ -84,7 +101,8 @@ export default function AttributeForm({
       try {
         setLoading(true);
         const response = await handleSubmit(formData);
-        setLoading(false);
+        if (!response.ack) throw response.message;
+        router.push("/admin/attributes");
       } catch (error) {
         setLoading(false);
       }
@@ -117,6 +135,7 @@ export default function AttributeForm({
             type="text"
             id="new-attribute-name"
             name="name"
+            defaultValue={attribute?.name}
             onChange={({ target: { value: name } }) => {
               setErrors((prevErrors) => ({
                 ...prevErrors,
@@ -128,7 +147,6 @@ export default function AttributeForm({
               }));
             }}
             placeholder="Enter the name of the attribute"
-            required
           />
           <InputError errors={errors} name="name" />
         </Fragment>
@@ -144,8 +162,8 @@ export default function AttributeForm({
             name="code"
             placeholder="Code"
             value={attributeCode}
+            disabled={attribute?._id}
             onChange={attributeCodeChangeHandler}
-            required
           />
           <InputError errors={errors} name="code" />
         </Fragment>
@@ -158,7 +176,8 @@ export default function AttributeForm({
             className={styles.attributeTypeRadioBtn}
             name="type"
             value="TEXT"
-            checked={attributeType === "TEXT"}
+            disabled={attribute?._id}
+            checked={attributeType.toUpperCase() === "TEXT"}
             onChange={attributeTypeChangeHandler}
           >
             Text
@@ -166,8 +185,9 @@ export default function AttributeForm({
           <RadioButton
             className={styles.attributeTypeRadioBtn}
             name="type"
+            disabled={attribute?._id}
             value="SELECT"
-            checked={attributeType === "SELECT"}
+            checked={attributeType.toUpperCase() === "SELECT"}
             onChange={attributeTypeChangeHandler}
           >
             Select
@@ -176,7 +196,8 @@ export default function AttributeForm({
             className={styles.attributeTypeRadioBtn}
             name="type"
             value="NUMBER"
-            checked={attributeType === "NUMBER"}
+            disabled={attribute?._id}
+            checked={attributeType.toUpperCase() === "NUMBER"}
             onChange={attributeTypeChangeHandler}
           >
             Number
@@ -193,49 +214,61 @@ export default function AttributeForm({
                   type="text"
                   value={option}
                   name="options"
+                  disabled={attribute?._id}
                   onChange={optionChangeHandler.bind(null, index)}
                   placeholder="Option"
                   required
                 />
-                <button
-                  className={styles.removeOption}
-                  type="button"
-                  onClick={handleOptionRemove.bind(null, index)}
-                >
-                  Remove
-                </button>
+                {!attribute?._id && (
+                  <button
+                    className={styles.removeOption}
+                    type="button"
+                    onClick={handleOptionRemove.bind(null, index)}
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             ))}
-            <button
-              className={styles.addOption}
-              type="button"
-              onClick={() =>
-                setAttributeSelectOptions((prevOptions) =>
-                  prevOptions.concat("")
-                )
-              }
-            >
-              Add Option
-            </button>
+            {!attribute?._id && (
+              <button
+                className={styles.addOption}
+                type="button"
+                onClick={() =>
+                  setAttributeSelectOptions((prevOptions) =>
+                    prevOptions.concat("")
+                  )
+                }
+              >
+                Add Option
+              </button>
+            )}
           </Fragment>
         )}
       </Card>
 
       <Card className={`${styles.card} ${styles.advanced}`}>
         <span className={styles.cardTitle}>Advanced</span>
-        <label className={formStyles.label}>Is Required?</label>
-        <RadioButton
-          className={styles.radio}
-          value="no"
-          name="is-required"
-          defaultChecked
-        >
-          Not Required
-        </RadioButton>
-        <RadioButton className={styles.radio} value="yes" name="is-required">
-          Required
-        </RadioButton>
-        <hr />
+        {/* <Fragment key="is-required">
+          <label className={formStyles.label}>Is Required?</label>
+          <RadioButton
+            className={styles.radio}
+            value="no"
+            name="is-required"
+            defaultChecked
+          >
+            Not Required
+          </RadioButton>
+          <RadioButton
+            className={styles.radio}
+            value="yes"
+            name="is-required"
+            defaultChecked={attribute?.isRequired}
+          >
+            Required
+          </RadioButton>
+        </Fragment> */}
+        {/* <hr /> */}
         <label className={formStyles.label}>Show to customers?</label>
         <RadioButton
           value="no"
@@ -249,6 +282,7 @@ export default function AttributeForm({
           value="yes"
           name="show-to-customer"
           className={styles.radio}
+          defaultChecked={!attribute ? true : attribute.showToCustomer}
         >
           Yes
         </RadioButton>
@@ -256,7 +290,7 @@ export default function AttributeForm({
 
       <Card className={`${styles.footer} ${styles.card}`}>
         <button className={styles.saveButton} type="submit">
-          Save
+          {attribute ? "Update" : "Save"}
         </button>
         <button className={styles.cancelButton} type="reset">
           Reset

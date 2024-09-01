@@ -8,6 +8,7 @@ import DND from "@/components/_admin/DND/DND";
 import RadioButton from "@/components/RadioButton/RadioButton";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import { Fragment, useState } from "react";
+import InputError from "@/components/InputError/InputError";
 
 export default function CategoryForm({ handleSubmit }) {
   const [isParentCategory, setIsParentCategory] = useState(false);

@@ -9,6 +9,10 @@ const attributeSetSchema = new Schema(
       type: String,
       required: true,
     },
+    code: {
+      type: String,
+      required: true,
+    },
     attributes: [
       {
         type: Schema.Types.ObjectId,
@@ -21,4 +25,5 @@ const attributeSetSchema = new Schema(
   }
 );
 
-export default mongoose.models.AttributeSet || mongoose.model("AttributeSet", attributeSetSchema);
+export default mongoose.models.AttributeSet ||
+  mongoose.model("AttributeSet", attributeSetSchema);

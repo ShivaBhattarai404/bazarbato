@@ -6,6 +6,7 @@ import Category from "@/models/Category";
 import Product from "@/models/Product";
 import Attribute from "@/models/Attribute";
 import dbConnect from "./dbConnect";
+import AttributeSet from "@/models/AttributeSet";
 
 export async function uploadFile(file, filename) {
   try {
@@ -35,7 +36,7 @@ export async function checkExistence(filter, model) {
       return { ack: true, exists: false };
     }
   } catch (error) {
-    console.error(error);
+    console.log("Error Occured while checking existence ->", error.message);
     return { ack: false, error: "Internal Server Error" };
   }
 }
@@ -49,4 +50,7 @@ export async function checkIfCategoryExists(filter) {
 }
 export async function checkIfAttributeExists(filter) {
   return checkExistence(filter, Attribute);
+}
+export async function checkIfAttributeSetExists(filter) {
+  return checkExistence(filter, AttributeSet);
 }

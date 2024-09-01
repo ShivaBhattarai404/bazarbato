@@ -11,7 +11,7 @@ const DEFAULT_SET = {
   attributes: [],
 };
 
-const Attributes = ({ attributeSet, defaultSet, attributes }) => {
+export default function Attributes({ attributeSet, defaultSet, attributes }) {
   // function to get attributes of a set
   function getAttributesOfSet(setName) {
     const set = attributeSet.find((item) => item.name === setName);
@@ -97,6 +97,4 @@ const Attributes = ({ attributeSet, defaultSet, attributes }) => {
       ))}
     </Fragment>
   );
-};
-
-export default Attributes;
+}

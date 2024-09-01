@@ -171,10 +171,11 @@ async function formSubmitHandler(formData) {
 
     // saving the product to the database
     await product.save();
-    redirect("/admin/products");
   } catch (error) {
+    console.log("error occured",error);
     return { error: "Error saving product" };
   }
+  return redirect("/admin/products");
 }
 
 // function to fetch attributes
@@ -233,7 +234,6 @@ export default async function NewProduct({ searchParams: { product: slug } }) {
     fetchAttributes(),
     getCategories(),
     getProduct(slug),
-    fetchCategories(),
   ]);
   return (
     <div className={`${styles.container} homepadding`}>
