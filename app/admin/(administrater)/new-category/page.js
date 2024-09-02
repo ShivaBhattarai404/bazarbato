@@ -8,15 +8,20 @@ import AdminPageHeading from "@/components/Utils/AdminPageHeading";
 import CategoryForm from "./form";
 import dbConnect from "@/helpers/dbConnect";
 import { deepCopy } from "@/helpers/utils";
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 async function handleSubmit(formData) {
   "use server";
-  await dbConnect();
+
+  try {
+    await dbConnect();
+  } catch (error) {
+    return { error: "Cannot connect to database" };
+  }
   const _id = formData.get("_id");
   const name = formData.get("name");
   const categoryCode = formData.get("code");
-  const isParent = formData.get("is-parent-category") === "yes";
+  const isParent = formData.get("is-parent-category");
   let parentCategory = formData.get("parent");
   const description = formData.get("description");
   const banner = formData.get("banner");
@@ -29,6 +34,7 @@ async function handleSubmit(formData) {
 
   if (!isParent) {
     try {
+      console.log(parentCategory);
       parentCategory = await Category.findById(parentCategory);
       if (!parentCategory) return { error: "Parent category does not exist" };
     } catch (error) {
@@ -53,7 +59,6 @@ async function handleSubmit(formData) {
   // else create a new category
   let existingCategory = null;
   try {
-    if (!_id) throw new Error("Category does not exist");
     existingCategory = await Category.findById(_id);
   } catch (error) {
     existingCategory = null;
@@ -71,7 +76,7 @@ async function handleSubmit(formData) {
     // so if the child category has a parent category then update the parent category
     // else the child category will have the existing parent category
     if (!existingCategory.isParent)
-      category.parent = isParent ? existingCategory.parent : parentCategory;
+      category.parent = parentCategory || existingCategory.parent;
     category.description = description;
     // if the banner is a file and the category exists
     // then delete the existing banner and upload the new banner
@@ -131,10 +136,11 @@ async function handleSubmit(formData) {
   }
   try {
     await category.save();
+    revalidatePath("/admin/new-category");
   } catch (error) {
     return { error: "Error while saving category" };
   }
-  return redirect("/admin/categories");
+  return { error: null };
 }
 
 // function to fetch the category by its url_key
@@ -156,7 +162,9 @@ async function getParentCategories() {
     const parentCategories = await Category.find({
       status: "enabled",
       isParent: true,
-    }).select("name");
+    })
+      .select("name")
+      .lean();
     return deepCopy(parentCategories);
   } catch {
     return Promise.resolve([]);
@@ -170,6 +178,7 @@ export default async function NewCategory({
     getParentCategories(),
     getCategoryByUrlKey(slug),
   ]);
+
   return (
     <div className={`${styles.container} homepadding`}>
       <AdminPageHeading back="/admin/categories" className={styles.title}>

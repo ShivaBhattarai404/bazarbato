@@ -18,10 +18,7 @@ async function handleSubmit(formData) {
   try {
     await dbConnect();
     if (_id) {
-      await AttributeSet.findByIdAndUpdate(_id, {
-        name,
-        attributes,
-      });
+      await AttributeSet.findByIdAndUpdate(_id, { name });
       return { ack: true, message: "Attribute set updated successfully" };
     } else {
       await AttributeSet.create({ name, code, attributes });

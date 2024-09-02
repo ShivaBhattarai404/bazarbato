@@ -8,38 +8,74 @@ import formStyles from "@/public/styles/form.module.css";
 import Card from "@/components/Card/Card";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import Modal from "@/components/_admin/Modal/Modal";
+import Spinner from "@/components/_admin/Spinner/Spinner";
+import { useRouter } from "next/navigation";
 
-export default function AttributeSetClientPage({ attributeSets }) {
+export default function AttributeSetClientPage({
+  attributeSets,
+  deleteAttributeSet,
+}) {
   const [selectedAttributeSets, setSelectedSets] = useState([]);
   const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const attributeSetSelectHandler = (e) => {
-    const { attributeId } = e.target;
-    if (selectedAttributeSets.includes(attributeId)) {
-      setSelectedSets((prev) => prev.filter((item) => item !== attributeId));
+    const attributeSetId = e.target.value;
+    if (selectedAttributeSets.includes(attributeSetId)) {
+      setSelectedSets((prev) => prev.filter((item) => item !== attributeSetId));
     } else {
-      setSelectedSets((prev) => [...prev, attributeId]);
+      setSelectedSets((prev) => [...prev, attributeSetId]);
     }
   };
 
-  const attributeSetDeleteHandler = () => {
-    // console.log(selectedAttributeSets);
+  const attributeSetDeleteHandler = async (IDs) => {
+    try {
+      setModal(false);
+      setSelectedSets([]);
+      setLoading(true);
+      const response = await deleteAttributeSet(IDs);
+      if (response.error) {
+        setLoading(false);
+        setError(response.error);
+      } else {
+        setLoading(false);
+        router.refresh();
+      }
+    } catch (error) {
+      setError("Some error occured. Try refreshing the page");
+    }
   };
 
+  const btn1Text = error ? "Okay" : "Delete";
+  const bgColor1 = error ? "#0070f3" : "#d72c0d";
   const word = selectedAttributeSets.length > 1 ? "sets" : "set";
   const grammar = selectedAttributeSets.length > 1 ? "these" : "this";
+  const title = error
+    ? "Error Occured!!"
+    : `Delete ${selectedAttributeSets.length} ${word}`;
+  const paragraph =
+    error || `Are you sure you want to delete ${grammar} attribute ${word}?`;
+  const onOk = () => {
+    if (error) {
+      setError("");
+      setModal(false);
+    } else attributeSetDeleteHandler(selectedAttributeSets);
+  };
 
+  if (loading) return <Spinner />;
   return (
     <div className={styles.container}>
-      {modal && (
+      {(error || modal) && (
         <Modal
-          btn1Text="Delete"
+          btn1Text={btn1Text}
           btn2Text="Cancel"
-          bgColor2="#d72c0d"
-          onOk={attributeSetDeleteHandler}
+          bgColor2={bgColor1}
+          onOk={onOk}
           onCancel={() => setModal(false)}
-          title={`Delete ${selectedAttributeSets.length} ${word}`}
-          paragraph={`Are you sure you want to delete ${grammar} attribute ${word}?`}
+          title={title}
+          paragraph={paragraph}
         />
       )}
 
@@ -103,7 +139,9 @@ export default function AttributeSetClientPage({ attributeSets }) {
                   />
                 </td>
                 <td className={styles.name}>
-                  <Link href={`/admin/new-attribute-set?set=${attributeSet.code}`}>
+                  <Link
+                    href={`/admin/new-attribute-set?set=${attributeSet.code}`}
+                  >
                     {attributeSet.name}
                   </Link>
                 </td>

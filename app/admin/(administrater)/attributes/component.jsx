@@ -8,13 +8,18 @@ import formStyles from "@/public/styles/form.module.css";
 import Card from "@/components/Card/Card";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import Modal from "@/components/_admin/Modal/Modal";
+import { useRouter } from "next/navigation";
+import Spinner from "@/components/_admin/Spinner/Spinner";
 
-export default function AttributesClientPage({ attributes }) {
+export default function AttributesClientPage({ attributes, deleteAttributes }) {
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [modal, setModal] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const attributeSelectHandler = (e) => {
-    const { attributeId } = e.target;
+    const attributeId = e.target.value;
     if (selectedAttributes.includes(attributeId)) {
       setSelectedAttributes((prev) =>
         prev.filter((item) => item !== attributeId)
@@ -24,24 +29,53 @@ export default function AttributesClientPage({ attributes }) {
     }
   };
 
-  const attributeDeleteHandler = () => {
-    // console.log(selectedAttributes);
+  const attributeDeleteHandler = async (selectedAttributes) => {
+    try {
+      setModal(false);
+      setSelectedAttributes([]);
+      setLoading(true);
+      const response = await deleteAttributes(selectedAttributes);
+      if (response.error) {
+        setLoading(false);
+        setError(response.error);
+      } else {
+        setLoading(false);
+        router.refresh();
+      }
+    } catch (error) {
+      setError("Server Error, Failed to delete attributes");
+    }
   };
 
+  const btn1Text = error ? "Okay" : "Delete";
+  const bgColor1 = error ? "#0070f3" : "#d72c0d";
   const word = selectedAttributes.length > 1 ? "attributes" : "attribute";
   const grammar = selectedAttributes.length > 1 ? "these" : "this";
+  const title = error
+    ? "Error Occured!!"
+    : `Delete ${selectedAttributes.length} ${word}`;
+  const paragraph =
+    error || `Are you sure you want to delete ${grammar} ${word}?`;
+  const onOk = () => {
+    if (error) {
+      setError("");
+      setModal(false);
+    } else attributeDeleteHandler(selectedAttributes);
+  };
+
+  if (loading) return <Spinner />;
 
   return (
     <div className={styles.container}>
-      {modal && (
+      {(error || modal) && (
         <Modal
-          btn1Text="Delete"
+          btn1Text={btn1Text}
           btn2Text="Cancel"
-          bgColor2="#d72c0d"
-          onOk={attributeDeleteHandler}
+          bgColor2={bgColor1}
+          onOk={onOk}
           onCancel={() => setModal(false)}
-          title={`Delete ${selectedAttributes.length} ${word}`}
-          paragraph={`Are you sure you want to delete ${grammar} ${word}?`}
+          title={title}
+          paragraph={paragraph}
         />
       )}
 
@@ -92,14 +126,15 @@ export default function AttributesClientPage({ attributes }) {
             </tr>
           </thead>
           <tbody>
-            {attributes?.length &&
-              attributes.map((attribute, i) => (
-                <tr key={attribute.name}>
+            {attributes?.length > 0 &&
+              attributes.map((attribute) => (
+                <tr key={attribute._id}>
                   <td className={styles.checkbox}>
                     <CheckBox
-                      id={`attributes-${i}`}
+                      id={`attributes-${attribute._id}`}
                       value={attribute._id}
-                      onClick={attributeSelectHandler}
+                      checked={selectedAttributes.includes(attribute._id)}
+                      onChange={attributeSelectHandler}
                     />
                   </td>
                   <td className={styles.name}>

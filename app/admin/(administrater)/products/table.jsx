@@ -9,14 +9,20 @@ import formStyles from "@/public/styles/form.module.css";
 import Card from "@/components/Card/Card";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import Modal from "@/components/_admin/Modal/Modal";
-import frame from "@/public/images/frame.png";
 
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
+import Spinner from "@/components/_admin/Spinner/Spinner";
 
-export default function ProductTable({ products }) {
+export default function ProductTable({
+  products,
+  deleteProducts,
+  disableProducts,
+}) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [modalType, setModalType] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const productSelectHandler = (e) => {
     const { value } = e.target;
@@ -27,22 +33,73 @@ export default function ProductTable({ products }) {
     }
   };
 
+  // function to delete the selected products
+  const deleteSelectedProducts = async (productIDs) => {
+    setLoading(true);
+    try {
+      const response = await deleteProducts(productIDs);
+      if (!response) throw new Error("Failed to delete products");
+      setSelectedProducts([]);
+    } catch (error) {
+      setError("Failed to delete products");
+    }
+    setModalType("");
+    setLoading(false);
+  };
+
+  // function to disable the selected products
+  const disableSelectedProducts = async (productIDs) => {
+    setLoading(true);
+    const response = await disableProducts(productIDs);
+    setLoading(false);
+    setModalType("");
+    if (!response) {
+      return setError("Failed to disable products");
+    }
+    setSelectedProducts([]);
+  };
+
   const modalTitleKey = modalType === "disable" ? "Disable" : "Delete";
   const modalPargraphKey = modalType === "disable" ? "disable" : "delete";
-  const btn1Text = modalType === "disable" ? "Disable" : "Delete";
+  const btn1Text = error
+    ? "Okay"
+    : modalType === "disable"
+    ? "Disable"
+    : "Delete";
+
+  if (loading) return <Spinner />;
 
   return (
     <Fragment>
-      {modalType && (
+      {(error || modalType) && (
         <Modal
           btn1Text={btn1Text}
           btn2Text="Cancel"
-          bgColor2={modalType === "disable" ? "#2c6ecb" : "#d72c0d"}
-          onCancel={() => setModalType("")}
-          title={`${modalTitleKey} ${selectedProducts.length} products`}
-          paragraph={`Are you sure you want to ${modalPargraphKey} this product?`}
+          bgColor2={error || modalType === "disable" ? "#2c6ecb" : "#d72c0d"}
+          onOk={
+            error
+              ? setError.bind(null, null)
+              : modalType === "disable"
+              ? disableSelectedProducts.bind(null, selectedProducts)
+              : deleteSelectedProducts.bind(null, selectedProducts)
+          }
+          onCancel={() => {
+            setModalType("");
+            setError(null);
+          }}
+          title={
+            error
+              ? "Some Error Occured!!"
+              : `${modalTitleKey} ${selectedProducts.length} products`
+          }
+          paragraph={
+            error ||
+            `Are you sure you want to ${modalPargraphKey} this product?`
+          }
         />
       )}
+
+      {/* {error && <Modal title="Error" paragraph={error} />} */}
 
       <Card className={styles.card}>
         <input
@@ -96,15 +153,17 @@ export default function ProductTable({ products }) {
               <th className={styles.status}>Status</th>
             </tr>
           </thead>
+
           <tbody>
-            {products.length &&
+            {products?.length > 0 &&
               products.map((product) => (
                 <tr key={product._id}>
                   <td className={styles.checkbox}>
                     <CheckBox
                       id={`all-products-${product._id}`}
                       value={product._id}
-                      onClick={productSelectHandler}
+                      checked={selectedProducts.includes(product._id)}
+                      onChange={productSelectHandler}
                     />
                   </td>
                   <td className={`${styles.thumbnail} ${styles.image}`}>
@@ -165,7 +224,7 @@ export default function ProductTable({ products }) {
                 <button className={styles.last}>
                   <AiOutlineDoubleRight />
                 </button>
-                <span>36 records</span>
+                <span>{products ? products.length : 0} records</span>
               </td>
             </tr>
           </tfoot>

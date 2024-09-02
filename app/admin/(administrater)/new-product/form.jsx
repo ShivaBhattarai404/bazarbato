@@ -11,6 +11,8 @@ import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
 import Attributes from "@/components/_admin/Attributes/Attributes";
 import Spinner from "@/components/_admin/Spinner/Spinner";
+import Modal from "@/components/_admin/Modal/Modal";
+import { useRouter } from "next/navigation";
 
 // Null erros
 // these errors are shown initially when the the page is in edit mode
@@ -122,13 +124,16 @@ function reducer(state, action) {
 
 // rendering the form
 export default function NewProductForm({
-  attributeSet,
+  attributeSets,
   handleSubmit,
   checkIfProductExists,
   product,
   categories,
 }) {
+  const router = useRouter();
   const [errors, dispatch] = useReducer(reducer, DEFAULT_ERRORS);
+  const [responseError, setResponseError] = useState("");
+  const [sku, setSku] = useState(product ? product.sku : "");
   const [images, setImages] = useState(new Array(5).fill(null));
   const [loading, setLoading] = useState(false);
 
@@ -146,7 +151,7 @@ export default function NewProductForm({
         }
       });
     }
-  }, [product, images]);
+  }, [product, setImages]);
 
   // setting the image in the images array using useState hook
   const imageChangeHandler = (file, index) => {
@@ -173,14 +178,15 @@ export default function NewProductForm({
     }
   }
   async function skuChangeHandler(e) {
-    const slug = e.target.value;
-    if (slug.length < 3) {
+    const product_sku = e.target.value;
+    setSku(product_sku.toUpperCase().replace(" ", "_"));
+    if (product_sku.length < 3) {
       dispatch({
         type: "SKU",
         payload: "SKU must be at least 3 characters",
       });
     } else {
-      const productStatus = await checkIfProductExists({ sku: slug });
+      const productStatus = await checkIfProductExists({ sku: product_sku });
       if (productStatus.ack && productStatus.exists) {
         dispatch({ type: "SKU", payload: "SKU key already exists" });
       } else {
@@ -208,10 +214,20 @@ export default function NewProductForm({
       try {
         setLoading(true);
         const response = await handleSubmit(formData);
-        setLoading(false);
+        if (response) {
+          router.push("/admin/products");
+        } else {
+          setLoading(false);
+          setResponseError(
+            "Server Error, Couldnot save the product. Try refreshing the page"
+          );
+        }
       } catch (error) {
-        g;
         setLoading(false);
+        setResponseError(
+          "Server Error, Couldnot save the product. Try refreshing the page"
+        );
+        setSku("");
       }
     } else {
       for (const key in errors) {
@@ -224,314 +240,333 @@ export default function NewProductForm({
   if (loading) return <Spinner />;
 
   return (
-    <form
-      className={styles.wrapper}
-      onSubmit={handleFormSubmit}
-      // action={handleSubmit}
-      noValidate
-      encType="multipart/form-data"
-    >
-      <Card className={`${styles.general} ${styles.card}`}>
-        <span className={styles.cardTitle}>General</span>
-        <Fragment key="name">
-          <label htmlFor="new-product-name" className={formStyles.label}>
-            Name
-          </label>
-          <input
-            id="new-product-name"
-            className={formStyles.input}
-            type="text"
-            name="name"
-            placeholder="Name"
-            defaultValue={product ? product.name : ""}
-            onChange={(e) =>
-              dispatch({ type: "NAME", payload: e.target.value })
-            }
-          />
-          <InputError errors={errors} name="name" />
-        </Fragment>
-
-        <Fragment key="sku">
-          <label
-            htmlFor="new-product-sku"
-            className={`${formStyles.label} ${styles.price}`}
-          >
-            SKU
-          </label>
-          <input
-            id="new-product-sku"
-            className={`${formStyles.input} ${styles.sku}`}
-            type="text"
-            name="sku"
-            placeholder="SKU"
-            disabled={Boolean(product)}
-            defaultValue={product ? product.sku : ""}
-            onChange={skuChangeHandler}
-          />
-          <InputError errors={errors} name="sku" />
-        </Fragment>
-
-        <Fragment key="price">
-          <label
-            htmlFor="new-product-price"
-            className={`${formStyles.label} ${styles.price}`}
-          >
-            Price (Rs)
-          </label>
-          <input
-            id="new-product-price"
-            className={`${formStyles.input} ${styles.price}`}
-            type="number"
-            name="price"
-            placeholder="Price"
-            step={0.01}
-            min={0}
-            defaultValue={product ? product.price : ""}
-            onChange={(e) =>
-              dispatch({ type: "PRICE", payload: e.target.value })
-            }
-          />
-          <InputError errors={errors} name="price" />
-        </Fragment>
-
-        <Fragment>
-          <label htmlFor="new-product-category" className={formStyles.label}>
-            Category
-          </label>
-          <select
-            id="new-product-category"
-            className={formStyles.select}
-            name="category"
-            defaultValue={product ? product.category._id : "none"}
-            onChange={(e) =>
-              dispatch({ type: "CATEGORY", payload: e.target.value })
-            }
-          >
-            <option value="none">None</option>
-            {categories.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          <InputError errors={errors} name="category" />
-        </Fragment>
-
-        <Fragment>
-          <label htmlFor="new-product-description" className={formStyles.label}>
-            Description
-          </label>
-          <InputError errors={errors} name="description" />
-          <textarea
-            name="description"
-            id="new-product-description"
-            className={formStyles.textarea}
-            placeholder="Description"
-            defaultValue={product ? product.description : ""}
-            onChange={(e) =>
-              dispatch({ type: "DESCRIPTION", payload: e.target.value })
-            }
-          />
-        </Fragment>
-      </Card>
-
-      <Card className={`${styles.media} ${styles.card}`}>
-        <span className={styles.cardTitle}>
-          Media
-          <InputError errors={errors} name="image" />
-        </span>
-        {images.map((_, index) => (
-          <DND
-            key={index}
-            className={styles.imagePicker}
-            defaultimage={product?.images[index]}
-            onUpload={(file) => imageChangeHandler(file, index)}
-          />
-        ))}
-      </Card>
-
-      <Card className={`${styles.seo} ${styles.card}`}>
-        <span className={styles.cardTitle}>Search Engine Optimization</span>
-        <Fragment>
-          <label htmlFor="new-product-url-key" className={formStyles.label}>
-            Url key
-          </label>
-          <input
-            id="new-product-url-key"
-            className={formStyles.input}
-            type="text"
-            name="url_key"
-            placeholder="products/<your-key>"
-            defaultValue={product ? product.url_key : ""}
-            onChange={urlKeyChangeHandler}
-          />
-          <InputError errors={errors} name="url-key" />
-        </Fragment>
-
-        <Fragment>
-          <label htmlFor="new-product-meta-title" className={formStyles.label}>
-            Meta Title
-          </label>
-          <input
-            id="new-product-meta-title"
-            className={formStyles.input}
-            type="text"
-            name="meta_title"
-            placeholder="Title"
-            defaultValue={product ? product.meta_title : ""}
-            onChange={(e) =>
-              dispatch({ type: "META-TITLE", payload: e.target.value })
-            }
-          />
-          <InputError errors={errors} name="meta-title" />
-        </Fragment>
-
-        <Fragment>
-          <label
-            htmlFor="new-product-meta-keywords"
-            className={formStyles.label}
-          >
-            Meta Keywords
-          </label>
-          <input
-            id="new-product-meta-keywords"
-            className={formStyles.input}
-            type="text"
-            name="meta_keywords"
-            placeholder="Keywords"
-            defaultValue={product ? product.meta_keywords : ""}
-            onChange={(e) =>
-              dispatch({ type: "META-KEYWORDS", payload: e.target.value })
-            }
-          />
-          <InputError errors={errors} name="meta-keywords" />
-        </Fragment>
-
-        <Fragment>
-          <label
-            htmlFor="new-product-meta-description"
-            className={formStyles.label}
-          >
-            Meta Description
-          </label>
-          <textarea
-            id="new-product-meta-description"
-            className={formStyles.textarea}
-            type="text"
-            name="meta_description"
-            placeholder="Description"
-            defaultValue={product ? product.meta_description : ""}
-            onChange={(e) =>
-              dispatch({ type: "META-DESCRIPTION", payload: e.target.value })
-            }
-          />
-          <InputError errors={errors} name="meta-description" />
-        </Fragment>
-      </Card>
-
-      <Card className={`${styles.productStatus} ${styles.card}`}>
-        <span className={styles.cardTitle}>Product Status</span>
-        <label className={formStyles.label}>Status</label>
-        <RadioButton
-          name="status"
-          value="disabled"
-          className={styles.radio}
-          labelclassname={styles.radioText}
-          defaultChecked
-        >
-          Disabled
-        </RadioButton>
-        <RadioButton
-          name="status"
-          value="enabled"
-          className={styles.radio}
-          labelclassname={styles.radioText}
-          defaultChecked={!product || product.status === "enabled"}
-        >
-          Enabled
-        </RadioButton>
-        <hr />
-
-        <label className={formStyles.label}>Visibility</label>
-        <RadioButton
-          defaultChecked
-          name="visibility"
-          value="not-visible"
-          className={styles.radio}
-          labelclassname={styles.radioText}
-        >
-          Not visible
-        </RadioButton>
-        <RadioButton
-          name="visibility"
-          value="visible"
-          className={styles.radio}
-          labelclassname={styles.radioText}
-          defaultChecked={!product || product.visibility === "visible"}
-        >
-          Visible
-        </RadioButton>
-      </Card>
-
-      <Card className={`${styles.inventory} ${styles.card}`}>
-        <span className={styles.cardTitle}>Inventory</span>
-        <label className={formStyles.label}>Stock Avaibility</label>
-        <RadioButton
-          value="no"
-          defaultChecked
-          name="stock_availability"
-          className={styles.radio}
-          labelclassname={styles.radioText}
-        >
-          No
-        </RadioButton>
-        <RadioButton
-          value="yes"
-          name="stock_availability"
-          className={styles.radio}
-          defaultChecked={!product || product.stock_availability === "yes"}
-          labelclassname={styles.radioText}
-        >
-          Yes
-        </RadioButton>
-        <hr />
-        <label htmlFor="new-product-quantity" className={formStyles.label}>
-          Quantity
-        </label>
-        <input
-          id="new-product-quantity"
-          className={formStyles.input}
-          type="number"
-          name="quantity"
-          placeholder="Quantity"
-          defaultValue={product ? product.quantity : ""}
-          onChange={(e) => dispatch({ type: "QTY", payload: e.target.value })}
+    <Fragment>
+      {responseError && (
+        <Modal
+          btn1Text="Okay"
+          btn2Text="Cancel"
+          onOk={() => setResponseError("")}
+          onCancel={setResponseError.bind(null, "")}
+          title="Some Error Occured!!"
+          paragraph={responseError}
         />
-        <InputError errors={errors} name="qty" />
-      </Card>
-
-      <Card className={`${styles.variants} ${styles.card}`}>Variants</Card>
-
-      <Card className={`${styles.attributes} ${styles.card}`}>
-        <span className={styles.cardTitle}>Attributes</span>
-        <Attributes
-          attributeSet={attributeSet}
-          defaultSet={product ? product.attributeSet : ""}
-          attributes={product ? product.attributes : null}
-        />
-      </Card>
-
-      <Card
-        style={{ backgroundColor: "transparent" }}
-        className={`${styles.footer} ${styles.card}`}
+      )}
+      <form
+        className={styles.wrapper}
+        onSubmit={handleFormSubmit}
+        // action={handleSubmit}
+        noValidate
+        encType="multipart/form-data"
       >
-        <button className={styles.saveButton} type="submit">
-          Save
-        </button>
-        <button className={styles.cancelButton} type="reset">
-          Reset
-        </button>
-      </Card>
-    </form>
+        <Card className={`${styles.general} ${styles.card}`}>
+          <span className={styles.cardTitle}>General</span>
+          <Fragment key="name">
+            <label htmlFor="new-product-name" className={formStyles.label}>
+              Name
+            </label>
+            <input
+              id="new-product-name"
+              className={formStyles.input}
+              type="text"
+              name="name"
+              placeholder="Name"
+              defaultValue={product ? product.name : ""}
+              onChange={(e) =>
+                dispatch({ type: "NAME", payload: e.target.value })
+              }
+            />
+            <InputError errors={errors} name="name" />
+          </Fragment>
+
+          <Fragment key="sku">
+            <label
+              htmlFor="new-product-sku"
+              className={`${formStyles.label} ${styles.price}`}
+            >
+              SKU
+            </label>
+            <input
+              id="new-product-sku"
+              className={`${formStyles.input} ${styles.sku}`}
+              type="text"
+              name="sku"
+              placeholder="SKU"
+              disabled={Boolean(product)}
+              value={sku}
+              onChange={skuChangeHandler}
+            />
+            <InputError errors={errors} name="sku" />
+          </Fragment>
+
+          <Fragment key="price">
+            <label
+              htmlFor="new-product-price"
+              className={`${formStyles.label} ${styles.price}`}
+            >
+              Price (Rs)
+            </label>
+            <input
+              id="new-product-price"
+              className={`${formStyles.input} ${styles.price}`}
+              type="number"
+              name="price"
+              placeholder="Price"
+              step={0.01}
+              min={0}
+              defaultValue={product ? product.price : ""}
+              onChange={(e) =>
+                dispatch({ type: "PRICE", payload: e.target.value })
+              }
+            />
+            <InputError errors={errors} name="price" />
+          </Fragment>
+
+          <Fragment>
+            <label htmlFor="new-product-category" className={formStyles.label}>
+              Category
+            </label>
+            <select
+              id="new-product-category"
+              className={formStyles.select}
+              name="category"
+              defaultValue={product ? product.category._id : "none"}
+              onChange={(e) =>
+                dispatch({ type: "CATEGORY", payload: e.target.value })
+              }
+            >
+              <option value="none">None</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            <InputError errors={errors} name="category" />
+          </Fragment>
+
+          <Fragment>
+            <label
+              htmlFor="new-product-description"
+              className={formStyles.label}
+            >
+              Description
+            </label>
+            <InputError errors={errors} name="description" />
+            <textarea
+              name="description"
+              id="new-product-description"
+              className={formStyles.textarea}
+              placeholder="Description"
+              defaultValue={product ? product.description : ""}
+              onChange={(e) =>
+                dispatch({ type: "DESCRIPTION", payload: e.target.value })
+              }
+            />
+          </Fragment>
+        </Card>
+
+        <Card className={`${styles.media} ${styles.card}`}>
+          <span className={styles.cardTitle}>
+            Media
+            <InputError errors={errors} name="image" />
+          </span>
+          {images.map((_, index) => (
+            <DND
+              key={index}
+              className={styles.imagePicker}
+              defaultimage={product?.images[index]}
+              onUpload={(file) => imageChangeHandler(file, index)}
+            />
+          ))}
+        </Card>
+
+        <Card className={`${styles.seo} ${styles.card}`}>
+          <span className={styles.cardTitle}>Search Engine Optimization</span>
+          <Fragment>
+            <label htmlFor="new-product-url-key" className={formStyles.label}>
+              Url key
+            </label>
+            <input
+              id="new-product-url-key"
+              className={formStyles.input}
+              type="text"
+              name="url_key"
+              placeholder="products/<your-key>"
+              defaultValue={product ? product.url_key : ""}
+              disabled={Boolean(product)}
+              onChange={urlKeyChangeHandler}
+            />
+            <InputError errors={errors} name="url-key" />
+          </Fragment>
+
+          <Fragment>
+            <label
+              htmlFor="new-product-meta-title"
+              className={formStyles.label}
+            >
+              Meta Title
+            </label>
+            <input
+              id="new-product-meta-title"
+              className={formStyles.input}
+              type="text"
+              name="meta_title"
+              placeholder="Title"
+              defaultValue={product ? product.meta_title : ""}
+              onChange={(e) =>
+                dispatch({ type: "META-TITLE", payload: e.target.value })
+              }
+            />
+            <InputError errors={errors} name="meta-title" />
+          </Fragment>
+
+          <Fragment>
+            <label
+              htmlFor="new-product-meta-keywords"
+              className={formStyles.label}
+            >
+              Meta Keywords
+            </label>
+            <input
+              id="new-product-meta-keywords"
+              className={formStyles.input}
+              type="text"
+              name="meta_keywords"
+              placeholder="Keywords"
+              defaultValue={product ? product.meta_keywords : ""}
+              onChange={(e) =>
+                dispatch({ type: "META-KEYWORDS", payload: e.target.value })
+              }
+            />
+            <InputError errors={errors} name="meta-keywords" />
+          </Fragment>
+
+          <Fragment>
+            <label
+              htmlFor="new-product-meta-description"
+              className={formStyles.label}
+            >
+              Meta Description
+            </label>
+            <textarea
+              id="new-product-meta-description"
+              className={formStyles.textarea}
+              type="text"
+              name="meta_description"
+              placeholder="Description"
+              defaultValue={product ? product.meta_description : ""}
+              onChange={(e) =>
+                dispatch({ type: "META-DESCRIPTION", payload: e.target.value })
+              }
+            />
+            <InputError errors={errors} name="meta-description" />
+          </Fragment>
+        </Card>
+
+        <Card className={`${styles.productStatus} ${styles.card}`}>
+          <span className={styles.cardTitle}>Product Status</span>
+          <label className={formStyles.label}>Status</label>
+          <RadioButton
+            name="status"
+            value="disabled"
+            className={styles.radio}
+            labelclassname={styles.radioText}
+            defaultChecked
+          >
+            Disabled
+          </RadioButton>
+          <RadioButton
+            name="status"
+            value="enabled"
+            className={styles.radio}
+            labelclassname={styles.radioText}
+            defaultChecked={!product || product.status === "enabled"}
+          >
+            Enabled
+          </RadioButton>
+          <hr />
+
+          <label className={formStyles.label}>Visibility</label>
+          <RadioButton
+            defaultChecked
+            name="visibility"
+            value="not-visible"
+            className={styles.radio}
+            labelclassname={styles.radioText}
+          >
+            Not visible
+          </RadioButton>
+          <RadioButton
+            name="visibility"
+            value="visible"
+            className={styles.radio}
+            labelclassname={styles.radioText}
+            defaultChecked={!product || product.visibility === "visible"}
+          >
+            Visible
+          </RadioButton>
+        </Card>
+
+        <Card className={`${styles.inventory} ${styles.card}`}>
+          <span className={styles.cardTitle}>Inventory</span>
+          <label className={formStyles.label}>Stock Avaibility</label>
+          <RadioButton
+            value="no"
+            defaultChecked
+            name="stock_availability"
+            className={styles.radio}
+            labelclassname={styles.radioText}
+          >
+            No
+          </RadioButton>
+          <RadioButton
+            value="yes"
+            name="stock_availability"
+            className={styles.radio}
+            defaultChecked={!product || product.stock_availability === "yes"}
+            labelclassname={styles.radioText}
+          >
+            Yes
+          </RadioButton>
+          <hr />
+          <label htmlFor="new-product-quantity" className={formStyles.label}>
+            Quantity
+          </label>
+          <input
+            id="new-product-quantity"
+            className={formStyles.input}
+            type="number"
+            name="quantity"
+            placeholder="Quantity"
+            defaultValue={product ? product.quantity : ""}
+            onChange={(e) => dispatch({ type: "QTY", payload: e.target.value })}
+          />
+          <InputError errors={errors} name="qty" />
+        </Card>
+
+        <Card className={`${styles.variants} ${styles.card}`}>Variants</Card>
+
+        <Card className={`${styles.attributes} ${styles.card}`}>
+          <span className={styles.cardTitle}>Attributes</span>
+          <Attributes
+            attributeSets={attributeSets}
+            defaultSet={product ? product.attributeSet : ""}
+            attributes={product ? product.attributes : null}
+          />
+        </Card>
+
+        <Card
+          style={{ backgroundColor: "transparent" }}
+          className={`${styles.footer} ${styles.card}`}
+        >
+          <button className={styles.saveButton} type="submit">
+            Save
+          </button>
+          <button className={styles.cancelButton} type="reset">
+            Reset
+          </button>
+        </Card>
+      </form>
+    </Fragment>
   );
 }

@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import Category from "./Category";
+import AttributeSet from "./AttributeSet";
 
 const SchemaTypes = Schema.Types;
 
@@ -70,8 +71,9 @@ const productSchema = new Schema(
       default: 0,
     },
     attributeSet: {
-      type: String,
-      required: true,
+      type: SchemaTypes.ObjectId,
+      required: false,
+      ref: AttributeSet,
     },
     attributes: [
       {

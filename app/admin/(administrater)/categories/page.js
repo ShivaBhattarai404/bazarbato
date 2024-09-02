@@ -7,6 +7,8 @@ import styles from "./page.module.css";
 
 import CategoryTable from "./table";
 import { deepCopy } from "@/helpers/utils";
+import { deleteFile } from "@/helpers/crud";
+import Product from "@/models/Product";
 
 async function fetchCategories() {
   await dbConnect();
@@ -15,6 +17,48 @@ async function fetchCategories() {
     return deepCopy(categories);
   } catch {
     return [];
+  }
+}
+
+// function to delete categories
+async function deleteCategories(categoryIDs) {
+  "use server";
+  try {
+    await dbConnect();
+  } catch (error) {
+    return { error: "Failed to connect to database" };
+  }
+  try {
+    const categoriesAssociatedWithChildren = await Category.countDocuments({
+      parent: { $in: categoryIDs },
+    });
+    if (categoriesAssociatedWithChildren > 0)
+      return { error: "Cannot delete categories which has children" };
+
+    const categoriesAssociatedWithProducts = await Product.countDocuments({
+      category: { $in: categoryIDs },
+    });
+    if (categoriesAssociatedWithProducts > 0)
+      return { error: "Cannot delete categories which has products" };
+
+    const categories = await Category.find({
+      _id: { $in: categoryIDs },
+    }).select("banner");
+
+    const deleteBannerPromises = categories.map((category) =>
+      deleteFile(category.banner)
+    );
+    const categoryDeletePromise = Category.deleteMany({
+      _id: { $in: categoryIDs },
+    });
+    try {
+      await Promise.all([...deleteBannerPromises, categoryDeletePromise]);
+    } catch (error) {
+      return { error: "Server Error, Failed to delete category banners" };
+    }
+    return { error: null };
+  } catch {
+    return { error: "Some error occured. Try refreshing the page" };
   }
 }
 
@@ -28,7 +72,10 @@ export default async function ProductsPage() {
           New Category
         </Link>
       </div>
-      <CategoryTable categories={categories} />
+      <CategoryTable
+        categories={categories}
+        deleteCategories={deleteCategories}
+      />
     </div>
   );
 }

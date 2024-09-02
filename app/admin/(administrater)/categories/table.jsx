@@ -9,10 +9,15 @@ import styles from "./page.module.css";
 import Card from "@/components/Card/Card";
 import CheckBox from "@/components/CheckBox/CheckBox";
 import Modal from "@/components/_admin/Modal/Modal";
+import Spinner from "@/components/_admin/Spinner/Spinner";
+import { useRouter } from "next/navigation";
 
-export default function CategoryTable({ categories }) {
+export default function CategoryTable({ categories, deleteCategories }) {
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const categorySelectHandler = (e) => {
     const { value } = e.target;
@@ -23,21 +28,60 @@ export default function CategoryTable({ categories }) {
     }
   };
 
+  // function to delete the selected categories
+  const categoryDeleteHandler = async (categoryIDs) => {
+    try {
+      setModal(false);
+      setSelectedCategories([]);
+      setLoading(true);
+      const response = await deleteCategories(categoryIDs);
+      if (response.error) {
+        setLoading(false);
+        setError(response.error);
+      } else {
+        setLoading(false);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Some error occured. Try refreshing the page");
+    }
+  };
+  const btn1Text = error ? "Ok" : "Delete";
+  const bgColor2 = error ? "#2c6ecb" : "#d72c0d";
   const word = selectedCategories.length > 1 ? "categories" : "category";
   const grammar = selectedCategories.length > 1 ? "these" : "this";
 
+  const title = error
+    ? "Error Occured!!"
+    : `Delete ${selectedCategories.length} ${word}`;
+  const paragraph =
+    error || `Are you sure you want to delete ${grammar} ${word}?`;
+  const onOk = () => {
+    if (error) {
+      setError(null);
+      setModal(false);
+    } else {
+      categoryDeleteHandler(selectedCategories);
+    }
+  };
+
+  if (loading) return <Spinner />;
+
   return (
     <Fragment>
-      {modal && (
+      {(error || modal) && (
         <Modal
-          btn1Text="Delete"
+          btn1Text={btn1Text}
           btn2Text="Cancel"
-          bgColor2="#d72c0d"
+          bgColor2={bgColor2}
+          onOk={onOk}
           onCancel={() => setModal(false)}
-          title={`Delete ${selectedCategories.length} ${word}`}
-          paragraph={`Are you sure you want to delete ${grammar} ${word}?`}
+          title={title}
+          paragraph={paragraph}
         />
       )}
+
       <Card className={styles.card}>
         <input
           type="text"
@@ -89,11 +133,16 @@ export default function CategoryTable({ categories }) {
                   <CheckBox
                     id={`categories-${category._id}`}
                     value={category._id}
-                    onClick={categorySelectHandler}
+                    checked={selectedCategories.includes(category._id)}
+                    onChange={categorySelectHandler}
                   />
                 </td>
                 <td className={styles.name}>
-                  <Link href={`/admin/new-category?category=${category.url_key}`}>{category.name}</Link>
+                  <Link
+                    href={`/admin/new-category?category=${category.url_key}`}
+                  >
+                    {category.name}
+                  </Link>
                 </td>
                 <td className={styles.no_of_products}>
                   {category?.products?.length || 0}

@@ -85,7 +85,7 @@ async function formSubmitHandler(formData) {
   const description = formData.get("description");
   const images = formData.getAll("images");
   const key = formData.get("url_key");
-  const url_key = key ? key.trim().replace(" ", "_") : "";
+  const url_key = key ? key.trim().replace(" ", "-") : "";
   const meta_title = formData.get("meta_title");
   const meta_keywords = formData.get("meta_keywords");
   const meta_description = formData.get("meta_description");
@@ -110,9 +110,8 @@ async function formSubmitHandler(formData) {
       : imageUploadHandler(images, url_key);
 
     // fetching schema of attributes of the selected attribute set from database
-    let attributeSetSchema = AttributeSet.findOne({
-      name: attributeSet,
-    }).populate("attributes");
+    let attributeSetSchema =
+      AttributeSet.findById(attributeSet).populate("attributes");
 
     // combining both promises to get the resolved values and reducing the time taken
     [imageNames, attributeSetSchema] = await Promise.all([
@@ -168,22 +167,22 @@ async function formSubmitHandler(formData) {
         attributes,
       });
     }
-
     // saving the product to the database
     await product.save();
+    return true;
   } catch (error) {
-    console.log("error occured",error);
-    return { error: "Error saving product" };
+    console.log(error);
+    return false;
   }
-  return redirect("/admin/products");
 }
 
 // function to fetch attributes
 async function fetchAttributes() {
   await dbConnect();
-  const attributes = await AttributeSet.find().populate("attributes");
-  const formattedAttributes = attributes.map((attributeSet) => {
+  const attributeSets = await AttributeSet.find().populate("attributes");
+  const formattedAttributes = attributeSets.map((attributeSet) => {
     return {
+      _id: attributeSet._id.toString(),
       name: attributeSet.name,
       attributes: attributeSet.attributes.map((attribute) => {
         const modifiedAttribute = {
@@ -230,7 +229,7 @@ async function getProduct(url_key) {
 }
 
 export default async function NewProduct({ searchParams: { product: slug } }) {
-  const [attributeSet, categories, product] = await Promise.all([
+  const [attributeSets, categories, product] = await Promise.all([
     fetchAttributes(),
     getCategories(),
     getProduct(slug),
@@ -241,7 +240,7 @@ export default async function NewProduct({ searchParams: { product: slug } }) {
         Create A New Product
       </AdminPageHeading>
       <NewProductForm
-        attributeSet={attributeSet}
+        attributeSets={attributeSets}
         handleSubmit={formSubmitHandler}
         checkIfProductExists={checkIfProductExists}
         product={deepCopy(product)}

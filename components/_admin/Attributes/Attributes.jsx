@@ -6,22 +6,26 @@ import styles from "./Attributes.module.css";
 
 // default set
 const DEFAULT_SET = {
+  _id: "000000000000000000000000",
   name: "none",
   type: "none",
   attributes: [],
 };
 
-export default function Attributes({ attributeSet, defaultSet, attributes }) {
+export default function Attributes({ attributeSets, defaultSet, attributes }) {
+  // defaultSet means the that the product currently has
+  // currentSet is already used thats why I had to name it defaultSet
+
   // function to get attributes of a set
-  function getAttributesOfSet(setName) {
-    const set = attributeSet.find((item) => item.name === setName);
+  function getAttributesOfSet(setID) {
+    const set = attributeSets.find((item) => item._id === setID);
     return set ? set : DEFAULT_SET;
   }
 
   // state to store current set
   const [currentSet, setCurrentSet] = useState(DEFAULT_SET);
 
-  // set current set on initial render and value of each attribute
+  // set one current set out of all attribute sets on initial render and value of each attribute
   useEffect(() => {
     const set = getAttributesOfSet(defaultSet);
     if (attributes && attributes.length) {
@@ -50,12 +54,12 @@ export default function Attributes({ attributeSet, defaultSet, attributes }) {
         id="new-product-attribute-set"
         className={formStyles.select}
         name="attribute_set"
-        value={currentSet.name}
+        value={currentSet._id}
         onChange={selectChangeHandler}
       >
-        <option value="none">None</option>
-        {attributeSet.map((attributeSet) => (
-          <option key={attributeSet.name} value={attributeSet.name}>
+        <option value={DEFAULT_SET._id}>None</option>
+        {attributeSets.map((attributeSet) => (
+          <option key={attributeSet.name} value={attributeSet._id}>
             {attributeSet.name}
           </option>
         ))}
