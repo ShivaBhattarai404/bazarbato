@@ -90,7 +90,8 @@ async function handleSubmit(formData) {
           ),
           deleteFile(category.banner),
         ]);
-        bannerUrl = response[0].url;
+        const responseOfBannerUpload = response[0];
+        bannerUrl = responseOfBannerUpload.url;
       } catch (error) {
         return { error: "Error while uploading banner" };
       }

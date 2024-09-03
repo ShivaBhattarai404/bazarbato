@@ -13,6 +13,7 @@
     "@canvasjs/react-charts": "^1.0.2",
     "@reduxjs/toolkit": "^2.2.6",
     "@vercel/blob": "^0.23.4",
+    "aws-sdk": "^2.1687.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
