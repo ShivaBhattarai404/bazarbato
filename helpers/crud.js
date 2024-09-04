@@ -12,7 +12,13 @@ import AttributeSet from "@/models/AttributeSet";
 // upload images to digital ocean space object storage using aws s3 bucket
 export async function uploadFile(file, filename) {
   const arrayBuffer = await file.arrayBuffer();
-  console.log("From crud.js [line:14]", file, "\nBuffer is ", arrayBuffer);
+
+  // add timestamp to filename to make it unique
+  const filenameArray = filename.split("/");
+  const lastItem = filenameArray.pop();
+  filenameArray.push(Date.now() + "-" + lastItem);
+  const newFilename = filenameArray.join("/");
+
   try {
     const s3 = new AWS.S3({
       endpoint: process.env.DO_SPACES_ENDPOINT,
@@ -21,7 +27,7 @@ export async function uploadFile(file, filename) {
     });
     const params = {
       Bucket: process.env.DO_SPACES_BUCKET,
-      Key: "premps/" + filename,
+      Key: "premps/" + newFilename,
       Body: Buffer.from(arrayBuffer),
       ACL: "public-read",
     };
@@ -34,7 +40,7 @@ export async function uploadFile(file, filename) {
 }
 
 // delete images from digital ocean space object storage
-export async function deleteFile(filename) {
+export async function deleteFile(filename="") {
   try {
     const s3 = new AWS.S3({
       endpoint: process.env.DO_SPACES_ENDPOINT,
@@ -43,11 +49,11 @@ export async function deleteFile(filename) {
     });
     const params = {
       Bucket: process.env.DO_SPACES_BUCKET,
-      Key: filename,
+      Key: filename.replace(process.env.DO_SPACES_URL, ""),
     };
     const response = await s3.deleteObject(params).promise();
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw new Error("Error while deleting file ->" + filename);
   }
 }
