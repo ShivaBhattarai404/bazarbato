@@ -12,8 +12,8 @@ VOLUME [ "/app/.next/" ]
 
 EXPOSE 3000
 
-COPY . .
-
 RUN npm run build
+
+COPY . .
 
 CMD ["npm", "start"]
