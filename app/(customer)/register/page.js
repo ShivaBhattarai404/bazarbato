@@ -5,10 +5,10 @@ export const metadata = {
   description: "Register",
 };
 
-async function handleSubmit(formData) {
+async function registerUser(formData) {
   "use server";
-  console.log("Registering customer", formData);
+  const fullName = formData.get("name");
 }
 export default function Register() {
-  return <RegisterForm handleSubmit={handleSubmit} />;
+  return <RegisterForm handleSubmit={registerUser} />;
 }

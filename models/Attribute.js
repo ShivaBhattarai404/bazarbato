@@ -17,10 +17,6 @@ const AttributeSchema = new Schema({
     type: [String],
     required: false,
   },
-  // isRequired: {
-  //   type: Boolean,
-  //   default: false,
-  // },
   showToCustomer: {
     type: Boolean,
     default: false,

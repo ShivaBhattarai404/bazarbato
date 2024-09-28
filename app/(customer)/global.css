@@ -14,6 +14,7 @@
   --eerie-black: hsl(0, 0%, 13%);
   --info: hsl(215, 64%, 48%);
   --salmon-pink: hsl(353, 100%, 78%);
+  --salmon-pink-dark: hsl(353, 100%, 70%);
   --sandy-brown: hsl(29, 90%, 65%);
   --sandy-brown-light: hsl(37, 100%, 94%);
   --sandy-brown-dark: hsl(29, 100%, 57%);
@@ -118,6 +119,9 @@ ion-icon,
 button,
 a {
   display: block;
+}
+a:visited {
+  color: inherit;
 }
 hr {
   border: 1px solid var(--cultured);

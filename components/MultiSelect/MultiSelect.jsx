@@ -6,26 +6,51 @@ import { FaTimes } from "react-icons/fa";
 
 import styles from "./MultiSelect.module.css";
 
+const filterCapsules = (capsules = [], options = []) => {
+  const returnedArray = capsules
+    .map((capsule) => {
+      return options.find((option) => option.code === capsule.code);
+    })
+    .filter((capsule) => capsule);
+
+  console.log(options);
+  return returnedArray;
+};
+
+// MultiSelect component
 export default function MultiSelect({
   label,
   className,
   CapsuleComponent,
-  capsules: propsCapsules,
+  OptionComponent,
+  capsules = [],
   options: optionFromProps,
   name,
   ...rest
 }) {
   const [dropDownVisisbility, setDropDownVisisbility] = useState(false);
-  const [capsules, setCapsules] = useState(propsCapsules || []);
-  const [propsOptions, setPropsOptions] = useState(optionFromProps || []);
+  const [currentCapsules, setCurrentCapsules] = useState(
+    filterCapsules(capsules, optionFromProps) || []
+  );
   const [options, setOptions] = useState(optionFromProps || []);
+  const [currentOptions, setCurrentOptions] = useState(optionFromProps || []);
 
   useEffect(() => {
-    setOptions(propsOptions);
-  }, [propsOptions]);
+    const formattedCapusles = capsules
+      .map((capsule) => {
+        return options.find((option) => option.code === capsule);
+      })
+      .filter((capsule) => capsule);
+    setCurrentCapsules(formattedCapusles);
+
+    const formattedOptions = options.filter(
+      (option) => !capsules.includes(option.code)
+    );
+    setCurrentOptions(formattedOptions);
+  }, [options, capsules]);
 
   // function to search through options
-  const searchOption = (key, options) => {
+  const searchOptions = (key, options) => {
     return options.filter((option) =>
       option.name.toLowerCase().includes(key.toLowerCase())
     );
@@ -35,23 +60,23 @@ export default function MultiSelect({
   // this function will execute when user starts to type something in the input field
   const inputChangeHandler = (e) => {
     const value = e.target.value;
-    setOptions(searchOption(value, propsOptions));
+    setCurrentOptions(searchOptions(value, options));
   };
 
   // this function will execute when user clicks on an option
   const optionClickHandler = (option) => {
-    setCapsules((prevCapsules) => [...prevCapsules, option]);
-    setPropsOptions((prevOptions) => [
+    setCurrentCapsules((prevCapsules) => [...prevCapsules, option]);
+    setOptions((prevOptions) => [
       ...prevOptions.filter((prevOption) => prevOption.code !== option.code),
     ]);
   };
 
   // this function will execute when user clicks on a capsule
   const removeCapsule = (capsule) => {
-    setCapsules((prevCapsules) =>
+    setCurrentCapsules((prevCapsules) =>
       prevCapsules.filter((prevCapsule) => prevCapsule.code !== capsule.code)
     );
-    setPropsOptions((prevOptions) => [...prevOptions, capsule]);
+    setOptions((prevOptions) => [...prevOptions, capsule]);
   };
 
   return (
@@ -62,15 +87,14 @@ export default function MultiSelect({
         </label>
       )}
       {CapsuleComponent ? (
-        <CapsuleComponent capsules={capsules} removeCapsule={removeCapsule} />
+        <CapsuleComponent
+          capsules={currentCapsules}
+          removeCapsule={removeCapsule}
+        />
       ) : (
-        capsules.map((capsule, i) => (
+        currentCapsules.map((capsule, i) => (
           <Fragment key={i}>
-            <input
-              type="hidden"
-              name={name || "capsules"}
-              value={capsule._id}
-            />
+            <input name={name || "capsules"} value={capsule.code} hidden />
             <button
               className={styles.capsule}
               type="button"
@@ -102,17 +126,19 @@ export default function MultiSelect({
         </label>
         {dropDownVisisbility && (
           <ul className={styles.options}>
-            {options &&
-              options.length > 0 &&
-              options.map((option, i) => (
-                <li
-                  key={i}
-                  className={styles.option}
-                  onClick={optionClickHandler.bind(null, option)}
-                >
-                  {option.name}
-                </li>
-              ))}
+            {currentOptions.map?.((option, i) => (
+              <li
+                key={i}
+                className={styles.option}
+                onClick={optionClickHandler.bind(null, option)}
+              >
+                {OptionComponent ? (
+                  <OptionComponent option={option} />
+                ) : (
+                  option.name
+                )}
+              </li>
+            ))}
           </ul>
         )}
       </div>

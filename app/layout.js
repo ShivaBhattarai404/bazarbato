@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div id="overlay" />
+        <div style={{ position: "relative" }} id="overlay" />
         {children}
       </body>
     </html>

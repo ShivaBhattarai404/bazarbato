@@ -1,24 +1,31 @@
-import { Fragment } from "react";
+// helper functions
+import { getUser } from "@/helpers/crud";
 
-import Header from "@/components/_customer/Header/Header";
+// custom components
 import Nav from "@/components/_customer/Nav/Nav";
-
-import "./global.css";
 import Footer from "@/components/_customer/Footer/Footer";
-import MobileNav from "@/components/_customer/MobileNav/MobileNav";
+import Header from "@/components/_customer/Header/Header";
+
+// styles
+import "./global.css";
+
+// redux provider component
+// directly Provider is not used here
+// if Provider is used here, we had to make layout client component which is not possible
+import UserContextProvider from "../store/UserContextProvider";
 
 export const metadata = {
   title: "Home | Premps",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const user = await getUser();
   return (
-    <Fragment>
+    <UserContextProvider user={user}>
       <Header />
       <Nav />
-      <MobileNav />
       <main>{children}</main>
       <Footer />
-    </Fragment>
+    </UserContextProvider>
   );
 }

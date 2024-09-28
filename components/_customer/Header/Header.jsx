@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 import {
   IoPersonOutline,
@@ -14,6 +16,10 @@ import logoIcon from "@/public/images/icon.png";
 import styles from "./Header.module.css";
 
 export default function Header() {
+  const itemsCountOnBag = useSelector((state) => state.bag.totalQuantity);
+  const user = useSelector((state) => state.user.user);
+  // const itemsCountOnBag = 0;
+
   return (
     <header className={styles.header}>
       <Link href="/">
@@ -31,9 +37,10 @@ export default function Header() {
           width={45}
         />
       </Link>
-      <form className={styles.search_container}>
+      <form className={styles.search_container} action="/search" method="GET">
         <input
           type="text"
+          name="query"
           placeholder="Enter your product name..."
           className={styles.search}
         />
@@ -43,15 +50,26 @@ export default function Header() {
       </form>
 
       <div className={styles.icons}>
-        <Link href="/login">
-          <IoPersonOutline className={styles.icon} />
+        <Link href={`/${user ? "me" : "login"}`}>
+          {user ? (
+            <Image
+              className={styles.avatar}
+              // src={user.avatar}
+              src="/images/testimonial-1.jpg"
+              alt="Premps"
+              width={35}
+              height={35}
+            />
+          ) : (
+            <IoPersonOutline className={styles.icon} />
+          )}
         </Link>
         <Link href="wishlist">
           <span className={styles.cart_count}>0</span>
           <IoHeartOutline className={styles.icon} />
         </Link>
         <Link href="/bag">
-          <span className={styles.cart_count}>0</span>
+          <span className={styles.cart_count}>{itemsCountOnBag}</span>
           <IoBagHandleOutline className={styles.icon} />
         </Link>
       </div>

@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import Attribute from "./Attribute";
 
-const SchemaTypes = Schema.Types;
+const { ObjectId } = Schema.Types;
 
 const attributeSetSchema = new Schema(
   {
@@ -15,8 +14,8 @@ const attributeSetSchema = new Schema(
     },
     attributes: [
       {
-        type: Schema.Types.ObjectId,
-        ref: Attribute,
+        type: ObjectId,
+        ref: "Attribute",
       },
     ],
   },

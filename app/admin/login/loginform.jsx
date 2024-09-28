@@ -8,11 +8,10 @@ import { PiWarningCircleFill } from "react-icons/pi";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginComponent(props) {
+export default function LoginComponent({ login }) {
   const INITIAL_ERROR = [];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(INITIAL_ERROR);
-  const router = useRouter();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +21,7 @@ export default function LoginComponent(props) {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const response = await props.login(email, password);
+    const response = await login(email, password);
 
     if (response && !response.ok) {
       setLoading(false);

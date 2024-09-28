@@ -7,10 +7,65 @@
   left: 50%;
   transform: translateX(-50%);
   margin: auto;
-  display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 5px 0;
   box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.25);
   z-index: 5;
+  border-radius: var(--border-radius-md) var(--border-radius-sm) 0 0;
+}
+.navItems {
+  width: 100%;
+  padding: 0.4rem 0 0.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+.navButton {
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.navButton a {
+  color: var(--erie-black);
+}
+.navButton.active,
+.navButton.active a {
+  scale: 1.05;
+  color: var(--bittersweet-dark);
+}
+.menu,
+.apps {
+  width: 18rem;
+  height: 100vh;
+  transition: 0.3s ease-in-out;
+}
+.menu {
+  width: 16rem;
+}
+.menu {
+  left: -20rem;
+}
+.menu.active {
+  left: 0;
+}
+.apps {
+  right: -20rem;
+}
+.apps.active {
+  right: 0;
+}
+.backdrop {
+  display: none;
+}
+.backdrop.active {
+  display: block;
+}
+@media (min-width: 1024px) {
+  .nav,
+  .menu,
+  .apps,
+  .backdrop {
+    display: none !important;
+  }
 }

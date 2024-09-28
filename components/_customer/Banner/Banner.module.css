@@ -52,9 +52,9 @@
   display: none;
 }
 
-.slider_btn {
+a.slider_btn {
   background: var(--salmon-pink);
-  color: var(--white);
+  color: #fff;
   width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
@@ -101,7 +101,7 @@
     font-size: var(--fs-2);
   }
 
-  .slider_btn {
+  a.slider_btn {
     padding: 7px 20px;
   }
 }
@@ -137,7 +137,7 @@
     --fs-2: 1.875rem;
   }
 
-  .slider_btn {
+  a.slider_btn {
     --fs-11: 0.75rem;
   }
 }
@@ -160,7 +160,7 @@
     --fs-7: 1.375rem;
   }
 
-  .slider_btn {
+  a.slider_btn {
     --fs-11: 0.875rem;
   }
 }

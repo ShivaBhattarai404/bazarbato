@@ -1,0 +1,34 @@
+.label {
+  margin: 0 0 0.25rem;
+  font-size: 0.875rem;
+  display: block;
+  color: hsl(0, 0%, 47%);
+}
+.quantity {
+  display: flex;
+  grid-area: quantity;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 2rem;
+  width: 5rem;
+}
+.quantity span {
+  font-size: 0.875rem;
+}
+.button svg {
+  color: hsl(0, 0%, 47%);
+  vertical-align: middle;
+  font-size: 1.1rem;
+}
+
+@media (min-width: 570px) {
+  .quantity {
+    width: 6rem;
+    height: 2.2rem;
+    padding: 0.5rem;
+    background-color: hsl(210, 40%, 96%);
+  }
+  .button svg {
+    font-size: 1.3rem;
+  }
+}

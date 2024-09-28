@@ -18,7 +18,7 @@ export async function decodeJwtToken(token) {
 }
 
 export async function verifyJwtToken(token) {
-  if(!token) return null;
+  if (!token) return null;
   try {
     return jwt.verify(token, SECRET);
   } catch (error) {

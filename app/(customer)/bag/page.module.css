@@ -72,22 +72,6 @@
 .removeButton {
   display: none;
 }
-.productQuantity {
-  display: flex;
-  grid-area: quantity;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 2rem;
-  width: 5rem;
-}
-.productQuantity span {
-  font-size: var(--fs-7);
-}
-.productQuantity button svg {
-  color: var(--sonic-silver);
-  vertical-align: middle;
-  font-size: 1.1rem;
-}
 .productPrice {
   font-size: var(--fs-7);
   color: var(--ocean-green);
@@ -102,6 +86,14 @@
   padding: 0.5rem;
   color: var(--bittersweet);
   text-align: center;
+}
+.spinner {
+  animation: spin 1s linear infinite;
+}
+.saved {
+  color: var(--ocean-green-dark);
+  font-size: var(--fs-9);
+  text-transform: capitalize;
 }
 
 /* Order summary */
@@ -143,6 +135,89 @@
   scale: 0.9;
 }
 
+/* DISCOUNT COUPON */
+.discountCoupon,
+.spinnerContainer {
+  width: 20rem;
+  display: flex;
+  gap: 0.5rem;
+  position: relative;
+  margin: 1rem 0;
+}
+.spinner {
+  margin: auto;
+}
+.couponError {
+  width: 100%;
+  color: var(--bittersweet-dark);
+  font-size: var(--fs-9);
+  font-weight: var(--weight-500);
+  margin: 1rem 0 0.25rem;
+}
+.discountCoupon input {
+  padding: 0.5rem 1rem;
+  font-size: var(--fs-8);
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-sm);
+  text-transform: uppercase;
+  width: 100%;
+}
+.discountCoupon input:focus {
+  outline: 1px solid var(--sandy-brown);
+}
+.discountCoupon input::placeholder {
+  color: var(--spanish-gray);
+  text-transform: capitalize;
+}
+.discountCoupon button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-sm);
+  background: var(--white);
+  font-size: var(--fs-8);
+  cursor: pointer;
+  transition: var(--transition-timing);
+}
+.discountCoupon button:hover {
+  background: var(--cultured);
+}
+.discountCoupon button:active {
+  scale: 0.9;
+}
+
+.couponApplied {
+  font-size: var(--fs-9);
+  font-weight: var(--weight-500);
+  margin: 1rem 0 0.25rem;
+  display: grid;
+  gap: 0 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+  width: 100%;
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+    "wallet text1 remove"
+    "wallet text2 remove";
+}
+.couponApplied .wallet {
+  color: var(--sandy-brown);
+  grid-area: wallet;
+}
+.couponApplied p:nth-of-type(1) {
+  grid-area: text1;
+  font-size: var(--fs-8);
+}
+.couponApplied p:nth-of-type(2) {
+  grid-area: text2;
+  font-size: var(--fs-9);
+  color: var(--spanish-gray);
+}
+.couponApplied .cross {
+  grid-area: remove;
+  cursor: pointer;
+}
+
 @media (min-width: 570px) {
   .product {
     display: flex;
@@ -153,15 +228,6 @@
   }
   .productName {
     max-width: 10rem;
-  }
-  .productQuantity {
-    width: 6rem;
-    height: 2.5rem;
-    padding: 0.5rem;
-    background-color: var(--ash-gray);
-  }
-  .productQuantity button svg {
-    font-size: 1.3rem;
   }
   .productPrice {
     color: var(--ocean-green);
@@ -203,5 +269,12 @@
   .section {
     grid-template-columns: 40rem auto;
     padding: 0 var(--padding-sm);
+  }
+}
+
+/* SPIN animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

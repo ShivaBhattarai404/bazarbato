@@ -6,13 +6,25 @@ import styles from "./ProductItem.module.css";
 import shoes from "@/public/images/products/1.jpg";
 import Image from "next/image";
 
-export default function ProductItem({className, ...rest}) {
+export default function ProductItem({ className, product, ...rest }) {
+  if (!product) return <></>;
+
   return (
-    <div className={[styles.product, className].join(" ")}>
-      <Link href="/product/shoe">
-        <Image src={shoes} alt="shoes" width={250} height={250} />
-        <p className={styles.category_name}>Clothes</p>
-        <p className={styles.name}>Relaxed short full sleeves</p>
+    <div className={[styles.product, className].join(" ")} {...rest}>
+      <Link href={`/product/${product?.url_key}`}>
+        <Image src={product?.images[0]} alt="shoes" width={250} height={250} />
+        <Image
+          src={product?.images[1] || product?.images[0]}
+          alt="shoes"
+          width={250}
+          height={250}
+        />
+        <p className={styles.category_name}>
+          {product?.category.name || "Clothes"}
+        </p>
+        <p className={styles.name}>
+          {product?.name || "Relaxed short full sleeves"}
+        </p>
         <div className={styles.rating}>
           <FaStar />
           <FaStar />
@@ -21,7 +33,7 @@ export default function ProductItem({className, ...rest}) {
           <FaStar />
         </div>
         <span className={styles.price}>
-          <b>Rs 450</b>
+          <b>Rs {product?.price || 450}</b>
           <del>Rs 1200</del>
         </span>
       </Link>

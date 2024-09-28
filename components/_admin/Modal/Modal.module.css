@@ -2,6 +2,7 @@
 .modal {
   width: 32rem;
   height: 11rem;
+  overflow: hidden;
 }
 .modal h1 {
   display: flex;

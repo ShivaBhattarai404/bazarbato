@@ -1,0 +1,80 @@
+.menuTop {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--cultured);
+}
+.menuTop h1 {
+  color: var(--salmon-pink);
+  font-size: var(--fs-4);
+  font-weight: var(--weight-600);
+}
+.menuTop .close {
+  color: var(--erie-black);
+}
+.userProfile {
+  text-align: center;
+}
+.userProfilePic {
+  display: inline-block;
+  border-radius: 50%;
+}
+.username {
+  margin: 0.25rem 0 1rem;
+  font-size: var(--fs-6);
+  font-weight: var(--weight-500);
+  color: var(--onyx);
+}
+
+.menuTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.6rem 0;
+}
+.menuTitle h3 {
+  color: var(--onyx);
+  font-size: var(--fs-6);
+  font-weight: var(--weight-500);
+  /* padding: 0.5rem 0; */
+}
+.menuList {
+  max-height: 0;
+  margin-left: 0.5rem;
+  overflow: hidden;
+  transition: 0.3s ease-in-out;
+}
+.menuList.active {
+  max-height: 10rem;
+  margin-bottom: 1rem;
+}
+.listItem {
+  padding: 0.4rem 0;
+  font-size: var(--fs-6);
+  color: var(--davys-gray);
+  font-weight: var(--weight-400);
+}
+
+.logout {
+  margin-top: 1rem;
+  color: var(--bittersweet);
+  font-size: var(--fs-6);
+  font-weight: var(--weight-500);
+  cursor: pointer;
+}
+
+.menuBottom {
+  width: 10rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem auto;
+}
+.menuBottom li {
+  background: var(--cultured);
+  color: var(--eerie-black);
+  padding: 0.5rem;
+  border-radius: var(--border-radius-md);
+}

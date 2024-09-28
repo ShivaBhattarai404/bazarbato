@@ -47,6 +47,7 @@
 .icons {
   display: none;
   gap: var(--fs-5);
+  margin: 0 0.5rem;
 }
 .icons a {
   position: relative;
@@ -59,6 +60,12 @@
 }
 .icon:hover {
   color: var(--eerie-black);
+}
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  vertical-align: middle;
 }
 .cart_count {
   position: absolute;
@@ -91,6 +98,7 @@
   }
   .icons {
     display: flex;
+    align-items: center;
   }
 }
 

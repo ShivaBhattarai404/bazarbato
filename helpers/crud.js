@@ -1,13 +1,24 @@
 "use server";
 
+// core modules
+import { cookies } from "next/headers";
+
+// helper functions
+import { verifyJwtToken } from "./jwt";
+
+// third party libraries
 import { put, del } from "@vercel/blob";
 import AWS from "aws-sdk";
 
+// function to create database connection
+import dbConnect from "./dbConnect";
+
+// database models
 import Category from "@/models/Category";
 import Product from "@/models/Product";
 import Attribute from "@/models/Attribute";
-import dbConnect from "./dbConnect";
 import AttributeSet from "@/models/AttributeSet";
+import DiscountCoupon from "@/models/DiscountCoupon";
 
 // upload images to digital ocean space object storage using aws s3 bucket
 export async function uploadFile(file, filename) {
@@ -40,7 +51,7 @@ export async function uploadFile(file, filename) {
 }
 
 // delete images from digital ocean space object storage
-export async function deleteFile(filename="") {
+export async function deleteFile(filename = "") {
   try {
     const s3 = new AWS.S3({
       endpoint: process.env.DO_SPACES_ENDPOINT,
@@ -78,6 +89,22 @@ export async function deleteFile(filename="") {
 //   }
 // }
 
+export async function getUser() {
+  const cookieStore = cookies();
+  const loginToken = cookieStore.get("user-token")?.value;
+
+  let user = null;
+  if (loginToken) {
+    try {
+      user = await verifyJwtToken(loginToken);
+    } catch (error) {
+      console.error("Invalid token");
+    }
+  }
+
+  return user;
+}
+
 export async function checkExistence(filter, model) {
   try {
     await dbConnect();
@@ -92,11 +119,9 @@ export async function checkExistence(filter, model) {
     return { ack: false, error: "Internal Server Error" };
   }
 }
-
 export async function checkIfProductExists(filter) {
   return checkExistence(filter, Product);
 }
-
 export async function checkIfCategoryExists(filter) {
   return checkExistence(filter, Category);
 }
@@ -105,4 +130,7 @@ export async function checkIfAttributeExists(filter) {
 }
 export async function checkIfAttributeSetExists(filter) {
   return checkExistence(filter, AttributeSet);
+}
+export async function checkIfCouponExists(filter) {
+  return checkExistence(filter, DiscountCoupon);
 }

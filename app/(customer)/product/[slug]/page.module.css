@@ -36,8 +36,8 @@
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: 20rem 4rem;
   grid-template-areas:
-    "first first first first"
-    "second third fourth fifth";
+    "active active active active active"
+    "second third fourth fifth sixth";
 }
 .images img {
   width: 100%;
@@ -49,7 +49,7 @@
 }
 .images .mainImage {
   position: relative;
-  grid-area: first;
+  grid-area: active;
 }
 .images .mainImage img {
   cursor: default;
@@ -78,17 +78,20 @@
 .mainImage .rightArrow {
   right: 0.5rem;
 }
-.images img:nth-of-type(2) {
+.images img:nth-of-type(1) {
   grid-area: second;
 }
-.images img:nth-of-type(3) {
+.images img:nth-of-type(2) {
   grid-area: third;
 }
-.images img:nth-of-type(4) {
+.images img:nth-of-type(3) {
   grid-area: fourth;
 }
-.images img:nth-of-type(5) {
+.images img:nth-of-type(4) {
   grid-area: fifth;
+}
+.images img:nth-of-type(5) {
+  grid-area: sixth;
 }
 
 /* the details part where there would be name, price, attributes */
@@ -111,6 +114,11 @@
 .details .name {
   font-size: 1.6rem;
   font-weight: var(--weight-500);
+  margin: 0.5rem 0 0;
+}
+.details .sku {
+  font-size: var(--fs-9);
+  color: var(--spanish-gray);
   margin: 0.5rem 0;
 }
 .details .reviews {
@@ -129,6 +137,99 @@
   margin: 1rem 0;
   font-size: var(--fs-3);
 }
+.quantity {
+  margin-bottom: 1rem;
+}
+
+/* DISCOUNT COUPON */
+.discountCoupon,
+.spinnerContainer {
+  width: 20rem;
+  display: flex;
+  gap: 0.5rem;
+  position: relative;
+}
+.couponError {
+  width: 100%;
+  color: var(--bittersweet-dark);
+  font-size: var(--fs-9);
+  font-weight: var(--weight-500);
+  margin: 1rem 0 0.25rem;
+}
+.discountCoupon input {
+  padding: 0.5rem 1rem;
+  font-size: var(--fs-8);
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-sm);
+  text-transform: uppercase;
+  width: 100%;
+}
+.discountCoupon input:focus {
+  outline: 1px solid var(--sandy-brown);
+}
+.discountCoupon input::placeholder {
+  color: var(--spanish-gray);
+  text-transform: capitalize;
+}
+.discountCoupon button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-sm);
+  background: var(--white);
+  font-size: var(--fs-8);
+  cursor: pointer;
+  transition: var(--transition-timing);
+}
+.discountCoupon button:hover {
+  background: var(--cultured);
+}
+.discountCoupon button:active {
+  scale: 0.9;
+}
+.spinnerContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  margin: auto;
+  animation: spin 0.7s linear infinite, slideIn 50ms ease-out;
+}
+.couponApplied {
+  font-size: var(--fs-9);
+  font-weight: var(--weight-500);
+  margin: 1rem 0 0.25rem;
+  display: grid;
+  gap: 0 0.5rem;
+  align-items: center;
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+    "wallet text1 remove"
+    "wallet text2 remove";
+}
+.couponApplied .wallet {
+  color: var(--sandy-brown);
+  grid-area: wallet;
+}
+.couponApplied p:nth-of-type(1) {
+  grid-area: text1;
+  font-size: var(--fs-8);
+}
+.couponApplied p:nth-of-type(2) {
+  grid-area: text2;
+  font-size: var(--fs-9);
+  color: var(--spanish-gray);
+}
+.couponApplied .cross {
+  grid-area: remove;
+  cursor: pointer;
+}
+
+/* ATTRIBUTES */
 .details .attributes {
   margin: 1.5rem 0;
 }
@@ -236,5 +337,22 @@
   }
   .details {
     width: calc(100% - 27rem);
+  }
+}
+
+/* SPIN animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* SLIDE IN animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(5rem);
+  }
+  to {
+    transform: translateX(0);
   }
 }

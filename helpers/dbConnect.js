@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
 
-const connection = {
-  isConnected: 0,
-};
+let isConnected = false;
 
 async function dbConnect() {
-  if (connection.isConnected) {
+  if (isConnected) {
+    console.log("Using existing connection");
     return;
   }
 
   const db = await mongoose.connect(process.env.MONGODB_URI);
 
-  connection.isConnected = db.connections[0].readyState;
+  isConnected = db.connection.readyState >= 1;
   console.log("Connection to DB established");
 }
 // const dbConnect = async () => {

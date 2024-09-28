@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import Category from "./Category";
 import AttributeSet from "./AttributeSet";
 
-const SchemaTypes = Schema.Types;
+const { ObjectId, Number } = Schema.Types;
 
 const productSchema = new Schema(
   {
@@ -15,11 +15,11 @@ const productSchema = new Schema(
       required: true,
     },
     price: {
-      type: SchemaTypes.Number,
+      type: Number,
       required: true,
     },
     category: {
-      type: SchemaTypes.ObjectId,
+      type: ObjectId,
       required: true,
       ref: Category,
     },
@@ -71,7 +71,7 @@ const productSchema = new Schema(
       default: 0,
     },
     attributeSet: {
-      type: SchemaTypes.ObjectId,
+      type: ObjectId,
       required: false,
       ref: AttributeSet,
     },
@@ -89,8 +89,8 @@ const productSchema = new Schema(
           type: String,
           required: true,
         },
-        value: {
-          type: String,
+        values: {
+          type: [String],
           required: true,
         },
       },

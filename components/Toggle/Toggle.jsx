@@ -3,21 +3,20 @@
 import { Fragment } from "react";
 import styles from "./Toggle.module.css";
 
-const Toggle = (props) => {
-  const { className, ...rest } = props;
+const Toggle = ({ className, id, defaultChecked, ...rest }) => {
   return (
     <Fragment>
       <input
-        id={props.id || "toggle"}
+        id={id || "toggle"}
         className={styles.input}
         type="checkbox"
         {...rest}
-        defaultChecked
+        defaultChecked={defaultChecked === undefined ? true : defaultChecked}
         hidden
       />
       <label
-        className={`${props.className} ${styles.toggle}`}
-        htmlFor={props.id || "toggle"}
+        className={`${className} ${styles.toggle}`}
+        htmlFor={id || "toggle"}
       />
     </Fragment>
   );

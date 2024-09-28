@@ -75,6 +75,9 @@
 .summaryList li :first-child {
   color: var(--sonic-silver);
 }
+.discountAmount{
+  color: var(--ocean-green-dark);
+}
 .continueBtn {
   width: 100%;
   padding: 0.7rem;

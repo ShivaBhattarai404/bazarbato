@@ -2,17 +2,15 @@ FROM node
 
 WORKDIR /app
 
+VOLUME [ "/app/node_modules", "/app/.next/" ]
+
 COPY package.json .
 
 RUN npm install
 
-VOLUME [ "/app/node_modules" ]
-
-VOLUME [ "/app/.next/" ]
+RUN npm run build
 
 EXPOSE 3000
-
-RUN npm run build
 
 COPY . .
 

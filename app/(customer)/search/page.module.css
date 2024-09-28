@@ -1,18 +1,21 @@
 .section {
-  margin-bottom: 5rem;
-  display: flex;
-  justify-content: flex-start;
-  align-content: flex-start;
+  margin: 1rem 0 5rem;
+  display: grid;
+  grid-template-columns: 13rem calc(100% - 13rem);
+  grid-auto-rows: auto;
+  align-items: start;
+  grid-template-areas:
+    "heading heading"
+    "results results";
   gap: 2rem;
-  flex-wrap: wrap;
 }
 .heading {
-  width: 100%;
   text-align: center;
   font-size: var(--fs-4);
+  grid-area: heading;
 }
 .filter {
-  width: 15rem;
+  grid-area: filter;
 }
 .title {
   font-size: var(--fs-4);
@@ -28,9 +31,49 @@
 .filter label {
   margin-top: 1rem;
 }
+.applyFilterBtn {
+  border: none;
+  background-color: var(--salmon-pink);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: var(--fs-7);
+}
+.applyFilterBtn:hover {
+  background-color: var(--salmon-pink-dark);
+}
+.applyFilterBtn:active {
+  scale: 0.95;
+}
 
 .results {
+  --max-width: 10rem;
   display: grid;
   gap: 2rem 1rem;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, var(--max-width));
+  justify-content: start;
+  grid-area: results;
+}
+.noResults {
+  margin: auto;
+  grid-area: results;
+}
+.noResults img {
+  margin-top: 2rem;
+  height: 100%;
+  width: 90%;
+  max-width: 20rem;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    grid-template-areas:
+      "heading heading"
+      "filter results";
+  }
+  .filter {
+    display: block;
+  }
 }

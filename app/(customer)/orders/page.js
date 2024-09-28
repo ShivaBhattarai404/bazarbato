@@ -1,12 +1,40 @@
+// core modules
 import Image from "next/image";
 import Link from "next/link";
 
+// custom components
 import Path from "@/components/_customer/Path/Path";
-import styles from "./page.module.css";
-import hoodie from "@/public/images/p1.png";
-import { IoIosArrowForward } from "react-icons/io";
 
-export default function Orders() {
+// helper functions
+import { getUser } from "@/helpers/crud";
+import dbConnect from "@/helpers/dbConnect";
+import { deepCopy, formatDate } from "@/helpers/utils";
+
+// database models
+import Order from "@/models/Order";
+
+// styles
+import styles from "./page.module.css";
+
+// react-icons
+import { IoIosArrowForward } from "react-icons/io";
+import hoodie from "@/public/images/p1.png";
+
+// function to fetch all the orders of the customer
+async function fetchOrders() {
+  try {
+    await dbConnect();
+    const user = await getUser();
+    const orders = await Order.find({ user: user._id }).lean();
+    return deepCopy(orders);
+  } catch (error) {
+    return [];
+  }
+}
+
+export default async function Orders() {
+  const orders = await fetchOrders();
+
   return (
     <section className={styles.section}>
       <h1 className={styles.title}>Order History</h1>
@@ -19,38 +47,45 @@ export default function Orders() {
       />
 
       <div className={styles.orders}>
-        {new Array(3).fill(0).map((_, i) => (
-          <div key={i} className={styles.order}>
+        {orders.map?.((order) => (
+          <div key={order._id} className={styles.order}>
             <div className={styles.orderHeader}>
               <div
-                // classNames options -: processing, shipped, delivered
-                className={[styles.orderStatus, styles.processing].join(" ")}
+                // classNames options -: processing, shipped, delivered, cancelled
+                className={[
+                  styles.orderStatus,
+                  styles[order.orderStatus.toLowerCase?.()],
+                ].join(" ")}
               >
-                processing
+                {order.orderStatus.toLowerCase?.()}
               </div>
               <div className={styles.orderDate}>
-                {new Date().toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
+                {formatDate(order.placedAt)}
               </div>
             </div>
             <div className={styles.orderBody}>
-              <Image src={hoodie} alt="product" width={100} height={100} />
+              <Link href={`/order/${order._id}`}>
+                <Image
+                  src={order.items[0].image}
+                  alt="product"
+                  width={100}
+                  height={100}
+                />
+              </Link>
               <div className={styles.orderInfo}>
-                <div className={styles.orderId}>Order ID: ABC-6457325</div>
+                <div className={styles.orderId}>Order ID: {order._id}</div>
                 <div className={styles.orderItems}>
-                  Hoodie{" "}
+                  {order.items[0].name}{" "}
                   <Link href="#" className={styles.extraItems}>
-                    & 2 more items
+                    {order.items.length > 1 &&
+                      `& ${order.items.length - 1} more items`}
                   </Link>
                 </div>
-                <div className={styles.orderPrice}>Rs 20.00</div>
+                <div className={styles.orderPrice}>Rs {order.grossTotal}</div>
               </div>
-              <div className={styles.orderCTA}>
+              <Link href={`/order/${order._id}`} className={styles.orderCTA}>
                 <IoIosArrowForward />
-              </div>
+              </Link>
             </div>
           </div>
         ))}

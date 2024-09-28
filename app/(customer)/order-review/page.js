@@ -1,12 +1,29 @@
-import CartProgressBar from "@/components/_customer/CartProgressBar/CartProgressBar";
-import styles from "./page.module.css";
-import { FiMinus, FiPlus } from "react-icons/fi";
-import { FaFileInvoice } from "react-icons/fa";
-import Image from "next/image";
-import tshirt from "@/public/images/p1.png";
+"use client";
+
+// core modules
 import Link from "next/link";
+import Image from "next/image";
+import { useSelector } from "react-redux";
+import { notFound, useRouter } from "next/navigation";
+
+// custom components
+import CartProgressBar from "@/components/_customer/CartProgressBar/CartProgressBar";
+
+// CSS files
+import styles from "./page.module.css";
 
 export default function OrderReview() {
+  const order = useSelector((state) => state.order.order);
+  const router = useRouter();
+  const confirmClickHandler = () => {
+    router.replace("/payment?order=" + order._id);
+  };
+
+  if (!order) {
+    // if there is no order placed then it makes no sense to show the review page
+    return notFound();
+  }
+
   return (
     <section className={styles.section}>
       <CartProgressBar
@@ -20,45 +37,68 @@ export default function OrderReview() {
       <div className={styles.delivery}>
         <h2 className={styles.sectionTitle}>Shipping Information</h2>
         <span>
-          Full name: <b>Sapana Bhandari</b>
+          Full name: <b>{order?.shipping?.name}</b>
         </span>
         <span>
-          Address: <b>Jaganath school agadi, Sunwal-12 Bhumahi, Nawalparasi</b>
+          Address:{" "}
+          <b>
+            {order?.shipping?.address}, {order?.shipping?.city},{" "}
+            {order?.shipping?.district} {order?.shipping?.province}{" "}
+            {order?.shipping?.country}
+          </b>
         </span>
         <span>
-          Phone: <b>9825452908</b>
+          Phone: <b>{order?.shipping?.phone}</b>
         </span>
         <span>
-          Alternative phone number: <b>9825452908</b>
+          Alternative phone number: <b>{order?.shipping?.alternativePhone}</b>
         </span>
         <span>
-          Order note:{" "}
-          <b>Ma ghara vayeni vni diyeko duita number ma phone garnu hola</b>
+          Order note: <b>{order?.shipping?.customerNote}</b>
         </span>
       </div>
       <hr className={styles.hr} />
 
       <h2 className={styles.sectionTitle}>Your Items</h2>
-      {new Array(3).fill(0).map((_, i) => (
-        <div key={i} className={styles.product}>
-          <Image
-            className={styles.productImg}
-            src={tshirt}
-            alt="product"
-            width={100}
-            height={100}
-          />
-          <div className={styles.productInfo}>
-            <h2 className={styles.productName}>Macbook pro M1 14</h2>
-            <span className={styles.productAttribute}>Size: M</span>
-            <span className={styles.productAttribute}>Coupon: 123456</span>
+      {order?.items &&
+        order.items?.length > 0 &&
+        order.items.map((item, i) => (
+          // item.product contains the product id which is reference to the product
+          <div key={item.product} className={styles.product}>
+            <Link href={`/product/${item.url_key}`}>
+              <Image
+                className={styles.productImg}
+                src={item.image}
+                alt={item.name}
+                width={100}
+                height={100}
+              />
+            </Link>
+            <div className={styles.productInfo}>
+              <Link href={`/product/${item.url_key}`}>
+                <h2 className={styles.productName}>{item.name}</h2>
+              </Link>
+              {/* <span className={styles.productAttribute}>Size: M</span> */}
+              {item.coupon && (
+                <span className={styles.productAttribute}>
+                  Coupon: {item.coupon}
+                </span>
+              )}
+            </div>
+            <div className={styles.priceAndQuantity}>
+              <span className={styles.price}>
+                Rs {item.price} * {item.quantity} = {item.price * item.quantity}
+              </span>
+              {item.discountAmount > 0 && (
+                <div className={styles.qty}>-Rs {item.discountAmount}</div>
+              )}
+              {/* <span className={styles.qty}>Qty: {item.quantity}</span> */}
+              {item.discountAmount > 0 && (
+                <div className={styles.qty}>Rs {item.total}</div>
+              )}
+            </div>
           </div>
-          <div className={styles.priceAndQuantity}>
-            <span className={styles.price}>Rs 100.00</span>
-            <span className={styles.qty}>Qty: 2</span>
-          </div>
-        </div>
-      ))}
+        ))}
 
       <hr className={styles.hr} />
 
@@ -67,20 +107,20 @@ export default function OrderReview() {
         <ul className={styles.summaryList}>
           <li>
             <span>Subtotal</span>
-            <span>Rs 460</span>
+            <span>Rs {order.total}</span>
           </li>
           <li>
             <span>Delivery charge</span>
-            <span>Rs 50</span>
+            <span>Rs {order.shipping.deliveryCharge}</span>
           </li>
           <li>
             <span>Gross amount (including tax)</span>
-            <span>Rs 510</span>
+            <span>Rs {order.grossTotal}</span>
           </li>
         </ul>
-        <Link href="/payment" className={styles.continueBtn}>
-          Confirm Order
-        </Link>
+        <button className={styles.continueBtn} onClick={confirmClickHandler}>
+          Continue to payment
+        </button>
       </div>
     </section>
   );

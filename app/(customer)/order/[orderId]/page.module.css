@@ -99,6 +99,9 @@
   margin-top: 0.5rem;
   color: var(--davys-gray);
 }
+.discountAmount {
+  color: var(--ocean-green-dark);
+}
 
 /* style of title of every section like payment, delivery, order etc */
 .sectionTitle {

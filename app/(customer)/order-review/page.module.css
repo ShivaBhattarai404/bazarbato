@@ -78,6 +78,10 @@
   font-size: var(--fs-7);
   color: var(--eerie-black);
 }
+.productName:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 .productAttribute {
   font-size: var(--fs-8);
   color: var(--davys-gray);
