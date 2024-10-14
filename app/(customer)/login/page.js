@@ -1,13 +1,22 @@
 // core modules
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-
-import LoginForm from "./form";
-import { generateJwt } from "@/helpers/jwt";
-import { EMAIL_REGEX } from "@/Constants/validation";
-import User from "@/models/User";
-import dbConnect from "@/helpers/dbConnect";
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+
+// helper functions
+import { getUser, resendVerificationEmail, setUser } from "@/helpers/auth";
+import { generateJwt } from "@/helpers/jwt";
+import dbConnect from "@/helpers/dbConnect";
+
+// database models
+import User from "@/models/User";
+
+// constants
+import { EMAIL_REGEX } from "@/Constants/validation";
+
+// custom components
+import LoginForm from "./form";
 
 export const metadata = {
   title: "Login",
@@ -49,9 +58,17 @@ async function handleSubmit(formData) {
   }
   try {
     // if valid, check if email exists in database
-    const user = await User.findOne({ email }).select("+password").lean();
+    const user = await User.findOne({ email }).lean();
     if (!user) {
       return { login: false, error: "Email doesn't exists" };
+    }
+
+    // if user exists but if user has not been verified then resend verfication email and redirect to verify page
+    if (!user.emailVerified) {
+      await resendVerificationEmail(email);
+      const error = new Error("REDIRECT");
+      error.URL = `/verify?email=${email}`;
+      throw error;
     }
 
     // Check if password is correct
@@ -62,34 +79,12 @@ async function handleSubmit(formData) {
     }
 
     // if correct, set cookies for login and token for user verification and login status
-    const token = await generateJwt(
-      {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        gender: user.gender,
-        phone: user.phone,
-        avatar: user.avatar,
-      },
-      "7d"
-    );
+    await setUser(user);
 
-    // set cookies for login and token for user verification and login status
-    cookies().set({
-      name: "user-token",
-      value: token,
-      secure: true,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      path: "/",
-    });
-
-    // remove the cached user data
-    revalidatePath("/");
-    revalidatePath("/(customer)", "layout");
     // return login status
     return {
       login: true,
+      error: null,
       user: {
         name: user.name,
         email: user.email,
@@ -99,9 +94,16 @@ async function handleSubmit(formData) {
       },
     };
   } catch (error) {
+    if (error.message === "REDIRECT") {
+      redirect(error.URL);
+    }
     return { login: false, error: "Server Error. Please try again." };
   }
 }
-export default function Login() {
+export default async function Login() {
+  const user = await getUser();
+  if (user) {
+    redirect("/");
+  }
   return <LoginForm login={handleSubmit} />;
 }

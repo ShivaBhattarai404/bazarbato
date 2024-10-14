@@ -14,14 +14,14 @@ export const metadata = {
 };
 
 // function to fetch all products from the database
-async function fetchProducts() {
+async function fetchProducts(skip, limit) {
   try {
     await dbConnect();
-    const products = await Product.find()
-      .sort({ createdAt: -1 })
-      .lean()
-      .select("images name price sku quantity status url_key");
-    return products;
+    const [products, productsCount] = await Promise.all([
+      Product.find().skip(skip).limit(limit).lean(),
+      Product.countDocuments(),
+    ]);
+    return { products, productsCount };
   } catch (error) {
     return null;
   }
@@ -71,8 +71,12 @@ async function disableProducts(products) {
   }
 }
 
-export default async function ProductsPage() {
-  const products = await fetchProducts();
+export default async function ProductsPage({
+  searchParams: { page = 1, perPage = 10 },
+}) {
+  const skip = (page - 1) * perPage;
+  const limit = perPage;
+  const { products, productsCount } = await fetchProducts(skip, limit);
 
   return (
     <div className={styles.container}>
@@ -86,6 +90,7 @@ export default async function ProductsPage() {
         products={deepCopy(products)}
         deleteProducts={deleteProducts}
         disableProducts={disableProducts}
+        productsCount={productsCount}
       />
     </div>
   );

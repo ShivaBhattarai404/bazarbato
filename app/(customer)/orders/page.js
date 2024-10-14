@@ -6,7 +6,7 @@ import Link from "next/link";
 import Path from "@/components/_customer/Path/Path";
 
 // helper functions
-import { getUser } from "@/helpers/crud";
+import { getUser } from "@/helpers/auth";
 import dbConnect from "@/helpers/dbConnect";
 import { deepCopy, formatDate } from "@/helpers/utils";
 
@@ -34,7 +34,6 @@ async function fetchOrders() {
 
 export default async function Orders() {
   const orders = await fetchOrders();
-
   return (
     <section className={styles.section}>
       <h1 className={styles.title}>Order History</h1>

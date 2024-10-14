@@ -54,9 +54,7 @@
 
 a.slider_btn {
   background: var(--salmon-pink);
-  color: #fff;
-  width: -webkit-max-content;
-  width: -moz-max-content;
+  color: #fff !important;
   width: max-content;
   font-size: var(--fs-11);
   font-weight: var(--weight-600);

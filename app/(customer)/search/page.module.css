@@ -1,11 +1,11 @@
 .section {
   margin: 1rem 0 5rem;
   display: grid;
-  grid-template-columns: 13rem calc(100% - 13rem);
   grid-auto-rows: auto;
   align-items: start;
   grid-template-areas:
     "heading heading"
+    "filter filter"
     "results results";
   gap: 2rem;
 }
@@ -24,22 +24,49 @@
   padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
-.filter select:focus {
+
+/* FILTER COMPONENT STARTS HERE (search-filter.js) */
+.filterComponent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0 0.5rem;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  max-height: 2.5rem;
+  transition: max-height 0.5s ease-in-out;
+}
+.filterComponent select:focus {
   outline-color: var(--salmon-pink);
   border-color: var(--cultured);
 }
-.filter label {
+.filterComponent .title {
+  width: 100%;
+  cursor: pointer;
+}
+.filterComponent .title svg {
+  margin-left: 0.5rem;
+  transition: transform 0.6s ease-in-out;
+}
+.filterComponent.expand {
+  max-height: 100rem;
+}
+.filterComponent.expand svg {
+  transform: rotate(180deg);
+}
+.filterComponent label {
   margin-top: 1rem;
 }
 .applyFilterBtn {
   border: none;
   background-color: var(--salmon-pink);
   color: #fff;
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
   margin-top: 1rem;
   font-size: var(--fs-7);
+  width: 100%;
 }
 .applyFilterBtn:hover {
   background-color: var(--salmon-pink-dark);
@@ -47,12 +74,13 @@
 .applyFilterBtn:active {
   scale: 0.95;
 }
+/* FILTER COMPONENTS ENDS HERE */
 
 .results {
-  --max-width: 10rem;
+  --max-product-width: 9.8rem;
   display: grid;
-  gap: 2rem 1rem;
-  grid-template-columns: repeat(auto-fill, var(--max-width));
+  gap: 1.5rem 0.6rem;
+  grid-template-columns: repeat(auto-fill, var(--max-product-width));
   justify-content: start;
   grid-area: results;
 }
@@ -67,13 +95,29 @@
   max-width: 20rem;
 }
 
+@media (min-width: 570px) {
+  .results {
+    --max-product-width: 13rem;
+  }
+  .filterComponent {
+    max-width: 30rem;
+  }
+}
 @media (min-width: 1024px) {
   .section {
     grid-template-areas:
       "heading heading"
       "filter results";
+    grid-template-columns: 17rem calc(100% - 17rem);
   }
   .filter {
     display: block;
+  }
+  .filterComponent {
+    max-height: unset;
+    padding: 0;
+  }
+  .filterComponent .title svg {
+    display: none;
   }
 }

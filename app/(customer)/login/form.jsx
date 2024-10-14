@@ -9,10 +9,13 @@ import { ImSpinner9 } from "react-icons/im";
 
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/app/reducers/user";
 
 export default function LoginForm({ login }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const handleFormSubmit = async (e) => {
@@ -23,6 +26,7 @@ export default function LoginForm({ login }) {
       const response = await login(formData);
       if (response.login) {
         setError("");
+        dispatch(setUser(response.user));
         router.push("/");
       } else {
         setError(response.error);

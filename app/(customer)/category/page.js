@@ -4,7 +4,6 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import dbConnect from "@/helpers/dbConnect";
-import Product from "@/models/Product";
 import Category from "@/models/Category";
 import { notFound } from "next/navigation";
 
@@ -121,8 +120,8 @@ export default async function CatgoryPage({ searchParams: { code } }) {
           <Link
             key={category._id}
             href={
-              category.productCount
-                ? "/search?category"
+              category.productCount >= 0
+                ? `/search?category=${category.code}`
                 : `?code=${category.code}`
             }
           >
@@ -136,7 +135,7 @@ export default async function CatgoryPage({ searchParams: { code } }) {
                     height={500}
                   />
                 </div>
-                {category.productCount ? (
+                {category.productCount >= 0 ? (
                   <h5>{category.productCount} Products</h5>
                 ) : (
                   <h5>{category.subCategoryCount} sub categories</h5>
@@ -147,7 +146,8 @@ export default async function CatgoryPage({ searchParams: { code } }) {
                 <h2>{category.name}</h2>
               </div>
               <div>
-                See {category.productCount ? "Collection" : "Sub Categories"}{" "}
+                See{" "}
+                {category.productCount >= 0 ? "Collection" : "Sub Categories"}{" "}
                 <BsArrowRight className={styles.aicon} />
               </div>
               <div className={styles.category_container_cover}>

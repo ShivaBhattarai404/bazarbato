@@ -13,17 +13,14 @@ export default function PaymentSuccessPage({
     dispatch(removeOrder());
   }, [dispatch]);
 
-  console.log(
-    "paymentResponseData from payment success page",
-    JSON.parse(paymentResponseData)
-  );
+  console.log("order from payment success page", order);
   return (
     <div>
       <h1>Payment Success</h1>
       <p>Your payment has been successfully processed.</p>
       <br />
-      <p>{paymentResponseData} </p>
-      <Link href="/orders">View Orders</Link>
+      {/* <p>{paymentResponseData} </p> */}
+      <Link href={`/order/${order._id}`}>View my order</Link>
     </div>
   );
 }

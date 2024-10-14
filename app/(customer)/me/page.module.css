@@ -1,5 +1,5 @@
 .links {
-  background-color: var(--ash-gray);
+  background-color: var(--ash-gray-light);
   border-radius: var(--border-radius-md);
   padding: 1rem;
   margin: 1rem 0;
@@ -60,7 +60,7 @@
 
 /* user infomation */
 .personalInfo {
-  background-color: var(--ash-gray);
+  background-color: var(--ash-gray-light);
   padding: 1rem;
   max-width: 30rem;
   border-radius: var(--border-radius-md);
@@ -87,13 +87,14 @@
   display: block;
   margin-top: 1rem;
 }
-.verified{
-    font-size: var(--fs-8);
-    text-transform: lowercase;
-    color: var(--ocean-green-dark);
+.verified {
+  font-size: var(--fs-8);
+  text-transform: lowercase;
+  color: var(--ocean-green-dark);
 }
 .form input {
   max-width: 20rem;
+  font-size: var(--fs-8);
 }
 .form input:disabled {
   background-color: var(--white);
@@ -109,6 +110,16 @@
   font-size: var(--fs-7);
 }
 
+.edit {
+  display: none !important;
+}
+.logout {
+  margin-top: 1rem;
+  color: var(--bittersweet);
+  font-size: var(--fs-6);
+  font-weight: var(--weight-500);
+  cursor: pointer;
+}
 @media (min-width: 480px) {
   .userProfile {
     margin: 0;

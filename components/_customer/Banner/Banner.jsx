@@ -12,7 +12,7 @@ export default function Banner() {
       <div className={styles.slider_item}>
         <Image
           src={banner1}
-          alt="banner 1"
+          alt="banner-1"
           className={styles.slider_img}
           width={1500}
           // height={500}

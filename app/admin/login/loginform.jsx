@@ -6,7 +6,6 @@ import styles from "./page.module.css";
 import { LuLoader2 } from "react-icons/lu";
 import { PiWarningCircleFill } from "react-icons/pi";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function LoginComponent({ login }) {
   const INITIAL_ERROR = [];

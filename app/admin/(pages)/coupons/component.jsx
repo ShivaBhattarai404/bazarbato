@@ -11,10 +11,20 @@ import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import Modal from "@/components/_admin/Modal/Modal";
 import { formatDate } from "@/helpers/utils";
+import { useDispatch } from "react-redux";
+import { resetError, setError } from "@/app/reducers/utils";
+import TableFoot from "@/components/_admin/TableFoot/TableFoot";
 
-export default function CouponClientComponent({ coupons }) {
+export default function CouponClientComponent({
+  coupons: propCoupons,
+  deleteCoupons,
+  disableCoupons,
+  couponsCount,
+}) {
   const [selectedCoupons, setSelectedCoupon] = useState([]);
+  const dispatch = useDispatch();
   const [modalType, setModalType] = useState("");
+  const [coupons, setCoupons] = useState(propCoupons);
 
   const couponSelectHandler = (e) => {
     const { value } = e.target;
@@ -22,6 +32,65 @@ export default function CouponClientComponent({ coupons }) {
       setSelectedCoupon((prev) => prev.filter((item) => item !== value));
     } else {
       setSelectedCoupon((prev) => [...prev, value]);
+    }
+  };
+
+  const couponDeleteHandler = async () => {
+    dispatch(resetError());
+    try {
+      const response = await deleteCoupons(selectedCoupons);
+      console.log(response.error);
+      if (response.error) {
+        dispatch(setError(response.error));
+      } else {
+        dispatch(
+          setError({
+            title: "Success",
+            message: "Coupons deleted successfully",
+            status: true,
+          })
+        );
+        setCoupons((prev) =>
+          prev.filter((coupon) => !selectedCoupons.includes(coupon._id))
+        );
+        setSelectedCoupon([]);
+      }
+    } catch (error) {
+      dispatch(setError("Server Error, Something went wrong"));
+    } finally {
+      setModalType("");
+    }
+  };
+
+  const couponDisableHandler = async () => {
+    dispatch(resetError());
+    try {
+      const response = await disableCoupons(selectedCoupons);
+      console.log(response.error);
+      if (response.error) {
+        dispatch(setError(response.error));
+      } else {
+        dispatch(
+          setError({
+            title: "Success",
+            message: "Coupons disabled successfully",
+            status: true,
+          })
+        );
+        setCoupons((prev) =>
+          prev.map((coupon) => {
+            if (selectedCoupons.includes(coupon._id)) {
+              return { ...coupon, isActive: false };
+            }
+            return coupon;
+          })
+        );
+        setSelectedCoupon([]);
+      }
+    } catch (error) {
+      dispatch(setError("Server Error, Something went wrong"));
+    } finally {
+      setModalType("");
     }
   };
 
@@ -37,6 +106,9 @@ export default function CouponClientComponent({ coupons }) {
           btn2Text="Cancel"
           bgColor2={modalType === "disable" ? "#2c6ecb" : "#d72c0d"}
           onCancel={() => setModalType("")}
+          onOk={
+            modalType === "disable" ? couponDisableHandler : couponDeleteHandler
+          }
           title={`${modalTitleKey} ${selectedCoupons.length} coupons`}
           paragraph={`Are you sure you want to ${modalPargraphKey} this coupon?`}
         />
@@ -100,12 +172,13 @@ export default function CouponClientComponent({ coupons }) {
           </thead>
           <tbody>
             {coupons?.length > 0 &&
-              coupons.map((coupon, i) => (
+              coupons.map((coupon) => (
                 <tr key={coupon._id}>
                   <td className={styles.checkbox}>
                     <CheckBox
                       id={coupon._id}
                       value={coupon._id}
+                      checked={selectedCoupons.includes(coupon._id)}
                       onClick={couponSelectHandler}
                     />
                   </td>
@@ -128,39 +201,7 @@ export default function CouponClientComponent({ coupons }) {
               ))}
           </tbody>
 
-          <tfoot className={styles.tableFoot}>
-            <tr>
-              <td colSpan={2} className={styles.product_per_page}>
-                Show
-                <input
-                  className={formStyles.input}
-                  type="number"
-                  defaultValue="10"
-                />
-                per page
-              </td>
-              <td colSpan={4} className={styles.pagination}>
-                <button className={styles.first}>
-                  <AiOutlineDoubleLeft />
-                </button>
-                <button className={styles.prev}>
-                  <HiOutlineChevronLeft />
-                </button>
-                <input
-                  className={formStyles.input}
-                  type="number"
-                  defaultValue="1"
-                />
-                <button className={styles.next}>
-                  <HiOutlineChevronRight />
-                </button>
-                <button className={styles.last}>
-                  <AiOutlineDoubleRight />
-                </button>
-                <span>36 records</span>
-              </td>
-            </tr>
-          </tfoot>
+          <TableFoot total={couponsCount} />
         </table>
       </Card>
     </div>

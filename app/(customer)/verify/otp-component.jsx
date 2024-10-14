@@ -1,6 +1,6 @@
 "use client";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
 // custom hook to handle countdown
@@ -34,25 +34,25 @@ export default function OTP_Component({ email, resendOtp, verifyOTP }) {
     if (otpString.length === 6) {
       submitOtp(otpString);
     }
-  }, [otp, submitOtp]);
+  }, [otp]);
 
-  const submitOtp = async (otpString) => {
+  async function submitOtp(otpString) {
     setSubmitting(true);
     try {
-      const response = await verifyOTP(otpString);
-      const errorMessage = response.error;
-      if (errorMessage) {
-        throw new Error(errorMessage);
+      const response = await verifyOTP({ otp: otpString });
+      if (response.error) {
+        return setError(response.error);
       }
       // if response is ok, redirect to home page
-      // cookies are already set in verify api route
-      router.replace("/");
+      // cookies are already set by verifyOTP function
+      router.push("/me");
     } catch (error) {
+      setError("Something went wrong. Please reload the page and try again.");
+    } finally {
       setSubmitting(false);
       setOtp(INITIAL_OTP);
-      setError(error.message || "Server Error");
     }
-  };
+  }
 
   const inputChangeHandler = (val = "", index) => {
     if (isNaN(val)) {
@@ -98,13 +98,19 @@ export default function OTP_Component({ email, resendOtp, verifyOTP }) {
   // handle resend otp click
   const handleResendOtp = async () => {
     if (!showCountdown) {
-      setSendingOtp(true);
-      //   const status = await resendOtp();
-      setSendingOtp(false);
-      startCountdown();
-      //   if (status) {
-      // startCountdown();
-      //   }
+      try {
+        setSendingOtp(true);
+        const response = await resendOtp();
+        if (response.error) {
+          setError(response.error);
+        } else {
+          startCountdown();
+        }
+      } catch (error) {
+        setError("Something went wrong. Please reload the page and try again.");
+      } finally {
+        setSendingOtp(false);
+      }
     }
   };
 

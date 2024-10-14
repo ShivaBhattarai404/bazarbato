@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 
 // helper functions
-import { getUser } from "@/helpers/crud";
+import { getUser } from "@/helpers/auth";
 import { deepCopy } from "@/helpers/utils";
 import dbConnect from "@/helpers/dbConnect";
 import {
@@ -39,6 +39,9 @@ async function getBag() {
     );
     if (!user) {
       return { error: "User not found" };
+    }
+    if (user.bag.items.length === 0) {
+      return null;
     }
     await validateCoupons(user.bag);
     return deepCopy(user.bag);
@@ -155,9 +158,11 @@ async function removeFromBag(itemId) {
   if (user.bag) {
     const bag = user.bag;
     bag.items = bag.items.filter((item) => item._id.toString() !== itemId);
-    await bag.save();
-    revalidatePath("/bag");
-    console.log("product removed from bag");
+    const response = await bag.save();
+    if (response.items.length === 0) {
+      return { updatedBag: null };
+    }
+    return { updatedBag: deepCopy(response) };
   }
 }
 

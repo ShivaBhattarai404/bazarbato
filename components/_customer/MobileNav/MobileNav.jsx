@@ -21,7 +21,11 @@ import Overlay from "@/components/Overlay/Overlay";
 import MenuNav from "./MenuNav";
 import CategorySidebar from "../ProductContainer/CatgorySidebar";
 
-export default function MobileNav() {
+export default function MobileNav({
+  featuredCategories,
+  bestSellerProducts,
+  navParentCategories,
+}) {
   const pathname = usePathname();
   const [activeButton, setActiveButton] = useState(pathname);
   const [displayApps, setDisplayApps] = useState(false);
@@ -41,7 +45,10 @@ export default function MobileNav() {
         onClick={() => setDisplayMenu(false)}
         center={false}
       >
-        <MenuNav close={() => setDisplayMenu(false)} />
+        <MenuNav
+          close={() => setDisplayMenu(false)}
+          navParentCategories={navParentCategories}
+        />
       </Overlay>
 
       <Overlay
@@ -53,7 +60,10 @@ export default function MobileNav() {
         onClick={() => setDisplayApps(false)}
         center={false}
       >
-        <CategorySidebar />
+        <CategorySidebar
+          featuredCategories={featuredCategories}
+          bestSellerProducts={bestSellerProducts}
+        />
       </Overlay>
       <div className={styles.nav}>
         <div className={styles.navItems}>

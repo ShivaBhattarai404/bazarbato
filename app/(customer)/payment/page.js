@@ -31,28 +31,26 @@ function getEsewaTransactionDetails(order) {
   const grossTotal = order.grossTotal;
   const taxAmount = 0;
   const productCode = "EPAYTEST";
-  const transactionId =
-    order._id.toString() +
-    Date.now().toString() +
-    Math.floor(Math.random() * 1000);
-
+  const transactionId = `${order._id.toString()}-${Date.now()}-${Math.floor(
+    Math.random() * 1000
+  )}`;
   const dataString = `total_amount=${grossTotal},transaction_uuid=${transactionId},product_code=${productCode}`;
+
   const signature = createSignatureForEsewaPayment(dataString);
 
   const payment = {
     amount: amount,
-    failure_url: "http://localhost:3000/payment?status=failure",
+    failure_url: process.env.NEXT_PUBLIC_ESEWA_FAILURE_URL,
     product_delivery_charge: deliveryCharge,
     product_service_charge: serviceCharge,
     product_code: productCode,
     signature: signature,
-    signed_field_names: "total_amount,transaction_uuid,product_code,order",
-    success_url: "http://localhost:3000/payment",
+    signed_field_names: "total_amount,transaction_uuid,product_code",
+    success_url: process.env.NEXT_PUBLIC_ESEWA_SUCCESS_URL,
     tax_amount: taxAmount,
     total_amount: grossTotal,
     transaction_uuid: transactionId,
   };
-
   return payment;
 }
 
@@ -73,10 +71,27 @@ async function fetchOrder(orderId) {
     return null;
   }
 }
+
+async function markOrderAsPaid(orderId) {
+  try {
+    await dbConnect();
+    await Order.findByIdAndUpdate(orderId, { paymentStatus: "PAID" });
+    return { error: null };
+  } catch {
+    return { error: "Failed to mark order as paid" };
+  }
+}
+
 export default async function Payment({
   searchParams: { data, order: orderId },
 }) {
   const decodedToken = decodeEsewaPaymentSuccessToken(data);
+  let markedAsPaid = false;
+  if (decodedToken) {
+    orderId = decodedToken.transaction_uuid.split("-")[0];
+    const response = await markOrderAsPaid(orderId);
+    markedAsPaid = !response.error;
+  }
   const order = await fetchOrder(orderId);
   if (!order) {
     return notFound();
@@ -92,8 +107,7 @@ export default async function Payment({
         className={styles.progressBar}
         steps={["Cart", "Shipping", "Review", "Payment"]}
       />
-
-      {decodedToken ? (
+      {decodedToken && markedAsPaid ? (
         <PaymentSuccessPage data={decodedToken} order={order} />
       ) : (
         <PaymentForm paymentData={paymentData} order={order} />

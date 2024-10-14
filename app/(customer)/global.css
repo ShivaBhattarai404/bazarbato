@@ -10,6 +10,7 @@
   --divider: hsl(0, 0%, 80%);
   --cultured: hsl(0, 0%, 93%);
   --ash-gray: hsl(210, 40%, 96%);
+  --ash-gray-light: hsl(210, 40%, 98%);
   --white: hsl(0, 100%, 100%);
   --eerie-black: hsl(0, 0%, 13%);
   --info: hsl(215, 64%, 48%);
@@ -98,6 +99,7 @@ html {
 }
 a {
   text-decoration: none;
+  color: inherit;
 }
 input[hidden] {
   display: none;

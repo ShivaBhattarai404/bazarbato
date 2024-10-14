@@ -35,12 +35,12 @@ const DUMMY_DATA = [
   },
 ];
 
-export default function MenuNav({ close }) {
+export default function MenuNav({ close, navParentCategories }) {
   const [active, setActive] = useState(null);
   const user = useSelector((state) => state.user.user);
 
-  const checkActive = (index) => {
-    return active === index;
+  const checkActive = (categoryId) => {
+    return active === categoryId;
   };
   return (
     <Fragment>
@@ -60,21 +60,23 @@ export default function MenuNav({ close }) {
             height={50}
           />
           <h3 className={styles.username}>
-            {user ? "Hello " + user.name : "Log in"}
+            {user ? `Hello ${user.firstName}` : "Log in"}
           </h3>
         </Link>
       </div>
       <div className={styles.menuItems}>
-        {DUMMY_DATA.map((category, index) => (
-          <ul key={index} className={styles.menuItem}>
+        {navParentCategories?.map((category) => (
+          <ul key={category._id} className={styles.menuItem}>
             <li>
               <div
                 className={styles.menuTitle}
-                onClick={() => setActive(checkActive(index) ? null : index)}
+                onClick={() =>
+                  setActive(checkActive(category._id) ? null : category._id)
+                }
               >
                 <h3>{category.name}</h3>
                 <button className={styles.menuButton}>
-                  {checkActive(index) ? (
+                  {checkActive(category._id) ? (
                     <FaMinus size={15} />
                   ) : (
                     <FaPlus size={15} />
@@ -84,12 +86,14 @@ export default function MenuNav({ close }) {
               <ul
                 className={[
                   styles.menuList,
-                  checkActive(index) ? styles.active : "",
+                  checkActive(category._id) ? styles.active : "",
                 ].join(" ")}
               >
-                {category.items.map((item, index) => (
-                  <li className={styles.listItem} key={index}>
-                    {item}
+                {category.subCategories?.map((subCategory) => (
+                  <li className={styles.listItem} key={subCategory._id}>
+                    <Link href={`/search?category=${subCategory.code}`}>
+                      {subCategory.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -98,7 +102,6 @@ export default function MenuNav({ close }) {
         ))}
       </div>
 
-      {user && <button className={styles.logout}>Logout</button>}
       <ul className={styles.menuBottom}>
         <li>
           <FaFacebook size={20} />

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 // helper functions
 import dbConnect from "@/helpers/dbConnect";
 import { deepCopy } from "@/helpers/utils";
-import { getUser } from "@/helpers/crud";
+import { getUser } from "@/helpers/auth";
 
 // database models
 import Product from "@/models/Product";
@@ -76,9 +76,11 @@ async function addToBag({ _id: productId, sku, attributes, coupon, quantity }) {
     if (item) {
       item.quantity = quantity;
       item.coupon = coupon;
-      await bag.save();
-      revalidatePath("/bag");
-      return;
+      const response = await bag.save();
+      if (response.items.length === 0) {
+        return { updatedBag: null };
+      }
+      return { updatedBag: deepCopy(response) };
     }
     // if product does not exist in the cart then add the product to the cart
     bag.items.push({
@@ -92,10 +94,11 @@ async function addToBag({ _id: productId, sku, attributes, coupon, quantity }) {
       quantity,
       coupon,
     });
-    await bag.save();
-    revalidatePath("/bag");
-    console.log("product added to bag");
-    return;
+    const response = await bag.save();
+    if (response.items.length === 0) {
+      return { updatedBag: null };
+    }
+    return { updatedBag: deepCopy(response) };
   } else {
     // if user does not have an existing bag/cart then create a new cart and add product to that cart
     const cart = new Bag({
@@ -119,10 +122,12 @@ async function addToBag({ _id: productId, sku, attributes, coupon, quantity }) {
       await User.findByIdAndUpdate(userStoredInCookies._id, {
         bag: response._id,
       });
-      revalidatePath("/bag");
-      console.log("product added to bag");
+      if (response.items.length === 0) {
+        return { updatedBag: null };
+      }
+      return { updatedBag: deepCopy(response) };
     } catch (error) {
-      console.log(error);
+      return { error: "Server Error, cannot add product to bag" };
     }
   }
 }

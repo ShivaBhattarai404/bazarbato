@@ -30,7 +30,6 @@ async function addCoupon(formData) {
   const validUntil = new Date(formData.get("end-date"));
   const freeShipping = formData.get("free-shipping") === "true";
   const forNewCustomers = formData.get("new-customers") === "true";
-  console.log("discount type", formData.get("type"));
   const discountType = formData.get("type")?.toUpperCase();
   const applicableOn = formData.get("apply-on");
   const scope = formData.get("scope");
@@ -49,7 +48,6 @@ async function addCoupon(formData) {
     revalidatePath("/admin/new-attribute");
     if (_id) {
       await DiscountCoupon.findByIdAndUpdate(_id, {
-        code,
         description,
         isActive,
         usageLimit,
@@ -97,8 +95,7 @@ async function fetchAllProductsAndCategories() {
       Product.aggregate([
         {
           $project: {
-            code: "$_id", // Rename _id to "code"
-            _id: 0, // Remove the original _id field
+            _id: 1, // Remove the original _id field
             name: 1, // Keep other fields as needed
             image: { $arrayElemAt: ["$images", 0] }, // Keep only the first image
           },
@@ -107,8 +104,7 @@ async function fetchAllProductsAndCategories() {
       Category.aggregate([
         {
           $project: {
-            code: "$_id", // Rename _id to "code"
-            _id: 0, // Remove the original _id field
+            _id: 1, // Remove the original _id field
             name: 1, // Keep other fields as needed
             image: "$banner",
           },
@@ -121,6 +117,7 @@ async function fetchAllProductsAndCategories() {
   }
 }
 
+// fetch single coupon by coupon code
 async function fetchCoupon(code) {
   if (!code) return null;
   try {
@@ -142,11 +139,11 @@ export default async function NewCoupon({
 
   return (
     <NewCouponForm
-      addCoupon={addCoupon}
-      checkIfCouponExists={checkIfCouponExists}
-      products={products}
-      categories={categories}
       coupon={coupon}
+      products={products}
+      addCoupon={addCoupon}
+      categories={categories}
+      checkIfCouponExists={checkIfCouponExists}
     />
   );
 }

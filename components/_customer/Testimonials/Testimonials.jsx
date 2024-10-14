@@ -25,7 +25,7 @@ export default function Testimonials() {
             width={80}
             height={80}
           />
-          <h2 className={styles.name}>Prawesh Gautam</h2>
+          <h2 className={styles.name}>Shiva Bhattarai</h2>
           <p className={styles.position}>CEO & Founder</p>
           <FaQuoteLeft className={styles.quotes} />
           <p className={styles.message}>

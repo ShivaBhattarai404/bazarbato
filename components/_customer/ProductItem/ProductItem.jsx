@@ -8,7 +8,6 @@ import Image from "next/image";
 
 export default function ProductItem({ className, product, ...rest }) {
   if (!product) return <></>;
-
   return (
     <div className={[styles.product, className].join(" ")} {...rest}>
       <Link href={`/product/${product?.url_key}`}>
@@ -33,8 +32,8 @@ export default function ProductItem({ className, product, ...rest }) {
           <FaStar />
         </div>
         <span className={styles.price}>
-          <b>Rs {product?.price || 450}</b>
-          <del>Rs 1200</del>
+          <b>Rs {product?.price}</b>
+          <del>Rs {Math.floor(product?.price * 1.46)}</del>
         </span>
       </Link>
     </div>

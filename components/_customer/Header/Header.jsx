@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 import {
   IoPersonOutline,
@@ -16,9 +17,16 @@ import logoIcon from "@/public/images/icon.png";
 import styles from "./Header.module.css";
 
 export default function Header() {
-  const itemsCountOnBag = useSelector((state) => state.bag.totalQuantity);
   const user = useSelector((state) => state.user.user);
-  // const itemsCountOnBag = 0;
+  const router = useRouter();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const query = e.target.query.value;
+    if (query) {
+      router.push(`/search?query=${query}`);
+    }
+  };
 
   return (
     <header className={styles.header}>
@@ -37,7 +45,7 @@ export default function Header() {
           width={45}
         />
       </Link>
-      <form className={styles.search_container} action="/search" method="GET">
+      <form className={styles.search_container} onSubmit={handleSearch}>
         <input
           type="text"
           name="query"
@@ -55,8 +63,8 @@ export default function Header() {
             <Image
               className={styles.avatar}
               // src={user.avatar}
-              src="/images/testimonial-1.jpg"
-              alt="Premps"
+              src={user?.avatar}
+              alt={user?.firstName}
               width={35}
               height={35}
             />
@@ -69,7 +77,7 @@ export default function Header() {
           <IoHeartOutline className={styles.icon} />
         </Link>
         <Link href="/bag">
-          <span className={styles.cart_count}>{itemsCountOnBag}</span>
+          {/* <span className={styles.cart_count}>0</span> */}
           <IoBagHandleOutline className={styles.icon} />
         </Link>
       </div>

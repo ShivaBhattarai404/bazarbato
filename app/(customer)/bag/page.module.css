@@ -37,8 +37,10 @@
 .product:last-child {
   border-bottom: none;
 }
-.productImage {
+.productImageWrapper {
   grid-area: image;
+}
+.productImage {
   width: 5rem;
   height: 5rem;
   object-fit: contain;

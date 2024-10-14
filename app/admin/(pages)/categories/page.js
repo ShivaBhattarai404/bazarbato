@@ -10,14 +10,14 @@ import { deepCopy } from "@/helpers/utils";
 import { deleteFile } from "@/helpers/crud";
 import Product from "@/models/Product";
 
-async function fetchCategories() {
+async function fetchCategories(skip, limit) {
   await dbConnect();
   try {
     // const categories = await Category.find({});
-    const categories = await Category.aggregate([
+    const result = await Category.aggregate([
       {
         $lookup: {
-          from: "products",
+          from: "products", // Assuming your products collection is named 'products'
           localField: "_id",
           foreignField: "category",
           as: "products",
@@ -33,9 +33,23 @@ async function fetchCategories() {
           productCount: { $size: "$products" },
         },
       },
+      {
+        $facet: {
+          paginatedResults: [
+            { $skip: skip }, // Skip for pagination
+            { $limit: limit }, // Limit the number of results
+          ],
+          totalCount: [
+            { $count: "count" }, // Count total number of documents
+          ],
+        },
+      },
     ]);
-    return deepCopy(categories);
-  } catch {
+
+    const categories = result[0].paginatedResults;
+    const totalCount = result[0].totalCount[0]?.count || 0; // If no categories, totalCount will be 0
+    return deepCopy({ categories, totalCount });
+  } catch (error) {
     return [];
   }
 }
@@ -82,8 +96,12 @@ async function deleteCategories(categoryIDs) {
   }
 }
 
-export default async function ProductsPage() {
-  const categories = await fetchCategories();
+export default async function ProductsPage({
+  searchParams: { page = 1, perPage = 10 },
+}) {
+  const skip = (page - 1) * +perPage;
+  const limit = +perPage;
+  const { categories, totalCount } = await fetchCategories(skip, limit);
   return (
     <div className={styles.container}>
       <div className={styles.title}>
@@ -93,8 +111,9 @@ export default async function ProductsPage() {
         </Link>
       </div>
       <CategoryTable
-        categories={categories}
+        categories={categories || []}
         deleteCategories={deleteCategories}
+        totalCount={totalCount}
       />
     </div>
   );

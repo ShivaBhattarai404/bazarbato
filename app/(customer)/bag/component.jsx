@@ -3,12 +3,13 @@
 // core module imports
 import Link from "next/link";
 import Image from "next/image";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
 // reducer actions
 import { addOrder } from "@/app/reducers/order";
+import { resetError, setError } from "@/app/reducers/utils";
 
 // react icons
 import { ImSpinner2, ImSpinner9 } from "react-icons/im";
@@ -32,7 +33,10 @@ export default function BagComponent({
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [couponLoading, setCouponLoading] = useState(false);
-  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setBag(initialBag);
+  }, [initialBag]);
 
   const handleCheckout = () => {
     dispatch(addOrder(bag));
@@ -40,21 +44,35 @@ export default function BagComponent({
   };
 
   const itemRemoveHandler = async (itemId) => {
-    const response = await removeFromBag(itemId);
+    try {
+      dispatch(resetError());
+      setLoading(true);
+      const { error, updatedBag } = await removeFromBag(itemId);
+      if (error) {
+        dispatch(setError(error));
+      } else {
+        setBag(updatedBag);
+      }
+    } catch (error) {
+      dispatch(setError("Something went wrong"));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const itemQuantityChangeHandler = async (item, option) => {
     if (loading || (item.quantity == 1 && option === "DECREMENT")) return;
     setLoading(true);
+    dispatch(resetError());
     try {
       const { error, updatedBag } = await changeItemQuantity(item._id, option);
       if (error) {
-        setError(error);
+        dispatch(setError(error));
       } else {
         setBag(updatedBag);
       }
     } catch {
-      setError("Something went wrong");
+      dispatch(setError("Something went wrong"));
     } finally {
       setLoading(false);
     }
@@ -67,15 +85,16 @@ export default function BagComponent({
     const couponCode = e.target.couponCode.value.toUpperCase();
     if (!couponCode) return;
     setCouponLoading(true);
+    dispatch(resetError());
     try {
       const { error, updatedBag } = await applyCoupon(couponCode);
       if (error) {
-        setError(error);
+        dispatch(setError(error));
       } else {
         setBag(updatedBag);
       }
     } catch {
-      setError("Something went wrong");
+      dispatch(setError("Something went wrong"));
     } finally {
       setCouponLoading(false);
     }
@@ -83,15 +102,16 @@ export default function BagComponent({
 
   const removeCouponFromBag = async () => {
     setCouponLoading(true);
+    dispatch(resetError());
     try {
       const { error, updatedBag } = await applyCoupon(null);
       if (error) {
-        setError(error);
+        dispatch(setError(error));
       } else {
         setBag(updatedBag);
       }
     } catch {
-      setError("Something went wrong");
+      dispatch(setError("Something went wrong"));
     } finally {
       setCouponLoading(false);
     }
@@ -106,7 +126,10 @@ export default function BagComponent({
           <div className={styles.bag}>
             {bag.items.map((item) => (
               <div className={styles.product} key={item._id}>
-                <Link href={`/product/${item.url_key}`}>
+                <Link
+                  className={styles.productImageWrapper}
+                  href={`/product/${item.url_key}`}
+                >
                   <Image
                     className={styles.productImage}
                     src={item.image}
@@ -152,7 +175,7 @@ export default function BagComponent({
                     className={styles.removeButton}
                     onClick={() => itemRemoveHandler(item._id)}
                   >
-                    Remove
+                    {loading ? <QuantityLoadingSpinner /> : "Remove"}
                   </button>
                 </div>
               </div>
