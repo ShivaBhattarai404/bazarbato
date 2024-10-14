@@ -10,8 +10,13 @@ import CheckBox from "@/components/CheckBox/CheckBox";
 import Modal from "@/components/_admin/Modal/Modal";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/_admin/Spinner/Spinner";
+import TableFoot from "@/components/_admin/TableFoot/TableFoot";
 
-export default function AttributesClientPage({ attributes, deleteAttributes }) {
+export default function AttributesClientPage({
+  attributes,
+  deleteAttributes,
+  attributesCount,
+}) {
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [modal, setModal] = useState(false);
   const [error, setError] = useState("");
@@ -149,6 +154,7 @@ export default function AttributesClientPage({ attributes, deleteAttributes }) {
                 </tr>
               ))}
           </tbody>
+          <TableFoot total={attributesCount} />
         </table>
       </Card>
     </div>

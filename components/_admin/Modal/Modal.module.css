@@ -1,6 +1,7 @@
 /* Modal styles */
 .modal {
-  width: 32rem;
+  width: 80vw;
+  max-width: 32rem;
   height: 11rem;
   overflow: hidden;
 }
@@ -48,4 +49,17 @@
   color: var(--text);
   border: 1px solid var(--divider);
   box-shadow: none;
+}
+
+/* LOADING SPINNER */
+.loading {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

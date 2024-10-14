@@ -1,137 +1,52 @@
 import Link from "next/link";
 import styles from "./Category.module.css";
-// import "./Category.css";
+import dbConnect from "@/helpers/dbConnect";
+import SiteContent from "@/models/SiteContent";
+import { deepCopy } from "@/helpers/utils";
+import Image from "next/image";
 
-export default function Category() {
+async function getCategoryBar() {
+  try {
+    await dbConnect();
+    const { categories } = await SiteContent.find({
+      subject: "FEATURED_CATEGORIES_BELOW_BANNER",
+    })
+      .populate("categories", "name code banner isParent")
+      .lean();
+
+    return deepCopy(categories);
+  } catch (error) {
+    return [];
+  }
+}
+
+export default async function Category() {
+  const categories = await getCategoryBar();
   return (
     <div className={`${styles.category} has-scrollbar`}>
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img src="./images/icons/dress.svg" alt="dress & frock" width="30" />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>Dress & frock</h3>
-            <p className={styles.category_item_amount}>(53)</p>
+      {categories?.map((category) => (
+        <div key={category._id} className={styles.category_item}>
+          <div className={styles.category_img_box}>
+            <Image width={30} src={category.banner} alt={category.name} />
           </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
-        </div>
-      </div>
-
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img src="./images/icons/coat.svg" alt="winter wear" width="30" />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>Winter wear</h3>
-            <p className={styles.category_item_amount}>(58)</p>
+          <div className={styles.category_content_box}>
+            <div className={styles.category_content_flex}>
+              <h3 className={styles.category_item_title}>{category.name}</h3>
+              <p className={styles.category_item_amount}>(53)</p>
+            </div>
+            <Link
+              href={
+                category.isParent
+                  ? `/category?code=${category.code}`
+                  : `/search?category=${category.code}`
+              }
+              className={styles.category_btn}
+            >
+              Show all
+            </Link>
           </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
         </div>
-      </div>
-
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img
-            src="./images/icons/glasses.svg"
-            alt="glasses & lens"
-            width="30"
-          />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>Glasses & lens</h3>
-            <p className={styles.category_item_amount}>(68)</p>
-          </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
-        </div>
-      </div>
-
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img
-            src="./images/icons/shorts.svg"
-            alt="shorts & jeans"
-            width="30"
-          />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>Shorts & jeans</h3>
-            <p className={styles.category_item_amount}>(84)</p>
-          </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
-        </div>
-      </div>
-
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img src="./images/icons/tee.svg" alt="t-shirts" width="30" />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>T-shirts</h3>
-            <p className={styles.category_item_amount}>(35)</p>
-          </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
-        </div>
-      </div>
-
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img src="./images/icons/jacket.svg" alt="jacket" width="30" />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>Jacket</h3>
-            <p className={styles.category_item_amount}>(16)</p>
-          </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
-        </div>
-      </div>
-
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img src="./images/icons/watch.svg" alt="watch" width="30" />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>Watch</h3>
-            <p className={styles.category_item_amount}>(27)</p>
-          </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
-        </div>
-      </div>
-
-      <div className={styles.category_item}>
-        <div className={styles.category_img_box}>
-          <img src="./images/icons/hat.svg" alt="hat & caps" width="30" />
-        </div>
-        <div className={styles.category_content_box}>
-          <div className={styles.category_content_flex}>
-            <h3 className={styles.category_item_title}>Hat & caps</h3>
-            <p className={styles.category_item_amount}>(39)</p>
-          </div>
-          <Link href="#" className={styles.category_btn}>
-            Show all
-          </Link>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

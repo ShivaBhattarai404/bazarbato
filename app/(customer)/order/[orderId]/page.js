@@ -1,6 +1,7 @@
 // core react and nextjs modules
 import Link from "next/link";
 import Image from "next/image";
+import { Fragment } from "react";
 import { notFound } from "next/navigation";
 
 // database models
@@ -19,8 +20,6 @@ import Path from "@/components/_customer/Path/Path";
 // helper functions
 import dbConnect from "@/helpers/dbConnect";
 import { capitalize, deepCopy, formatDate } from "@/helpers/utils";
-import tshirt from "@/public/images/p1.png";
-import { Fragment } from "react";
 
 async function fetchOrderFromOrderId(orderID) {
   if (!orderID) return null;

@@ -1,11 +1,11 @@
 // core modules
+import Order from "@/models/Order";
 import crypto from "crypto";
 
 // this function will create a signature from a string
 export function createSignatureForEsewaPayment(data) {
-  const secret = "8gBm/:&EnhH.1/q";
   const hash = crypto
-    .createHmac("sha256", secret)
+    .createHmac("sha256", process.env.ESEWA_SECRET_KEY)
     .update(data)
     .digest("base64");
   return hash;
@@ -26,5 +26,15 @@ export function decodeEsewaPaymentSuccessToken(token) {
     return decodedToken;
   } else {
     return null;
+  }
+}
+
+export async function markOrderAsPaid(orderId) {
+  try {
+    await dbConnect();
+    await Order.findByIdAndUpdate(orderId, { paymentStatus: "PAID" });
+    return true;
+  } catch {
+    return false;
   }
 }

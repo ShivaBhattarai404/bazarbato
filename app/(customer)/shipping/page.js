@@ -1,6 +1,6 @@
 // helper functions
 import { deepCopy } from "@/helpers/utils";
-import { getUser } from "@/helpers/crud";
+import { getUser } from "@/helpers/auth";
 import dbConnect from "@/helpers/dbConnect";
 import Bag, {
   calculateDiscountAmountForEntireOrder,

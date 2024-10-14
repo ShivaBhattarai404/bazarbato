@@ -1,5 +1,3 @@
-import order from "@/app/reducers/order";
-import { convertMinutesToMilliseconds } from "@/helpers/utils";
 import mongoose, { Schema } from "mongoose";
 import DiscountCoupon from "./DiscountCoupon";
 const { ObjectId } = Schema.Types;
@@ -88,65 +86,44 @@ const orderSchema = new Schema({
     default: "PROCESSING",
   }, // Current status of the order
   placedAt: { type: Date, default: Date.now }, // Date and time the order was placed
+  createdAt: { type: Date, default: Date.now }, // Date and time the order was created
   cancelledAt: { type: Date, required: false }, // Date the order was cancelled (optional)
-  expiresAt: {
-    type: Date,
-    default: () => Date.now() + convertMinutesToMilliseconds(0.5),
-  }, // Expire after 5 minutes
 });
+
+orderSchema.index(
+  { createdAt: 1 },
+  {
+    expireAfterSeconds: 3600, // Automatically delete orders after 1 hour
+    partialFilterExpression: { paymentStatus: "PENDING" }, // Only delete pending orders
+  }
+);
 
 // Post-save hook to increase coupon usage counts
 orderSchema.post("save", async function (doc) {
   // This code runs after the order is saved
   if (doc.paymentStatus !== "PAID") return;
 
+  let orderCouponPromise = Promise.resolve();
   if (doc.coupon) {
     // Increment usage count for order-level coupon
-    await DiscountCoupon.findOneAndUpdate(
-      { code: doc.coupon },
-      { $inc: { usageCount: 1 } }
-    );
+    orderCouponPromise = DiscountCoupon.findOneAndUpdate({
+      code: doc.coupon,
+      $inc: { usageCount: 1 },
+    });
   }
 
   // Increment usage count for product-level coupons
-  for (const item of doc.items) {
+  const promises = doc.items.map((item) => {
     if (item.coupon) {
-      await DiscountCoupon.findOneAndUpdate(
-        { code: item.coupon },
-        {
-          $inc: { usageCount: item.quantity },
-        }
-      );
+      return DiscountCoupon.findOneAndUpdate({
+        code: item.coupon,
+        $inc: { usageCount: 1 },
+      });
+    } else {
+      return Promise.resolve();
     }
-  }
-  console.log(`Coupon usage counts incremented for order ${doc._id}`);
+  });
+  await Promise.all([...promises, orderCouponPromise]);
 });
-
-// Post-remove hook to decrease coupon usage counts
-// orderSchema.post("remove", async function (doc) {
-//   // This code runs after the order is deleted (either manually or via TTL)
-//   if (doc.coupon) {
-//     // Decrement usage count for order-level coupon
-//     await DiscountCoupon.findOneAndUpdate(
-//       { code: doc.coupon },
-//       {
-//         $inc: { usageCount: -1 },
-//       }
-//     );
-//   }
-
-//   // Decrement usage count for product-level coupons
-//   for (const item of doc.items) {
-//     if (item.coupon) {
-//       await DiscountCoupon.findOneAndUpdate(
-//         { code: item.coupon },
-//         {
-//           $inc: { usageCount: -1 * item.quantity },
-//         }
-//       );
-//     }
-//   }
-//   console.log(`Coupon usage counts decremented for order ${doc._id}`);
-// });
 
 export default mongoose.models.Order || mongoose.model("Order", orderSchema);

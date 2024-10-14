@@ -13,11 +13,13 @@ import Modal from "@/components/_admin/Modal/Modal";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import Spinner from "@/components/_admin/Spinner/Spinner";
+import TableFoot from "@/components/_admin/TableFoot/TableFoot";
 
 export default function ProductTable({
   products,
   deleteProducts,
   disableProducts,
+  productsCount,
 }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [modalType, setModalType] = useState("");
@@ -195,39 +197,7 @@ export default function ProductTable({
               ))}
           </tbody>
 
-          <tfoot className={styles.tableFoot}>
-            <tr>
-              <td colSpan={2} className={styles.product_per_page}>
-                Show
-                <input
-                  className={formStyles.input}
-                  type="number"
-                  defaultValue="10"
-                />
-                per page
-              </td>
-              <td colSpan={4} className={styles.pagination}>
-                <button className={styles.first}>
-                  <AiOutlineDoubleLeft />
-                </button>
-                <button className={styles.prev}>
-                  <HiOutlineChevronLeft />
-                </button>
-                <input
-                  className={formStyles.input}
-                  type="number"
-                  defaultValue="1"
-                />
-                <button className={styles.next}>
-                  <HiOutlineChevronRight />
-                </button>
-                <button className={styles.last}>
-                  <AiOutlineDoubleRight />
-                </button>
-                <span>{products ? products.length : 0} records</span>
-              </td>
-            </tr>
-          </tfoot>
+          <TableFoot total={productsCount} />
         </table>
       </Card>
     </Fragment>

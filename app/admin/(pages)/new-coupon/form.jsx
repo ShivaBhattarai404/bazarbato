@@ -102,10 +102,10 @@ function reducer(state, action) {
 
 export default function NewCouponForm({
   addCoupon,
-  checkIfCouponExists,
   coupon,
   products,
   categories,
+  checkIfCouponExists,
 }) {
   const router = useRouter();
   const [errors, dispatch] = useReducer(
@@ -153,7 +153,7 @@ export default function NewCouponForm({
     }, 1000);
 
     return () => clearTimeout(timerID);
-  }, [couponCode]);
+  }, [couponCode, coupon]);
 
   // function to handle change in coupon code
   const handleCouponCodeChange = (e) => {
@@ -270,10 +270,11 @@ export default function NewCouponForm({
             Status
           </label>
           <Toggle
-            defaultChecked={coupon?.isActive}
+            defaultChecked={coupon ? coupon?.isActive : true}
             id="new-coupon-status"
             className={styles.statusToggle}
             name="status"
+            value="true"
           />
 
           <div className={styles.amount_and_date}>
@@ -401,7 +402,6 @@ export default function NewCouponForm({
                 className={[styles.discountTypeOption, "mr-1"].join(" ")}
                 name="apply-on"
                 value="CATEGORY"
-                disabled={coupon}
                 checked={couponApplyOn === "CATEGORY"}
                 onChange={() => setCouponApplyOn("CATEGORY")}
               >
@@ -411,7 +411,6 @@ export default function NewCouponForm({
                 className={styles.discountTypeOption}
                 name="apply-on"
                 value="PRODUCT"
-                disabled={coupon}
                 checked={couponApplyOn === "PRODUCT"}
                 onChange={() => setCouponApplyOn("PRODUCT")}
               >
@@ -432,7 +431,6 @@ export default function NewCouponForm({
                 className={[styles.discountTypeOption, "mr-1"].join(" ")}
                 name="scope"
                 value="INDIVIDUAL"
-                disabled={coupon}
                 checked={couponScope === "INDIVIDUAL"}
                 onChange={() => setCouponScope("INDIVIDUAL")}
               >
@@ -442,7 +440,6 @@ export default function NewCouponForm({
                 className={styles.discountTypeOption}
                 name="scope"
                 value="ENTIRE_ORDER"
-                disabled={coupon}
                 checked={couponScope === "ENTIRE_ORDER"}
                 onChange={() => setCouponScope("ENTIRE_ORDER")}
               >
@@ -461,6 +458,7 @@ export default function NewCouponForm({
               step={0.01}
               type="number"
               name="discount-value"
+              disabled={coupon}
               defaultValue={coupon?.discountValue}
               onChange={(e) =>
                 dispatch({
@@ -484,11 +482,13 @@ export default function NewCouponForm({
                 Maximum Discount Amount
               </label>
               <input
-                id="new-coupon-max-amount"
-                className={`${formStyles.input} ${styles.max_discount_amount}`}
-                type="number"
-                name="max-discount-amount"
                 min={1}
+                type="number"
+                disabled={coupon}
+                name="max-discount-amount"
+                id="new-coupon-max-amount"
+                placeholder="Max discount amount"
+                className={`${formStyles.input} ${styles.max_discount_amount}`}
                 defaultValue={coupon?.maxDiscountAmount}
                 onChange={(e) =>
                   dispatch({
@@ -496,7 +496,6 @@ export default function NewCouponForm({
                     payload: e.target.value,
                   })
                 }
-                placeholder="Max discount amount"
               />
               <InputError errors={errors} name="maxDiscountAmount" />
             </Fragment>
@@ -548,7 +547,7 @@ export default function NewCouponForm({
 
         <Card className={`${styles.footer} ${styles.card}`}>
           <button className={styles.saveButton} type="submit">
-            Save
+            {coupon ? "Update" : "Save"}
           </button>
           <button className={styles.cancelButton} type="reset">
             Reset

@@ -459,7 +459,7 @@ export default function NotFoundPage() {
             />
           </g>
         </svg>
-        <h1 className="message">Page you are looking for does not exits</h1>
+        <h1 className="message">Page you are looking for does not exists</h1>
         <div className="buttons">
           {/* <button className="go_to_home">Go back</button> */}
           <Link href="/">

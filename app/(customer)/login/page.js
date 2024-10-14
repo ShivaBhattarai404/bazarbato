@@ -1,13 +1,22 @@
 // core modules
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-
-import LoginForm from "./form";
-import { generateJwt } from "@/helpers/jwt";
-import { EMAIL_REGEX } from "@/Constants/validation";
-import User from "@/models/User";
-import dbConnect from "@/helpers/dbConnect";
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+
+// helper functions
+import { getUser, resendVerificationEmail } from "@/helpers/auth";
+import { generateJwt } from "@/helpers/jwt";
+import dbConnect from "@/helpers/dbConnect";
+
+// database models
+import User from "@/models/User";
+
+// constants
+import { EMAIL_REGEX } from "@/Constants/validation";
+
+// custom components
+import LoginForm from "./form";
 
 export const metadata = {
   title: "Login",
@@ -49,9 +58,17 @@ async function handleSubmit(formData) {
   }
   try {
     // if valid, check if email exists in database
-    const user = await User.findOne({ email }).select("+password").lean();
+    const user = await User.findOne({ email }).lean();
     if (!user) {
       return { login: false, error: "Email doesn't exists" };
+    }
+
+    // if user exists but if user has not been verified then resend verfication email and redirect to verify page
+    if (!user.emailVerified) {
+      await resendVerificationEmail(email);
+      const error = new Error("REDIRECT");
+      error.URL = `/verify?email=${email}`;
+      throw error;
     }
 
     // Check if password is correct
@@ -65,7 +82,8 @@ async function handleSubmit(formData) {
     const token = await generateJwt(
       {
         _id: user._id,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         gender: user.gender,
         phone: user.phone,
@@ -99,9 +117,16 @@ async function handleSubmit(formData) {
       },
     };
   } catch (error) {
+    if (error.message === "REDIRECT") {
+      redirect(error.URL);
+    }
     return { login: false, error: "Server Error. Please try again." };
   }
 }
-export default function Login() {
+export default async function Login() {
+  const user = await getUser();
+  if (user) {
+    redirect("/");
+  }
   return <LoginForm login={handleSubmit} />;
 }

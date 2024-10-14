@@ -6,10 +6,17 @@ import { deepCopy } from "@/helpers/utils";
 import Image from "next/image";
 import noResultsFound from "@/public/no-results-found.png";
 import SearchFilter from "./search-filter";
+import Category from "@/models/Category";
 
-async function getProducts(query = "", alphabet_sort, price_sort, min, max) {
-  query = query.trim();
-  if (query.length === 0) return [];
+async function getProducts({
+  min,
+  max,
+  price_sort,
+  query = "",
+  category = "",
+  alphabet_sort,
+}) {
+  query = query?.trim?.();
   alphabet_sort = +alphabet_sort === 2 ? -1 : 1;
   price_sort = +price_sort === 2 ? 1 : -1;
   min = isNaN(min) ? 0 : +min;
@@ -17,8 +24,15 @@ async function getProducts(query = "", alphabet_sort, price_sort, min, max) {
 
   try {
     await dbConnect();
+    if (category) {
+      category = await Category.findOne({ code: category })
+        .lean()
+        .select("_id");
+      if (!category) return [];
+    }
+    if (!category && query?.length === 0) return [];
 
-    const products = await Product.find({
+    let filter = {
       $or: [
         { name: { $regex: query, $options: "i" } },
         { description: { $regex: query, $options: "i" } },
@@ -27,7 +41,11 @@ async function getProducts(query = "", alphabet_sort, price_sort, min, max) {
         { url_key: { $regex: query, $options: "i" } },
       ],
       price: { $gte: min, $lte: max },
-    })
+    };
+    if (category) {
+      filter = { ...filter, category };
+    }
+    const products = await Product.find(filter)
       .sort({ name: alphabet_sort, price: price_sort })
       .populate("category", "name")
       .select("name price images category url_key rating")
@@ -42,32 +60,40 @@ async function getProducts(query = "", alphabet_sort, price_sort, min, max) {
 }
 
 export default async function Search({
-  searchParams: { query, alphabet_sort, price_sort, min, max },
+  searchParams: {
+    query = "",
+    alphabet_sort,
+    price_sort,
+    min,
+    max,
+    category = "",
+  },
 }) {
-  query = query.trim();
+  query = decodeURI(query)?.trim?.();
   alphabet_sort = +alphabet_sort === 2 ? 2 : 1;
   price_sort = +price_sort === 2 ? 2 : 1;
   min = isNaN(min) ? 0 : +min;
   max = isNaN(max) || max == 0 ? Infinity : +max;
 
-  const products = await getProducts(
-    query,
-    alphabet_sort,
-    price_sort,
+  const products = await getProducts({
     min,
-    max
-  );
+    max,
+    query,
+    price_sort,
+    alphabet_sort,
+    category,
+  });
 
+  const title = category
+    ? `${products?.length} products of ${category}`
+    : `${products?.length} results for '${query}'`;
   return (
     <section className={styles.section}>
-      {products?.length > 0 && (
-        <h1 className={styles.heading}>
-          {products?.length} results for &apos;{query}&apos;
-        </h1>
-      )}
+      {products?.length > 0 && <h1 className={styles.heading}>{title}</h1>}
       <SearchFilter
         className={styles.filter}
         query={query}
+        category={category}
         alphabet_sort={alphabet_sort}
         price_sort={price_sort}
         min={min}

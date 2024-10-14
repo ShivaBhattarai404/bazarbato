@@ -11,45 +11,6 @@ import { useSelector } from "react-redux";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-// const ORDER = {
-//   user: "66dc175f0ff272e3689d913b",
-//   items: [
-//     {
-//       product: "66de63a5cf925a675f2a7ed5",
-//       name: "Smart watches Vital Plus",
-//       sku: "SMART_WATCH",
-//       image:
-//         "https://premps.nyc3.digitaloceanspaces.com/premps/products/smart-watch/1725850533617-watch-1.jpg",
-//       price: 5000,
-//       category: "66de6321cf925a675f2a7eae",
-//       quantity: 1,
-//       coupon: null,
-//       discountAmount: 0,
-//       total: 5000,
-//       url_key: "smart-watch",
-//       discountAmount: 0,
-//     },
-//   ],
-//   totalItems: 1,
-//   total: 5000,
-//   coupon: null,
-//   discountAmount: 0,
-//   shipping: {
-//     name: "Shiva Bhattarai",
-//     country: "India",
-//     province: "Gujarat",
-//     district: "Ahmedabad",
-//     city: "Navrangpura",
-//     address: "Vrundhavan",
-//     postalCode: "390019",
-//     phone: "09621197817",
-//     alternativePhone: "09621197817",
-//     customerNote: "ma ghara nahuna ni sakxu",
-//     deliveryCharge: 445,
-//   },
-//   grossTotal: 5445,
-// };
-
 export default function PaymentForm({ order, paymentData }) {
   return (
     <Fragment>
@@ -72,10 +33,11 @@ export default function PaymentForm({ order, paymentData }) {
         <form
           action="https://rc-epay.esewa.com.np/api/epay/main/v2/form"
           method="POST"
+          encType="application/x-www-form-urlencoded"
         >
           {paymentData?.ESEWA &&
             Object.entries(paymentData.ESEWA).map(([key, value]) => (
-              <input key={key} name={key} hidden value={value} disabled />
+              <input key={key} name={key} hidden value={value} />
             ))}
           <button className={styles.continueBtn}>Pay through Esewa</button>
         </form>

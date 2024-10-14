@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 
 const SECRET = process.env.JWT_SECRET;
 
-export async function generateJwt(data, expiresIn) {
-  const token = jwt.sign(data, SECRET, { expiresIn: expiresIn || "5m" });
+export async function generateJwt(data, expiresIn = "5m") {
+  const token = jwt.sign(data, SECRET, { expiresIn: expiresIn });
   return token;
 }
 

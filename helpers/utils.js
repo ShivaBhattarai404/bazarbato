@@ -1,4 +1,7 @@
+// helper functions
+// These function are pure function so they can be used in both client and server side
 export function deepCopy(obj) {
+  if (!obj) return null;
   return JSON.parse(JSON.stringify(obj));
 }
 

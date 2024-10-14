@@ -21,8 +21,8 @@ import { LiaTimesCircleSolid } from "react-icons/lia";
 
 import styles from "./page.module.css";
 import Quantity from "@/components/_customer/Quantity/Quantity";
-import { set } from "mongoose";
 import Path from "@/components/_customer/Path/Path";
+import { resetError, setError } from "@/app/reducers/utils";
 
 // function to get the active attribute initially when the page loads
 // it is a pure function
@@ -48,6 +48,7 @@ export default function PageComponent({ product, addToBag, applyCoupon }) {
   const [discount, setDiscount] = useState(0);
   const [coupon, setCoupon] = useState("");
   const [couponError, setCouponError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // function to slide image to left when left arrow is clicked
   const leftArrowClickHandler = () => {
@@ -65,6 +66,13 @@ export default function PageComponent({ product, addToBag, applyCoupon }) {
 
   // function to add product to bag
   const addToBagHandler = async () => {
+    if (loading) return;
+    dispatch(resetError());
+
+    if (!user) {
+      dispatch(setError("Please login to add this item to bag."));
+      return;
+    }
     const selectedProduct = {
       _id: product._id,
       sku: product.sku,
@@ -72,8 +80,27 @@ export default function PageComponent({ product, addToBag, applyCoupon }) {
       quantity: quantity,
       attributes: selectedAttribute,
     };
-    await addToBag(selectedProduct);
-    dispatch(add({ product, selectedAttribute }));
+    try {
+      setLoading(true);
+      const response = await addToBag(selectedProduct);
+      if (response?.error) {
+        dispatch(setError(response.error));
+        return;
+      } else {
+        dispatch(add({ product, selectedAttribute }));
+        dispatch(
+          setError({
+            message: "Product added to bag.",
+            title: "Success",
+            status: true,
+          })
+        );
+      }
+    } catch (error) {
+      dispatch(setError("Something went wrong. Please try again later."));
+    } finally {
+      setLoading(false);
+    }
   };
 
   // function to apply coupon
@@ -116,8 +143,9 @@ export default function PageComponent({ product, addToBag, applyCoupon }) {
 
   // buy now button click handler
   const buyNowHandler = () => {
+    dispatch(resetError());
     if (!user) {
-      router.push("/login");
+      dispatch(setError("Please login to order this item."));
       return;
     }
     const order = {

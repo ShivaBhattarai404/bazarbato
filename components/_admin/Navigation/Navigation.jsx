@@ -24,7 +24,9 @@ const Navigation = ({ children }) => {
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
-        <Image src={logo} alt="logo" width={120} height={35} />
+        <Link href="/admin/dashboard">
+          <Image src={logo} alt="logo" width={120} height={35} />
+        </Link>
         <div className={styles.profilePic}>D</div>
       </header>
       <nav className={styles.nav}>
@@ -55,7 +57,7 @@ const Navigation = ({ children }) => {
         <div className={styles.links}>
           <span>Catalog</span>
           <ul>
-          <li className={checkActive("/products")}>
+            <li className={checkActive("/products")}>
               <Link href="/admin/products">
                 <FaArchive />
                 Products
@@ -85,7 +87,7 @@ const Navigation = ({ children }) => {
         <div className={styles.links}>
           <span>Sale</span>
           <ul>
-          <li className={checkActive("/orders")}>
+            <li className={checkActive("/orders")}>
               <Link href="/admin/orders">
                 <RiBox3Fill />
                 Orders
@@ -97,7 +99,7 @@ const Navigation = ({ children }) => {
         <div className={styles.links}>
           <span>Customer</span>
           <ul>
-          <li className={checkActive("/customers")}>
+            <li className={checkActive("/customers")}>
               <Link href="/admin/customers">
                 <IoPeopleSharp />
                 Customers
@@ -109,7 +111,7 @@ const Navigation = ({ children }) => {
         <div className={styles.links}>
           <span>Promotion</span>
           <ul>
-          <li className={checkActive("/coupons")}>
+            <li className={checkActive("/coupons")}>
               <Link href="/admin/coupons">
                 <IoIosGift />
                 Coupons
@@ -121,7 +123,7 @@ const Navigation = ({ children }) => {
         <div className={styles.links}>
           <span>Site</span>
           <ul>
-          <li className={checkActive("/setting")}>
+            <li className={checkActive("/setting")}>
               <Link href="/admin/setting">
                 <IoMdSettings />
                 Setting

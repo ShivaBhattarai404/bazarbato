@@ -5,58 +5,43 @@ import Image from "next/image";
 import styles from "./ProductContainer.module.css";
 import { FaStar, FaStarHalf } from "react-icons/fa";
 
-import shoes from "@/public/images/products/1.jpg";
-import cloth1 from "@/public/images/products/clothes-1.jpg";
 import ProductItem from "../ProductItem/ProductItem";
 import CategorySidebar from "./CatgorySidebar";
 
-const DUMMY_NEW_ARRIVALS = [
-  {
-    name: "Relaxed short full sleeves",
-    image: cloth1,
-    category: "Clothes",
-    price: { before: 1200, after: 450 },
-  },
-  {
-    name: "Relaxed short full sleeves",
-    image: cloth1,
-    category: "Clothes",
-    price: { before: 1200, after: 450 },
-  },
-  {
-    name: "Relaxed short full sleeves",
-    image: cloth1,
-    category: "Clothes",
-    price: { before: 1200, after: 450 },
-  },
-  {
-    name: "Relaxed short full sleeves",
-    image: cloth1,
-    category: "Clothes",
-    price: { before: 1200, after: 450 },
-  },
-];
-
-export default function ProductContainer({ products }) {
+export default function ProductContainer({
+  products,
+  bestSellerProducts,
+  featuredCategories,
+  dealOfTheDay,
+}) {
   return (
     <div className={styles.product_container}>
-      <CategorySidebar className={styles.sidebar} />
+      <CategorySidebar
+        className={styles.sidebar}
+        featuredCategories={featuredCategories}
+        bestSellerProducts={bestSellerProducts}
+      />
       {/* NEW ARRIVAL PRODUCT LIST */}
       <div className={styles.product_showcase}>
         <h2 className={styles.showcase_title}>New Arrivals</h2>
         <ul className={styles.showcase_products}>
-          {DUMMY_NEW_ARRIVALS.map((product, index) => (
-            <li key={index} className={styles.showcase_product}>
-              <Link href="/product/shoe">
-                <Image src={cloth1} alt="shoes" width={70} height={70} />
+          {products.slice(0, 4).map((product) => (
+            <li key={product._id} className={styles.showcase_product}>
+              <Link href={product.url_key}>
+                <Image
+                  src={product.images[0]}
+                  alt={product.name}
+                  width={70}
+                  height={70}
+                />
                 <p className={styles.name}>{product.name}</p>
               </Link>
-              <Link href="/product/shoe">
-                <p className={styles.category_name}>{product.category}</p>
+              <Link href={`/search?category=${product.category.code}`}>
+                <p className={styles.category_name}>{product.category.name}</p>
               </Link>
               <span className={styles.price}>
-                <b>Rs {product.price.after}</b>
-                <del>Rs {product.price.before}</del>
+                <b>Rs {product.price}</b>
+                <del>Rs {product.price * 1.46}</del>
               </span>
             </li>
           ))}
@@ -67,18 +52,23 @@ export default function ProductContainer({ products }) {
       <div className={styles.product_showcase}>
         <h2 className={styles.showcase_title}>Trending</h2>
         <ul className={styles.showcase_products}>
-          {DUMMY_NEW_ARRIVALS.map((product, index) => (
-            <li key={index} className={styles.showcase_product}>
-              <Link href="/product/shoe">
-                <Image src={cloth1} alt="shoes" width={70} height={70} />
+          {products.slice(4, 8).map((product) => (
+            <li key={product._id} className={styles.showcase_product}>
+              <Link href={product.url_key}>
+                <Image
+                  src={product.images[0]}
+                  alt={product.name}
+                  width={70}
+                  height={70}
+                />
                 <p className={styles.name}>{product.name}</p>
               </Link>
-              <Link href="/product/shoe">
-                <p className={styles.category_name}>{product.category}</p>
+              <Link href={`/search?category=${product.category.code}`}>
+                <p className={styles.category_name}>{product.category.name}</p>
               </Link>
               <span className={styles.price}>
-                <b>Rs {product.price.after}</b>
-                <del>Rs {product.price.before}</del>
+                <b>Rs {product.price}</b>
+                <del>Rs {product.price * 1.46}</del>
               </span>
             </li>
           ))}
@@ -89,18 +79,23 @@ export default function ProductContainer({ products }) {
       <div className={styles.product_showcase}>
         <h2 className={styles.showcase_title}>Top rated</h2>
         <ul className={styles.showcase_products}>
-          {DUMMY_NEW_ARRIVALS.map((product, index) => (
-            <li key={index} className={styles.showcase_product}>
-              <Link href="/product/shoe">
-                <Image src={cloth1} alt="shoes" width={70} height={70} />
+          {products.slice(8, 12).map((product) => (
+            <li key={product._id} className={styles.showcase_product}>
+              <Link href={product.url_key}>
+                <Image
+                  src={product.images[0]}
+                  alt={product.name}
+                  width={70}
+                  height={70}
+                />
                 <p className={styles.name}>{product.name}</p>
               </Link>
-              <Link href="/product/shoe">
-                <p className={styles.category_name}>{product.category}</p>
+              <Link href={`/search?category=${product.category.code}`}>
+                <p className={styles.category_name}>{product.category.name}</p>
               </Link>
               <span className={styles.price}>
-                <b>Rs {product.price.after}</b>
-                <del>Rs {product.price.before}</del>
+                <b>Rs {product.price}</b>
+                <del>Rs {Math.floor(product.price * 1.46)}</del>
               </span>
             </li>
           ))}
@@ -111,11 +106,11 @@ export default function ProductContainer({ products }) {
       <div className={styles.deal_of_the_day}>
         <h2 className={styles.title}>Deal of the Day</h2>
         <div className={styles.product}>
-          <Link href="/product/shoe">
+          <Link href={"/product/" + dealOfTheDay.url_key}>
             <Image
               className={styles.image}
               alt="shoes"
-              src={shoes}
+              src={dealOfTheDay.images[0]}
               width={400}
               height={400}
             />
@@ -126,20 +121,17 @@ export default function ProductContainer({ products }) {
               <FaStar />
               <FaStar />
             </div>
-            <Link href="/product/shoe">
-              <h3 className={styles.name}>
-                SHAMPOO, CONDITIONER & FACEWASH PACKS
-              </h3>
+            <Link href={"/product/" + dealOfTheDay.url_key}>
+              <h3 className={styles.name}>{dealOfTheDay.name}</h3>
             </Link>
-            <p className={styles.description}>
-              Lorem ipsum dolor sit amet consectetur Lorem ipsum dolor dolor sit
-              amet consectetur Lorem ipsum dolor
-            </p>
+            <p className={styles.description}>{dealOfTheDay.description}</p>
             <span className={styles.price}>
-              <b>Rs 1500</b>
-              <del>Rs 2000</del>
+              <b>Rs {dealOfTheDay.price}</b>
+              <del>Rs {Math.floor(dealOfTheDay.price * 1.46)}</del>
             </span>
-            <button className={styles.cta}>Add to Cart</button>
+            <Link href={"/product/" + dealOfTheDay.url_key}>
+              <button className={styles.cta}>go to product</button>
+            </Link>
             <div className={styles.item_sold}>
               <div className={styles.item_count}>
                 <span>

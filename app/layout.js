@@ -1,4 +1,6 @@
 import { Inter } from "next/font/google";
+import UserContextProvider from "./store/UserContextProvider";
+import { getUser, setUser } from "@/helpers/auth";
 // import "./global.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -7,12 +9,14 @@ export const metadata = {
   title: "Premps",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const user = await getUser();
+  await setUser(user);
   return (
     <html lang="en">
       <body className={inter.className}>
         <div style={{ position: "relative" }} id="overlay" />
-        {children}
+        <UserContextProvider user={user}>{children}</UserContextProvider>
       </body>
     </html>
   );

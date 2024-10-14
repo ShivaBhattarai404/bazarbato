@@ -142,15 +142,11 @@ export default function AttributeSetForm({
         <Fragment key="attributeSet-attributes">
           <MultiSelect
             label="Add Attributes"
-            options={attributes.filter(
-              ({ _id }) =>
-                !attributeSet?.attributes.find(
-                  (attribute) => attribute._id === _id
-                )
-            )}
+            options={attributes}
             className={styles.multiselect}
             name="attributes"
             capsules={attributeSet?.attributes}
+            disabled={loading || attributeSet}
           />
         </Fragment>
       </Card>

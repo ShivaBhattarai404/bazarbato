@@ -62,7 +62,6 @@ export default async function NewAttributeSet({ searchParams: { set: code } }) {
     fetchAttributes(),
   ]);
 
-  console.log(attributeSet?.attributes);
   return (
     <div className={`${styles.container} homepadding`}>
       <AdminPageHeading back="/admin/attributes" className={styles.title}>

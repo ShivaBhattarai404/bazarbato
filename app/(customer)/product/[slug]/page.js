@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 // helper functions
 import dbConnect from "@/helpers/dbConnect";
 import { deepCopy } from "@/helpers/utils";
-import { getUser } from "@/helpers/crud";
+import { getUser } from "@/helpers/auth";
 
 // database models
 import Product from "@/models/Product";
@@ -94,8 +94,7 @@ async function addToBag({ _id: productId, sku, attributes, coupon, quantity }) {
     });
     await bag.save();
     revalidatePath("/bag");
-    console.log("product added to bag");
-    return;
+    return { error: null };
   } else {
     // if user does not have an existing bag/cart then create a new cart and add product to that cart
     const cart = new Bag({

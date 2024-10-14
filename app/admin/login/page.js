@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 import { generateJwt } from "@/helpers/jwt";
 import { EMAIL_REGEX } from "@/Constants/validation";
 
-
 // function to handle admin login
 async function loginHandler(email, password) {
   "use server";
@@ -30,7 +29,10 @@ async function loginHandler(email, password) {
   }
 
   // Check if email and password are correct
-  if (email === "demo@premps.com" && password === "demo") {
+  if (
+    email === process.env.ADMIN_USERNAME &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
     const storedCookies = cookies();
     // Generate JWT token
     const token = await generateJwt({ email }, "1d");

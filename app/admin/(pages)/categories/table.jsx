@@ -11,8 +11,13 @@ import CheckBox from "@/components/CheckBox/CheckBox";
 import Modal from "@/components/_admin/Modal/Modal";
 import Spinner from "@/components/_admin/Spinner/Spinner";
 import { useRouter } from "next/navigation";
+import TableFoot from "@/components/_admin/TableFoot/TableFoot";
 
-export default function CategoryTable({ categories, deleteCategories }) {
+export default function CategoryTable({
+  categories,
+  deleteCategories,
+  totalCount,
+}) {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [modal, setModal] = useState("");
   const [loading, setLoading] = useState(false);
@@ -161,6 +166,7 @@ export default function CategoryTable({ categories, deleteCategories }) {
               </tr>
             ))}
           </tbody>
+          <TableFoot total={totalCount} />
         </table>
       </Card>
     </Fragment>

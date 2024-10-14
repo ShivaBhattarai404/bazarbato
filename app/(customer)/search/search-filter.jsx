@@ -1,8 +1,9 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import styles from "./page.module.css";
 import formStyles from "@/public/styles/form.module.css";
 import { useRouter } from "next/navigation";
+import { FaChevronDown } from "react-icons/fa";
 
 export default function SearchFilter({
   query,
@@ -10,9 +11,16 @@ export default function SearchFilter({
   price_sort,
   min,
   max,
+  className,
+  category,
   ...rest
 }) {
   const router = useRouter();
+  const [expand, setExpand] = useState(false);
+
+  const toggleExpand = () => {
+    setExpand((prev) => !prev);
+  };
 
   const onFilter = (e) => {
     e.preventDefault();
@@ -23,13 +31,27 @@ export default function SearchFilter({
     const price_sort = formData.get("price_sort");
     const min = formData.get("min");
     const max = formData.get("max");
+
+    setExpand(false);
     router.push(
-      `/search?query=${query}&alphabet_sort=${alphabet_sort}&price_sort=${price_sort}&min=${min}&max=${max}`
+      `/search?query=${query}&alphabet_sort=${alphabet_sort}&price_sort=${price_sort}&min=${min}&max=${max}${
+        category ? "&category=" + category : ""
+      }`
     );
   };
   return (
-    <form className={styles.filterComponent} onSubmit={onFilter} {...rest}>
-      <h2 className={styles.title}>Filter By</h2>
+    <form
+      className={[
+        styles.filterComponent,
+        className,
+        expand ? styles.expand : "",
+      ].join(" ")}
+      onSubmit={onFilter}
+      {...rest}
+    >
+      <h2 className={styles.title} onClick={toggleExpand}>
+        Filters <FaChevronDown />
+      </h2>
       <input type="hidden" name="query" value={query} />
       <Fragment>
         <label className={formStyles.label} htmlFor="sort">

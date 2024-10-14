@@ -19,6 +19,7 @@ import Product from "@/models/Product";
 import Attribute from "@/models/Attribute";
 import AttributeSet from "@/models/AttributeSet";
 import DiscountCoupon from "@/models/DiscountCoupon";
+import { redirect } from "next/navigation";
 
 // upload images to digital ocean space object storage using aws s3 bucket
 export async function uploadFile(file, filename) {
@@ -88,22 +89,6 @@ export async function deleteFile(filename = "") {
 //     throw new Error("Error while deleting file ->" + filename);
 //   }
 // }
-
-export async function getUser() {
-  const cookieStore = cookies();
-  const loginToken = cookieStore.get("user-token")?.value;
-
-  let user = null;
-  if (loginToken) {
-    try {
-      user = await verifyJwtToken(loginToken);
-    } catch (error) {
-      console.error("Invalid token");
-    }
-  }
-
-  return user;
-}
 
 export async function checkExistence(filter, model) {
   try {

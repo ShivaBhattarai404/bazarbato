@@ -4,10 +4,13 @@ import dbConnect from "@/helpers/dbConnect";
 import AttributeSet from "@/models/AttributeSet";
 
 // function to fetch all available attributes in the database
-async function fetchAttributes() {
+async function fetchAttributes(skip, limit) {
   try {
     await dbConnect();
-    const attributes = await Attribute.find().sort({ createdAt: -1 }).lean();
+    const [attributes, totalCount] = await Promise.all([
+      Attribute.find().skip(skip).limit(limit).sort({ createdAt: -1 }).lean(),
+      Attribute.countDocuments(),
+    ]);
 
     const formattedAttributes = attributes.map((attribute) => {
       const modifiedAttribute = {
@@ -21,7 +24,7 @@ async function fetchAttributes() {
       }
       return modifiedAttribute;
     });
-    return formattedAttributes;
+    return { attributes: formattedAttributes, totalCount };
   } catch (error) {
     return [];
   }
@@ -51,12 +54,17 @@ async function deleteAttributes(attributeIDs) {
   }
 }
 
-export default async function ProductsPage() {
-  const attributes = await fetchAttributes();
+export default async function Attributes({
+  searchParams: { page = 1, perPage = 10 },
+}) {
+  const skip = (page - 1) * perPage;
+  const limit = perPage;
+  const { attributes, totalCount } = await fetchAttributes(skip, limit);
   return (
     <AttributesClientPage
       attributes={attributes}
       deleteAttributes={deleteAttributes}
+      attributesCount={totalCount}
     />
   );
 }

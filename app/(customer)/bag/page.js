@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 
 // helper functions
-import { getUser } from "@/helpers/crud";
+import { getUser } from "@/helpers/auth";
 import { deepCopy } from "@/helpers/utils";
 import dbConnect from "@/helpers/dbConnect";
 import {

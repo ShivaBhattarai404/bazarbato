@@ -31,10 +31,9 @@ function getEsewaTransactionDetails(order) {
   const grossTotal = order.grossTotal;
   const taxAmount = 0;
   const productCode = "EPAYTEST";
-  const transactionId =
-    order._id.toString() +
-    Date.now().toString() +
-    Math.floor(Math.random() * 1000);
+  const transactionId = `${order._id.toString()}-${Date.now()}-${Math.floor(
+    Math.random() * 1000
+  )}`;
 
   const dataString = `total_amount=${grossTotal},transaction_uuid=${transactionId},product_code=${productCode}`;
   const signature = createSignatureForEsewaPayment(dataString);
@@ -77,6 +76,11 @@ export default async function Payment({
   searchParams: { data, order: orderId },
 }) {
   const decodedToken = decodeEsewaPaymentSuccessToken(data);
+  if (decodedToken) {
+    const paidOrderId = decodedToken.order.split("-")[0];
+    await markOrderAsPaid(paidOrderId);
+  }
+
   const order = await fetchOrder(orderId);
   if (!order) {
     return notFound();
